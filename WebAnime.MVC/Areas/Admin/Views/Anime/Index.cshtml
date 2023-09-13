@@ -1,0 +1,102 @@
+﻿@using System.Text
+@using DataModels.EF
+@model IEnumerable<WebAnime.MVC.Areas.Admin.Models.AnimeViewModel>
+
+@{
+    ViewBag.Title = "Danh sách anime";
+    var danhSachQuocGia = ViewBag.DanhSachQuocGia as IEnumerable<QuocGia>;
+    var danhSachQuocGiaSelect = new SelectList(danhSachQuocGia, "Id", "TenQuocGia");
+
+    var danhSachDang = ViewBag.DanhSachDang as IEnumerable<Dang>;
+    var danhSachDangSelect = new SelectList(danhSachDang, "Id", "TenDang");
+
+    var danhSachMua = ViewBag.DanhSachMua as IEnumerable<Mua>;
+    var danhSachMuaSelect = new SelectList(danhSachMua, "Id", "TenMua");
+
+
+    var danhSachTheLoai = ViewBag.DanhSachTheLoai as IEnumerable<TheLoai>;
+    var danhSachTheLoaiMultiSelect = new MultiSelectList(danhSachTheLoai, "Id", "TenTheLoai");
+}
+<h2>Danh sách anime</h2>
+@if (!Model.Any())
+{
+    <h2>Không có anime nào</h2>
+}
+else
+{
+    <table class="table table-bordered table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>Tiêu đề</th>
+                <th>Tiêu đề gốc</th>
+                <th>Ngày phát hành</th>
+                <th>Hoàn thành</th>
+                <th>Studio</th>
+                <th>Ảnh bìa</th>
+                <th>Thumbnail</th>
+                <th>Quốc gia</th>
+                <th>Thể loại</th>
+                <th>Chức năng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var anime in Model)
+            {
+                <tr>
+
+                    <td>@anime.TieuDe</td>
+                    <td>@anime.TieuDeGoc</td>
+                    <td>@anime.NgayPhatHanh.ToShortDateString()</td>
+                    <td>
+                        @{
+                            if (anime.HoanThanh)
+                            {
+                                <text>Rồi</text>
+                            }
+                            else
+                            {
+                                <text>Chưa</text>
+                            }
+                        }
+                    </td>
+                    <td>@anime.Studio</td>
+                    <td><a href="@anime.LinkAnhBia" target="_blank" class="text-decoration-none">Xem</a></td>
+                    <td><a href="@anime.LinkThumb" target="_blank" class="text-decoration-none">Xem</a></td>
+                    <td>
+                        @{
+                            var quocGia = danhSachQuocGiaSelect.FirstOrDefault(x => int.Parse(x.Value) == anime.QuocGiaId);
+                            @((quocGia != null) ? quocGia.Text : "Đang cập nhật")
+                        }
+                    </td>
+                    <td>
+                        @{
+                            var builder = new StringBuilder();
+                            int n = anime.DanhSachTheLoai.Length;
+
+                            for (int i = 0; i < n - 1; ++i)
+                            {
+                                builder.Append(danhSachTheLoaiMultiSelect.FirstOrDefault(x => int.Parse(x.Value) == anime.DanhSachTheLoai[i])?.Text + ", ");
+                            }
+                            builder.Append(danhSachTheLoaiMultiSelect.FirstOrDefault(x => int.Parse(x.Value) == anime.DanhSachTheLoai[n - 1])?.Text + ".");
+                            <text>@builder.ToString()</text>
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            @Html.ActionLink("Sửa", "Edit", "Anime", new { id = anime.Id }, new { @class = "btn btn-primary " })
+                            @Html.ActionLink("Xoá", "Delete", "Anime", new { id = anime.Id }, new { @class = "btn btn-primary " })
+
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section footerJs
+{
+    <script>
+        CKFinder.setupCKEditor(editor, '/Resources/Library/Common/ckfinder/');
+    </script>
+}

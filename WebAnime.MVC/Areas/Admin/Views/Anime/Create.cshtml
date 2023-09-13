@@ -1,0 +1,215 @@
+﻿@using DataModels.EF
+@model WebAnime.MVC.Areas.Admin.Models.AnimeViewModel
+
+@{
+    ViewBag.Title = "Edit";
+
+    var danhSachQuocGia = ViewBag.DanhSachQuocGia as IEnumerable<QuocGia>;
+    var danhSachQuocGiaSelect = new SelectList(danhSachQuocGia, "Id", "TenQuocGia");
+
+    var danhSachDang = ViewBag.DanhSachDang as IEnumerable<Dang>;
+    var danhSachDangSelect = new SelectList(danhSachDang, "Id", "TenDang");
+
+    var danhSachMua = ViewBag.DanhSachMua as IEnumerable<Mua>;
+    var danhSachMuaSelect = new SelectList(danhSachMua, "Id", "TenMua");
+
+
+    var danhSachTheLoai = ViewBag.DanhSachTheLoai as IEnumerable<TheLoai>;
+    var danhSachTheLoaiMultiSelect = new MultiSelectList(danhSachTheLoai, "Id", "TenTheLoai");
+}
+
+<h2>Sửa Anime</h2>
+@using (Html.BeginForm("Edit", "Anime", FormMethod.Post, new { @class = "form-control" }))
+{
+    @Html.ValidationSummary(false)
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.TieuDe, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.TextBoxFor(model => model.TieuDe, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.TieuDe, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.TieuDeGoc, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.TextBoxFor(model => model.TieuDeGoc, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.TieuDeGoc, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.NoiDung, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.TextAreaFor(model => model.NoiDung, new { @class = "form-control", id = "noidung" })
+            @Html.ValidationMessageFor(model => model.NoiDung, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.NgayPhatHanh, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.TextBoxFor(model => model.NgayPhatHanh, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.NgayPhatHanh, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.QuocGiaId, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.DropDownListFor(model => model.QuocGiaId, danhSachQuocGiaSelect, new { @class = "form-select" })
+            @Html.ValidationMessageFor(model => model.QuocGiaId, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.HoanThanh, new { @class = "col-sm-2 form-check-label text-black fw-bold" })
+        <div class="col-sm-10">
+            @Html.CheckBoxFor(model => model.HoanThanh, new { @class = "form-check-input" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Studio, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.TextBoxFor(model => model.Studio, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Studio, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.LinkAnhBia, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-8">
+            @Html.TextBoxFor(model => model.LinkAnhBia, new { @class = "form-control", id = "txtLinkAnhBia" })
+            @Html.ValidationMessageFor(model => model.LinkAnhBia, "", new { @class = "text-danger" })
+
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary w-100 text-white" type="button" id="btnAnhBia">Chọn ảnh</button>
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.LinkThumb, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-8">
+            @Html.TextBoxFor(model => model.LinkThumb, new { @class = "form-control", id = "txtLinkThumb" })
+            @Html.ValidationMessageFor(model => model.LinkThumb, "", new { @class = "text-danger" })
+
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary w-100 text-white" type="button" id="btnThumb">Chọn ảnh</button>
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Trailer, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.TextBoxFor(model => model.Trailer, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Trailer, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.DangId, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.DropDownListFor(model => model.DangId, danhSachDangSelect, new { @class = "form-select" })
+            @Html.ValidationMessageFor(model => model.DangId, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.MuaId, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.DropDownListFor(model => model.MuaId, danhSachMuaSelect, new { @class = "form-select" })
+            @Html.ValidationMessageFor(model => model.MuaId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.DanhSachTheLoai, new { @class = "col-sm-2 col-form-label" })
+        <div class="col-sm-10">
+            @Html.ListBoxFor(model => model.DanhSachTheLoai, danhSachTheLoaiMultiSelect, new { @class = "form-control", id = "the-loai" })
+            @Html.ValidationMessageFor(model => model.DanhSachTheLoai, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+    <div class="mb-3 row">
+        <div class="col">
+            <button class="btn btn-primary">Lưu</button>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Quay lại", "Index")
+</div>
+@section headerCss
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+}
+@section footerCss
+{
+    <link href="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.css" rel="stylesheet" />
+}
+
+@section footerJs
+{
+    @{
+        Html.RenderPartial("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
+    <script>
+        $(document).ready(function () {
+            window.flatpickr(`#NgayPhatHanh`,
+                {
+                    dateFormat: "d/m/Y"
+                });
+            $('#the-loai[multiple]').multiselect({
+                columns: 4,
+                search: true,
+                checkboxAutoFit:true,
+                texts:
+                {
+                    placeholder: 'Lựa chọn thể loại'
+                },
+                maxPlaceholderOpts: 7
+            });
+            var editor = window.CKEDITOR.replace('noidung',
+                {
+                    height: 200
+                });
+            CKFinder.setupCKEditor(editor, '/Resources/Library/Common/ckfinder/');
+
+            $(`#btnAnhBia`).click(function () {
+                const ckFinder = new CKFinder();
+                ckFinder.selectActionFunction = function (fileUrl) {
+                    $(`#txtLinkAnhBia`).val(fileUrl);
+                };
+                ckFinder.popup();
+            });
+
+            $(`#btnThumb`).click(function () {
+                const ckFinder = new CKFinder();
+                ckFinder.selectActionFunction = function (fileUrl) {
+                    $(`#txtLinkThumb`).val(fileUrl);
+                };
+                ckFinder.popup();
+            });
+        })
+
+    </script>
+
+
+}

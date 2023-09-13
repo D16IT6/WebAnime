@@ -1,0 +1,40 @@
+﻿@model IEnumerable<WebAnime.MVC.Areas.Admin.Models.CountryViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Danh sách quốc gia</h2>
+
+<p>
+    @Html.ActionLink("Tạo mới", "Create",null,new {@class="btn btn-primary"})
+</p>
+<div class="row">
+    <div class="col-4">
+        @Html.ValidationSummary()
+        <table class="table table-hover">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>Chức năng</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            @Html.ActionLink("Sửa", "Update", "Country", new { id = item.Id }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Xoá", "Delete", "Country", new { id = item.Id }, new { @class = "btn btn-danger" })
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>

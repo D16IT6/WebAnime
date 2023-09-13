@@ -1,0 +1,19 @@
+﻿@model WebAnime.MVC.Areas.Admin.Models.CountryViewModel
+
+@{
+    ViewBag.Title = "Xoá quốc gia";
+}
+
+<h2>Xoá quốc gia <span class="text-danger">@Model.Name</span></h2>
+
+<h3>Bạn thật sự muốn xoá chứ?</h3>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Xoá" class="btn btn-danger" />
+        <br />
+        @Html.ActionLink("Quay về trang chủ", "Index", null, new { @class = "text-decoration-none btn btn-primary text-white mt-2" })
+    </div>
+}

@@ -83,6 +83,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\AgeRatingDto.cs" />
+    <Compile Include="Dto\AnimeDto.cs" />
+    <Compile Include="Dto\CategoryDto.cs" />
+    <Compile Include="Dto\StatusDto.cs" />
+    <Compile Include="Dto\StudioDto.cs" />
+    <Compile Include="Dto\TypeDto.cs" />
     <Compile Include="Helpers\BaseDto.cs" />
     <Compile Include="Dto\CountryDto.cs" />
     <Compile Include="EF\AgeRatings.cs" />
@@ -95,6 +101,10 @@
     <Compile Include="EF\WebAnimeDbContext.cs" />
     <Compile Include="Helpers\IRepository.cs" />
     <Compile Include="Helpers\LoadFirstData.cs" />
+    <Compile Include="Migrations\202309131222457_change_studio_reference.cs" />
+    <Compile Include="Migrations\202309131222457_change_studio_reference.designer.cs">
+      <DependentUpon>202309131222457_change_studio_reference.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -102,7 +112,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202309131222457_change_studio_reference.resx">
+      <DependentUpon>202309131222457_change_studio_reference.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

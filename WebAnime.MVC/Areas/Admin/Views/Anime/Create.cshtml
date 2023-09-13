@@ -2,214 +2,220 @@
 @model WebAnime.MVC.Areas.Admin.Models.AnimeViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Thêm anime mới";
+    var ageRatingsList = ViewBag.AgeRating as IEnumerable<AgeRatings>;
 
-    var danhSachQuocGia = ViewBag.DanhSachQuocGia as IEnumerable<QuocGia>;
-    var danhSachQuocGiaSelect = new SelectList(danhSachQuocGia, "Id", "TenQuocGia");
+    var categoriesList = ViewBag.Category as IEnumerable<Categories>;
 
-    var danhSachDang = ViewBag.DanhSachDang as IEnumerable<Dang>;
-    var danhSachDangSelect = new SelectList(danhSachDang, "Id", "TenDang");
+    var countryList = ViewBag.Country as IEnumerable<Countries>;
 
-    var danhSachMua = ViewBag.DanhSachMua as IEnumerable<Mua>;
-    var danhSachMuaSelect = new SelectList(danhSachMua, "Id", "TenMua");
+    var statusList = ViewBag.Status as IEnumerable<Statuses>;
 
+    var studioList = ViewBag.Studio as IEnumerable<Studios>;
 
-    var danhSachTheLoai = ViewBag.DanhSachTheLoai as IEnumerable<TheLoai>;
-    var danhSachTheLoaiMultiSelect = new MultiSelectList(danhSachTheLoai, "Id", "TenTheLoai");
+    var typeList = ViewBag.Type as IEnumerable<Types>;
 }
 
-<h2>Sửa Anime</h2>
-@using (Html.BeginForm("Edit", "Anime", FormMethod.Post, new { @class = "form-control" }))
+<h2>Thêm anime mới</h2>
+
+@using (Html.BeginForm("Create", "Anime", FormMethod.Post))
 {
-    @Html.ValidationSummary(false)
-    @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.Id)
-
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.TieuDe, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.TextBoxFor(model => model.TieuDe, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.TieuDe, "", new { @class = "text-danger" })
+    @Html.ValidationSummary(true)
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.Title, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.TieuDeGoc, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.TextBoxFor(model => model.TieuDeGoc, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.TieuDeGoc, "", new { @class = "text-danger" })
-
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.OriginalTitle, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.TextBoxFor(x => x.OriginalTitle, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.OriginalTitle, "", new { @class = "text-danger " })
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.Synopsis, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.TextAreaFor(x => x.Synopsis, new { @class = "form-control", id = "NoiDung" })
+            @Html.ValidationMessageFor(x => x.Synopsis, "", new { @class = "text-danger " })
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.Poster, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-8">
+            @Html.TextBoxFor(x => x.Poster, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Poster, "", new { @class = "text-danger " })
+        </div>
+        <div class="col-xl-2">
+            <button type="button" class="btn btn-primary w-100" id="btnPoster">Chọn ảnh</button>
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.Duration, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.TextBoxFor(x => x.Duration, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Duration, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.NoiDung, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.TextAreaFor(model => model.NoiDung, new { @class = "form-control", id = "noidung" })
-            @Html.ValidationMessageFor(model => model.NoiDung, "", new { @class = "text-danger" })
-
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.Release, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.TextBoxFor(x => x.Release, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Release, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.NgayPhatHanh, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.TextBoxFor(model => model.NgayPhatHanh, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.NgayPhatHanh, "", new { @class = "text-danger" })
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.Trailer, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.TextBoxFor(x => x.Trailer, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Trailer, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.QuocGiaId, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.DropDownListFor(model => model.QuocGiaId, danhSachQuocGiaSelect, new { @class = "form-select" })
-            @Html.ValidationMessageFor(model => model.QuocGiaId, "", new { @class = "text-danger" })
-
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.TotalEpisodes, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.EditorFor(x => x.TotalEpisodes, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(x => x.TotalEpisodes, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.HoanThanh, new { @class = "col-sm-2 form-check-label text-black fw-bold" })
-        <div class="col-sm-10">
-            @Html.CheckBoxFor(model => model.HoanThanh, new { @class = "form-check-input" })
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.StatusId, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.DropDownListFor(x => x.StatusId, new SelectList(statusList, "Id", "Name"), new { @class = "form-select" })
+            @Html.ValidationMessageFor(x => x.StatusId, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.Studio, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.TextBoxFor(model => model.Studio, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Studio, "", new { @class = "text-danger" })
-
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.TypeId, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.DropDownListFor(x => x.TypeId, new SelectList(typeList, "Id", "Name"), new { @class = "form-select" })
+            @Html.ValidationMessageFor(x => x.TypeId, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.LinkAnhBia, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(model => model.LinkAnhBia, new { @class = "form-control", id = "txtLinkAnhBia" })
-            @Html.ValidationMessageFor(model => model.LinkAnhBia, "", new { @class = "text-danger" })
-
-        </div>
-        <div class="col-sm-2">
-            <button class="btn btn-primary w-100 text-white" type="button" id="btnAnhBia">Chọn ảnh</button>
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.CountryId, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.DropDownListFor(x => x.CountryId, new SelectList(countryList, "Id", "Name"), new { @class = "form-select" })
+            @Html.ValidationMessageFor(x => x.CountryId, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.LinkThumb, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(model => model.LinkThumb, new { @class = "form-control", id = "txtLinkThumb" })
-            @Html.ValidationMessageFor(model => model.LinkThumb, "", new { @class = "text-danger" })
-
-        </div>
-        <div class="col-sm-2">
-            <button class="btn btn-primary w-100 text-white" type="button" id="btnThumb">Chọn ảnh</button>
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.AgeRatingId, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.DropDownListFor(x => x.AgeRatingId, new SelectList(ageRatingsList, "Id", "Name"), new { @class = "form-select" })
+            @Html.ValidationMessageFor(x => x.AgeRatingId, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.Trailer, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.TextBoxFor(model => model.Trailer, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Trailer, "", new { @class = "text-danger" })
-
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.CategoriesId, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.ListBoxFor(x => x.CategoriesId, new MultiSelectList(categoriesList, "Id", "Name"))
+            @Html.ValidationMessageFor(x => x.CategoriesId, "", new { @class = "text-danger " })
         </div>
     </div>
 
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.DangId, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.DropDownListFor(model => model.DangId, danhSachDangSelect, new { @class = "form-select" })
-            @Html.ValidationMessageFor(model => model.DangId, "", new { @class = "text-danger" })
+    <div class="row mb-3">
+        @Html.LabelFor(x => x.StudiosId, new { @class = "col-form-label col-xl-2 fw-bold" })
+        <div class="col-xl-10">
+            @Html.ListBoxFor(x => x.StudiosId, new MultiSelectList(studioList, "Id", "Name"))
+            @Html.ValidationMessageFor(x => x.StudiosId, "", new { @class = "text-danger " })
 
         </div>
     </div>
-
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.MuaId, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.DropDownListFor(model => model.MuaId, danhSachMuaSelect, new { @class = "form-select" })
-            @Html.ValidationMessageFor(model => model.MuaId, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="mb-3 row">
-        @Html.LabelFor(model => model.DanhSachTheLoai, new { @class = "col-sm-2 col-form-label" })
-        <div class="col-sm-10">
-            @Html.ListBoxFor(model => model.DanhSachTheLoai, danhSachTheLoaiMultiSelect, new { @class = "form-control", id = "the-loai" })
-            @Html.ValidationMessageFor(model => model.DanhSachTheLoai, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-
-    <div class="mb-3 row">
-        <div class="col">
-            <button class="btn btn-primary">Lưu</button>
+    <div class="row">
+        <div class="col-3">
+            <button class="btn btn-primary" type="submit">Tạo mới</button>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Quay lại", "Index")
+    @Html.ActionLink("Back to List", "Index")
 </div>
-@section headerCss
-{
+
+@section footerCss{
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-}
-@section footerCss
-{
     <link href="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.css" rel="stylesheet" />
-}
+    <style>
+        .ms-options-wrap button {
+            border-color: rgb(222, 226, 230);
+        }
 
+        .ms-options-wrap button span {
+            font-size: 16px;
+        }
+
+        .ms-options-wrap > button:after {
+            right: 15px;
+        }
+    </style>
+}
 @section footerJs
 {
-    @{
-        Html.RenderPartial("_ValidationScriptsPartial");
-    }
+
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
+
     <script>
-        $(document).ready(function () {
-            window.flatpickr(`#NgayPhatHanh`,
+            const editor = window.CKEDITOR.replace('NoiDung');
+            CKFinder.setupCKEditor(editor, "/Resources/Library/Common/ckfinder/");
+
+            $(`#btnPoster`).click(function () {
+                const ckFinder = new CKFinder();
+                ckFinder.selectActionFunction = function (fileUrl) {
+                    $(`#Poster`).val(fileUrl);
+                };
+                ckFinder.popup();
+            });
+            $(`#Release`).flatpickr({
+                altInput: true,
+                altFormat: "d/m/Y"
+            });
+            $(`select#CategoriesId[multiple]`).multiselect({
+                columns: 4,
+                texts: {
+                    placeholder: 'Chọn thể loại'
+                },
+                search: true,
+                searchOptions:
                 {
-                    dateFormat: "d/m/Y"
-                });
-            $('#the-loai[multiple]').multiselect({
+                    searchText: true
+                },
+                minHeight: 120
+            });
+            $(`select#StudiosId[multiple]`).multiselect({
                 columns: 4,
                 search: true,
-                checkboxAutoFit:true,
-                texts:
+                searchOptions:
                 {
-                    placeholder: 'Lựa chọn thể loại'
+                    searchText: true
                 },
-                maxPlaceholderOpts: 7
-            });
-            var editor = window.CKEDITOR.replace('noidung',
-                {
-                    height: 200
-                });
-            CKFinder.setupCKEditor(editor, '/Resources/Library/Common/ckfinder/');
+                texts: {
+                    placeholder: 'Chọn nhà sản xuất'
 
-            $(`#btnAnhBia`).click(function () {
-                const ckFinder = new CKFinder();
-                ckFinder.selectActionFunction = function (fileUrl) {
-                    $(`#txtLinkAnhBia`).val(fileUrl);
-                };
-                ckFinder.popup();
+                },
+                minHeight: 120
             });
 
-            $(`#btnThumb`).click(function () {
-                const ckFinder = new CKFinder();
-                ckFinder.selectActionFunction = function (fileUrl) {
-                    $(`#txtLinkThumb`).val(fileUrl);
-                };
-                ckFinder.popup();
-            });
-        })
-
+            const listMultiSelect = document.querySelectorAll(`.ms-options-wrap button`);
+            for (const item of listMultiSelect) {
+                item.classList.add(`form-control`);
+                item.classList.add(`border-1`);
+                item.classList.add(`p-2`);
+            }
     </script>
-
 
 }

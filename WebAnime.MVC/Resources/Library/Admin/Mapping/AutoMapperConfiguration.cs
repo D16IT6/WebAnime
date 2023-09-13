@@ -13,6 +13,9 @@ namespace WebAnime.MVC.Resources.Library.Admin.Mapping
                 {
                     cfg.CreateMap<Countries, CountryViewModel>();
                     cfg.CreateMap<CountryViewModel, Countries>();
+
+                    cfg.CreateMap<AnimeViewModel, Animes>();
+                    cfg.CreateMap<Animes, AnimeViewModel>();
                 }
             );
             return config.CreateMapper();

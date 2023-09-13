@@ -13,10 +13,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
         public CountryController(IMapper mapper)
         {
-            this._mapper = mapper;
+            _mapper = mapper;
         }
 
-        // GET: Admin/Country
         public ActionResult Index()
         {
             var countryDto = new CountryDto();

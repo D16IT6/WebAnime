@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace DataModels.EF
 {
     public class Animes
     {
-        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Animes()
         {
             Categories = new HashSet<Categories>();
@@ -27,7 +25,7 @@ namespace DataModels.EF
 
         [StringLength(50)] public string Duration { get; set; }
 
-        [Column(TypeName = "date")] public DateTime? Relase { get; set; } = DateTime.Now.Date;
+        [Column(TypeName = "date")] public DateTime? Release { get; set; } = DateTime.Now.Date;
 
         [StringLength(50)] public string Trailer { get; set; }
 
@@ -43,8 +41,6 @@ namespace DataModels.EF
 
         public int? AgeRatingId { get; set; }
 
-        public int? StudioId { get; set; }
-
         public virtual AgeRatings AgeRatings { get; set; }
 
         public virtual Countries Countries { get; set; }
@@ -56,5 +52,9 @@ namespace DataModels.EF
         public virtual ICollection<Categories> Categories { get; set; }
 
         public virtual ICollection<Studios> Studios { get; set; }
+
+        [NotMapped] public int[] CategoriesId { get; set; }
+
+        [NotMapped] public int[] StudiosId { get; set; }
     }
 }

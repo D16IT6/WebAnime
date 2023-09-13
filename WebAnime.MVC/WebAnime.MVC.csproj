@@ -34,6 +34,19 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TypeScriptTarget>ES2015</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind>ES6</TypeScriptModuleKind>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -73,12 +86,6 @@
     <Reference Include="DelegateDecompiler.EntityFramework, Version=0.32.0.0, Culture=neutral, PublicKeyToken=93b26a10a04705bd, processorArchitecture=MSIL">
       <HintPath>..\packages\DelegateDecompiler.EntityFramework.0.32.0\lib\net45\DelegateDecompiler.EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="ELFinder.Connector, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ELFinder.Connector.1.0.1\lib\net40\ELFinder.Connector.dll</HintPath>
-    </Reference>
-    <Reference Include="ELFinder.Connector.ASPNet, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ELFinder.Connector.ASPNet.1.0.1\lib\net40\ELFinder.Connector.ASPNet.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -95,11 +102,11 @@
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject, Version=3.3.3.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.3.3\lib\net45\Ninject.dll</HintPath>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Web.Common, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.Web.Common.3.3.0\lib\net45\Ninject.Web.Common.dll</HintPath>
+    <Reference Include="Ninject.Web.Common, Version=3.3.2.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.3.3.2\lib\net45\Ninject.Web.Common.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Web.Common.WebHost, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.Web.Common.WebHost.3.3.0\lib\net45\Ninject.Web.Common.WebHost.dll</HintPath>
@@ -129,6 +136,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Web.Razor">
@@ -157,13 +167,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Library\Admin\JqueryValidation\jquery.validate.js" />
+    <Content Include="Resources\Library\Admin\JqueryValidation\jquery.validate.unobtrusive.js" />
     <Content Include="Resources\Library\Common\jQuery-MultiSelect\jquery.multiselect.css" />
     <Content Include="Resources\Library\Common\jQuery-MultiSelect\jquery.multiselect.js" />
     <Content Include="Resources\Library\Common\PagedList\PagedList.css" />
     <Content Include="Global.asax" />
     <Content Include="Resources\Library\Admin\Bootstrap\css\bootstrap.css" />
     <Content Include="Resources\Library\Admin\Bootstrap\js\bootstrap.bundle.js" />
-    <Content Include="Resources\Library\Admin\Jquery\jquery.js" />
     <Content Include="Resources\Library\Client\css\bootstrap.min.css" />
     <Content Include="Resources\Library\Client\css\elegant-icons.css" />
     <Content Include="Resources\Library\Client\css\font-awesome.min.css" />
@@ -1390,40 +1401,26 @@
     <Content Include="Resources\Library\Common\ckfinder\skins\v1\skin.js" />
     <Content Include="Resources\Library\Common\ckfinder\skins\v1\uipanel.css" />
     <Content Include="Resources\Library\Common\ckfinder\translations.txt" />
-    <Content Include="Areas\Admin\Views\Anime\Edit.cshtml" />
-    <Content Include="libman.json" />
     <Content Include="Resources\Library\Admin\Bootstrap\css\bootstrap.css.map" />
     <Content Include="Resources\Library\Admin\Bootstrap\js\bootstrap.bundle.js.map" />
-    <Content Include="Areas\Admin\Views\Anime\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Country\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Country\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Country\Update.cshtml" />
     <Content Include="Areas\Admin\Views\Country\Delete.cshtml" />
-    <None Include="Resources\Library\Common\JqueryValidation\jquery.validate-vsdoc.js" />
-    <Content Include="Resources\Library\Common\JqueryValidation\jquery.validate.js" />
-    <Content Include="Resources\Library\Common\JqueryValidation\jquery.validate.min.js" />
-    <Content Include="Resources\Library\Common\JqueryValidation\jquery.validate.unobtrusive.js" />
-    <Content Include="Resources\Library\Common\JqueryValidation\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Resources\Library\Common\globalize\cldr.js" />
-    <Content Include="Resources\Library\Common\globalize\globalize.js" />
-    <Content Include="Resources\Library\Common\globalize\globalize\currency.js" />
-    <Content Include="Resources\Library\Common\globalize\globalize\date.js" />
-    <Content Include="Resources\Library\Common\globalize\globalize\message.js" />
-    <Content Include="Resources\Library\Common\globalize\globalize\number.js" />
-    <Content Include="Resources\Library\Common\globalize\globalize\plural.js" />
-    <Content Include="Resources\Library\Common\globalize\globalize\relative-time.js" />
-    <Content Include="Resources\Library\Common\globalize\globalize\unit.js" />
-    <None Include="Resources\Library\Common\globalize\jquery.validate-vsdoc.js" />
-    <Content Include="Resources\Library\Common\globalize\jquery.validate.globalize.js" />
-    <Content Include="Resources\Library\Common\globalize\jquery.validate.globalize.min.js" />
-    <Content Include="Resources\Library\Common\globalize\jquery.validate.js" />
-    <Content Include="Resources\Library\Common\globalize\jquery.validate.min.js" />
+    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Anime\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Anime\Create.cshtml" />
+    <None Include="Resources\Library\Admin\Jquery\jquery-3.7.1.intellisense.js" />
+    <Content Include="Resources\Library\Admin\Jquery\jquery-3.7.1.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AnimeController.cs" />
     <Compile Include="Areas\Admin\Controllers\CountryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Models\AnimeViewModel.cs" />
     <Compile Include="Areas\Admin\Models\CountryViewModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -1437,7 +1434,6 @@
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Admin\Views\Anime\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="packages.config" />
     <Content Include="Resources\Library\Common\ckfinder\plugins\fileeditor\codemirror\LICENSE" />

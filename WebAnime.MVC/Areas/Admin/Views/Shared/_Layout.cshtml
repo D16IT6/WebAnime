@@ -1,6 +1,4 @@
-﻿@{
-    ViewBag.Title = "Tiêu đề mặc định";
-}
+﻿
 <!doctype html>
 <html lang="en">
 <head>
@@ -53,11 +51,11 @@
         @RenderBody()
     </div>
     @RenderSection("headerJs", false)
-    <script src="~/Resources/Library/Admin/Jquery/jquery.js"></script>
+    <script src="~/Resources/Library/Admin/Jquery/jquery-3.7.1.js"></script>
+    <script src="~/Resources/Library/Admin/Bootstrap/js/bootstrap.bundle.js"></script>
     <script src="~/Resources/Library/Common/ckfinder/ckfinder.js"></script>
     <script src="~/Resources/Library/Common/ckeditor/ckeditor.js"></script>
-    <script src="~/Resources/Library/Admin/Bootstrap/js/bootstrap.bundle.js"></script>
+    @Html.Partial("_ValidationScriptsPartial")
     @RenderSection("footerJs", false)
-
 </body>
 </html>

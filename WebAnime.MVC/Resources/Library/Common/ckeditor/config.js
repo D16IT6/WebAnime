@@ -8,5 +8,5 @@ CKEDITOR.editorConfig = function( config ) {
 	 config.language = 'vi';
 	// config.uiColor = '#AADC6E';
     config.skin = "kama";
-    config.height = 500;
+    config.height = 120;
 };

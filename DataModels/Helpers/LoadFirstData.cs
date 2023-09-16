@@ -126,6 +126,24 @@ namespace DataModels.Helpers
                         Name = listCategoryName[i]
                     });
                 }
+
+                context.SaveChanges();
+            }
+        }
+
+        public static void LoadServers(this WebAnimeDbContext context)
+        {
+            if (!context.Servers.Any())
+            {
+                var listServerName = new string[] { "PlayerX", "Doodstream", "StreamTape", "MP4Upload" };
+                foreach (var s in listServerName)
+                {
+                    context.Servers.Add(new Servers()
+                    {
+                        Name = s
+                    });
+                }
+
                 context.SaveChanges();
             }
         }

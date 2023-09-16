@@ -1,0 +1,18 @@
+﻿@model WebAnime.MVC.Areas.Admin.Models.ServerViewModel
+
+@{
+    ViewBag.Title = "Xoá Server";
+}
+
+
+<h2>Xoá Server<span class="text-danger">@Model.Name</span></h2>
+
+<h3>Bạn thật sự muốn xoá chứ?</h3>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <input type="submit" value="Xoá" class="btn btn-danger" />
+    <br />
+    @Html.ActionLink("Quay về trang chủ", "Index", null, new { @class = "text-decoration-none btn btn-primary text-white mt-2" })
+}

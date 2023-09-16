@@ -1,0 +1,70 @@
+﻿@using DataModels.EF
+@model IEnumerable<WebAnime.MVC.Areas.Admin.Models.EpisodeViewModel>
+
+@{
+    ViewBag.Title = "Quản lý tập phim";
+    var anime = ViewBag.Anime as Animes;
+    var servers = ViewBag.Servers as IEnumerable<Servers>;
+}
+
+@if (anime != null)
+{
+    <h2>Quản lý tập phim @anime.Title</h2>
+    @Html.ActionLink("Thêm tập mới", "Create", new { animeId = anime.Id }, new { @class = "btn btn-primary my-2" })
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(m => m.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m.Url)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m.ServerId)
+                </th>
+                <th>
+                    Chức năng
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        <a target="_blank" href="@item.Url" class="text-decoration-none">@item.Url</a>
+                    </td>
+                    <td>
+                        @{
+                            var selectedServer = (servers ?? throw new InvalidOperationException()).FirstOrDefault(x => x.Id == item.ServerId);
+                            if (selectedServer != null)
+                            {
+                                <text>@selectedServer.Name</text>
+                            }
+                            else
+                            {
+                                <text>Đang cập nhật</text>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            @Html.ActionLink("Sửa", "Update", "Episode", new { area = "Admin", animeId = item.AnimeId, serverId = item.ServerId, order = item.Order }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Xoá", "Delete", "Episode", new { area = "Admin", animeId = item.AnimeId, serverId = item.ServerId, order = item.Order }, new { @class = "btn btn-danger" })
+
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h2>Không thấy anime, vui lòng tải lại</h2>
+}

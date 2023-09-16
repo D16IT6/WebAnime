@@ -18,6 +18,8 @@ namespace DataModels.EF
         public virtual DbSet<Statuses> Statuses { get; set; }
         public virtual DbSet<Studios> Studios { get; set; }
         public virtual DbSet<Types> Types { get; set; }
+        public virtual DbSet<Servers> Servers { get; set; }
+        public virtual DbSet<Episodes> Episodes { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -50,7 +52,20 @@ namespace DataModels.EF
                 .HasMany(e => e.Animes)
                 .WithOptional(e => e.Types)
                 .HasForeignKey(e => e.TypeId);
+
+            modelBuilder.Entity<Servers>()
+                .HasMany(e => e.Episodes)
+                .WithRequired(e => e.Servers)
+                .HasForeignKey(e => e.ServerId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Animes>()
+                .HasMany(e => e.Episodes)
+                .WithRequired(e => e.Animes)
+                .HasForeignKey(e => e.ServerId)
+                .WillCascadeOnDelete(false);
         }
+
 
     }
 }

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<WebAnime.MVC.Areas.Admin.Models.ServerViewModel>
+
+@{
+    ViewBag.Title = "Quản lý server";
+}
+
+<p>
+    @Html.ActionLink("Tạo server mới", "Create",null,new{@class = "btn btn-primary"})
+</p>
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>Chức năng</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>@item.Description</td>
+            <td>
+                <div class="btn-group">
+                    @Html.ActionLink("Sửa", "Update", new { id = item.Id }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Xoá", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+                </div>
+            </td>
+        </tr>
+    }
+</table>

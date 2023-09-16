@@ -1,0 +1,54 @@
+﻿@using DataModels.EF
+@model WebAnime.MVC.Areas.Admin.Models.EpisodeViewModel
+
+@{
+    ViewBag.Title = "Thêm tập mới";
+    var anime = ViewBag.Anime as Animes;
+    var servers = ViewBag.Servers as IEnumerable<Servers>;
+}
+
+<h3>Thêm tập mới cho <span class="text-danger">@anime.Title</span></h3>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    <div class="row mb-4">
+        @Html.LabelFor(x => x.Title, new { @class = "col-1 col-form-label fw-bold" })
+        <div class="col-8">
+            @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        @Html.LabelFor(x => x.Order, new { @class = "col-1 col-form-label fw-bold" })
+        <div class="col-8">
+            @Html.TextBoxFor(x => x.Order, new { @class = "form-control", type = "number", min = "1", max = "9999",placeholder="1 tới 9999" })
+            @Html.ValidationMessageFor(x => x.Order, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        @Html.LabelFor(x => x.Url, new { @class = "col-1 col-form-label fw-bold" })
+        <div class="col-8">
+            @Html.TextBoxFor(x => x.Url, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Url, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        @Html.LabelFor(x => x.ServerId, new { @class = "col-1 col-form-label fw-bold" })
+        <div class="col-8">
+            @Html.DropDownListFor(x => x.ServerId, new SelectList(servers, "Id", "Name"), new { @class = "form-select" })
+            @Html.ValidationMessageFor(x => x.ServerId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <button type="submit" class="btn btn-primary">Thêm mới</button>
+        </div>
+    </div>
+}
+@section footerJs
+{
+    @Html.Partial("_ValidationScriptsPartial")
+}

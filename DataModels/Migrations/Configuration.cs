@@ -20,6 +20,7 @@ namespace DataModels.Migrations
             context.LoadTypes();
             context.LoadStudios();
             context.LoadCategories();
+            context.LoadServers();
         }
 
 

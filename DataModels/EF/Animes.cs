@@ -53,8 +53,13 @@ namespace DataModels.EF
 
         public virtual ICollection<Studios> Studios { get; set; }
 
+        public virtual ICollection<Episodes> Episodes { get; set; }
+
+
         [NotMapped] public int[] CategoriesId { get; set; }
 
         [NotMapped] public int[] StudiosId { get; set; }
+
+        [NotMapped] public int[] EpisodesId { get; set; }
     }
 }

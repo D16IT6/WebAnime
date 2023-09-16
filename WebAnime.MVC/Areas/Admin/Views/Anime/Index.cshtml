@@ -23,8 +23,8 @@ else
                             <div class="card-body">
                                 <h5 class="card-title">@anime.Title</h5>
                                 <div class="btn-group w-100">
-                                    @Html.ActionLink("Xem chi tiết", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
-                                    <button class="btn btn-danger">Xoá</button>
+                                    @Html.ActionLink("Chi tiết", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
+                                    @Html.ActionLink("Quản lý tập", "Index", "Episode", new { animeId = anime.Id, area = "Admin" }, new { @class = "btn btn-info text-white" })
                                 </div>
                             </div>
                         </div>

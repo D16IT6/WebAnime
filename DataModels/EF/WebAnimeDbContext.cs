@@ -9,7 +9,6 @@ namespace DataModels.EF
             : base("name=WebAnimeDbContext")
         {
             var init = new MigrateDatabaseToLatestVersion<WebAnimeDbContext, Configuration>();
-            //Database.SetInitializer(new DropCreateDatabaseAlways<WebAnimeDbContext>());
         }
 
         public virtual DbSet<AgeRatings> AgeRatings { get; set; }

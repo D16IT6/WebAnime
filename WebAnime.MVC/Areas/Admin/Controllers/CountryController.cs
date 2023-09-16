@@ -42,10 +42,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Country");
                 }
 
-                ModelState.AddModelError("", "Lỗi không thêm được, vui lòng thử lại");
+                ModelState.AddModelError("", @"Lỗi không thêm được, vui lòng thử lại");
                 return View();
             }
-            ModelState.AddModelError("", "Đầu vào lỗi, vui lòng thử lại");
+            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng thử lại");
             return View();
         }
 
@@ -54,6 +54,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             var countryDto = new CountryDto();
             var countryViewModel = _mapper.Map<CountryViewModel>(countryDto.GetById(id));
+            if (countryViewModel == null) return HttpNotFound();
+
             return View(countryViewModel);
         }
 
@@ -69,10 +71,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Country");
                 }
 
-                ModelState.AddModelError("", "Lỗi không cập nhật được, vui lòng thử lại");
+                ModelState.AddModelError("", @"Lỗi không cập nhật được, vui lòng thử lại");
                 return View();
             }
-            ModelState.AddModelError("", "Đầu vào lỗi, vui lòng thử lại");
+            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng thử lại");
             return View();
         }
         [HttpGet]
@@ -80,6 +82,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             var countryDto = new CountryDto();
             var countryViewModel = _mapper.Map<CountryViewModel>(countryDto.GetById(id));
+            if (countryViewModel == null) return HttpNotFound();
             return View(countryViewModel);
         }
 
@@ -91,7 +94,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Country");
             }
-            ModelState.AddModelError("", "Lỗi không xoá được, vui lòng thử lại");
+            ModelState.AddModelError("", @"Lỗi không xoá được, vui lòng thử lại");
             return View(); ;
         }
     }

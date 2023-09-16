@@ -20,18 +20,24 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        @*<a class="nav-link active" aria-current="page" href="#">Home</a>*@
+                        @Html.ActionLink("Trang chủ","Index","Home",new {area="Admin"},new{@class = "nav-link"})
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
+                            Chức năng
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li>
+                                @Html.ActionLink("Quản lý quốc gia","Index","Country",new{area="Admin"},new {@class="dropdown-item"})
+                            </li>
+                            <li>
+                                @Html.ActionLink("Quản lý studio","Index","Studio",new{area="Admin"},new {@class="dropdown-item"})
+                            </li>
+                            <li>
+                                @Html.ActionLink("Quản lý anime","Index","Anime",new{area="Admin"},new {@class="dropdown-item"})
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
@@ -55,7 +61,6 @@
     <script src="~/Resources/Library/Admin/Bootstrap/js/bootstrap.bundle.js"></script>
     <script src="~/Resources/Library/Common/ckfinder/ckfinder.js"></script>
     <script src="~/Resources/Library/Common/ckeditor/ckeditor.js"></script>
-    @Html.Partial("_ValidationScriptsPartial")
     @RenderSection("footerJs", false)
 </body>
 </html>

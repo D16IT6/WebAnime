@@ -23,7 +23,7 @@ namespace DataModels.EF
 
         [StringLength(250)] public string Poster { get; set; }
 
-        [StringLength(50)] public string Duration { get; set; }
+        [Range(1, Int32.MaxValue)] public int Duration { get; set; }
 
         [Column(TypeName = "date")] public DateTime? Release { get; set; } = DateTime.Now.Date;
 

@@ -2,7 +2,7 @@
 @model WebAnime.MVC.Areas.Admin.Models.AnimeViewModel
 
 @{
-    ViewBag.Title = "Thêm anime mới";
+    ViewBag.Title = "Cập nhật anime";
     var ageRatingsList = ViewBag.AgeRating as IEnumerable<AgeRatings>;
 
     var categoriesList = ViewBag.Category as IEnumerable<Categories>;
@@ -16,9 +16,9 @@
     var typeList = ViewBag.Type as IEnumerable<Types>;
 }
 
-<h2>Thêm anime mới</h2>
+<h2>Cập nhật anime</h2>
 
-@using (Html.BeginForm("Create", "Anime", FormMethod.Post))
+@using (Html.BeginForm("Update", "Anime", FormMethod.Post))
 {
     @Html.ValidationSummary(true)
     <div class="row mb-3">
@@ -56,7 +56,7 @@
     <div class="row mb-3">
         @Html.LabelFor(x => x.Duration, new { @class = "col-form-label col-xl-2 fw-bold" })
         <div class="col-xl-10">
-            @Html.TextBoxFor(x=>x.Duration,new{@class = "form-control",type="number"})
+            @Html.TextBoxFor(x => x.Duration, new { @class = "form-control", type = "number" })
             @Html.ValidationMessageFor(x => x.Duration, "", new { @class = "text-danger " })
         </div>
     </div>
@@ -135,13 +135,13 @@
     </div>
     <div class="row">
         <div class="col-3">
-            <button class="btn btn-primary" type="submit" id="btnCreate">Tạo mới</button>
+            <button class="btn btn-primary" type="submit" id="btnCreate">Cập nhật</button>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Về trang chủ", "Index","Anime")
 </div>
 
 @section footerCss{
@@ -153,9 +153,9 @@
             border-color: rgb(222, 226, 230);
         }
 
-        .ms-options-wrap button span {
-            font-size: 16px;
-        }
+            .ms-options-wrap button span {
+                font-size: 16px;
+            }
 
         .ms-options-wrap > button:after {
             right: 15px;
@@ -166,9 +166,7 @@
 {
     @Html.Partial("_ValidationScriptsPartial")
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
     <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
-
     <script>
         $( document ).ready(function() {
             const editor = window.CKEDITOR.replace('Synopsis');
@@ -176,7 +174,7 @@
 
             editor.on('change', function () {
                 editor.updateElement();
-                $(editor.element.$).trigger('change'); 
+                $(editor.element.$).trigger('change');
             });
 
             $(`#btnPoster`).click(function () {

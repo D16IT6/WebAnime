@@ -105,6 +105,10 @@
     <Compile Include="Migrations\202309131222457_change_studio_reference.designer.cs">
       <DependentUpon>202309131222457_change_studio_reference.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202309151425057_update_duration_field.cs" />
+    <Compile Include="Migrations\202309151425057_update_duration_field.designer.cs">
+      <DependentUpon>202309151425057_update_duration_field.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -115,6 +119,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202309131222457_change_studio_reference.resx">
       <DependentUpon>202309131222457_change_studio_reference.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309151425057_update_duration_field.resx">
+      <DependentUpon>202309151425057_update_duration_field.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

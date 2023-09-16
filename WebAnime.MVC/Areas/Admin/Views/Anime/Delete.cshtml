@@ -1,0 +1,14 @@
+﻿@model WebAnime.MVC.Areas.Admin.Models.AnimeViewModel
+
+@{
+    ViewBag.Title = "Xoá Anime";
+}
+
+<h2>Xoá @Model.Title</h2>
+@using (Html.BeginForm("Delete", "Anime", FormMethod.Post))
+{
+    <h3>Bạn chắc chắn muốn xoá chứ?</h3>
+    <h4 class="text-danger">Sau khi xoá sẽ không thể khôi phục!</h4>
+    <button type="submit" class="btn btn-danger">Đồng ý</button>
+}
+

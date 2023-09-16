@@ -1,7 +1,7 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataModels.Dto
 {
@@ -49,14 +49,105 @@ namespace DataModels.Dto
             }
         }
 
-        public bool Update(Animes entity)
+        public bool Update(Animes newEntity)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var updateEntity = Context.Animes.Find(newEntity.Id);
+                if (updateEntity == null) return false;
+                if (updateEntity.CategoriesId == null) updateEntity.CategoriesId = new int[] { };
+                if (updateEntity.StudiosId == null) updateEntity.StudiosId = new int[] { };
+                UpdateSingleProperties(newEntity, updateEntity);
+                UpdateCategories(newEntity, updateEntity);
+                UpdateStudios(newEntity, updateEntity);
+                Context.SaveChanges();
 
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var deleteEntity = Context.Animes.Find(id);
+                if (deleteEntity == null) return false;
+                Context.Animes.Remove(deleteEntity);
+                Context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void UpdateSingleProperties(Animes newEntity, Animes updateEntity)
+        {
+            updateEntity.Title = newEntity.Title;
+            updateEntity.OriginalTitle = newEntity.OriginalTitle;
+            updateEntity.Synopsis = newEntity.Synopsis;
+            updateEntity.Poster = newEntity.Poster;
+            updateEntity.Duration = newEntity.Duration;
+            updateEntity.Release = newEntity.Release;
+            updateEntity.Trailer = newEntity.Trailer;
+            updateEntity.TotalEpisodes = newEntity.TotalEpisodes;
+            updateEntity.StatusId = newEntity.StatusId;
+            updateEntity.TypeId = newEntity.TypeId;
+            updateEntity.CountryId = newEntity.CountryId;
+            updateEntity.AgeRatingId = newEntity.AgeRatingId;
+        }
+
+        private void UpdateStudios(Animes newEntity, Animes updateEntity)
+        {
+            var oldStudioIds = updateEntity.Studios.Select(s => s.Id).ToArray();
+            var newStudioIds = newEntity.StudiosId;
+
+            var removeStudioIds = oldStudioIds.Except(newStudioIds);
+            var insertStudioIds = newStudioIds.Except(oldStudioIds);
+
+            foreach (int studioId in removeStudioIds)
+            {
+                var removeStudio = updateEntity.Studios.FirstOrDefault(x => x.Id == studioId);
+                if (removeStudio == null) continue;
+                updateEntity.Studios.Remove(removeStudio);
+            }
+            foreach (int studioId in insertStudioIds)
+            {
+                var insertStudio = Context.Studios.Find(studioId);
+                if (insertStudio == null) continue;
+                updateEntity.Studios.Add(insertStudio);
+            }
+
+        }
+
+
+
+        void UpdateCategories(Animes newEntity, Animes updateEntity)
+        {
+            var oldCategoryIds = updateEntity.Categories.Select(x => x.Id).ToArray();
+
+            var newCategoryIds = newEntity.CategoriesId;
+
+            var removeCategoryIds = oldCategoryIds.Except(newCategoryIds);
+            var insertCategoryIds = newCategoryIds.Except(oldCategoryIds);
+
+            foreach (int categoryId in removeCategoryIds)
+            {
+                var removeCategory = updateEntity.Categories.FirstOrDefault(x => x.Id == categoryId);
+                if (removeCategory == null) continue;
+                updateEntity.Categories.Remove(removeCategory);
+            }
+
+            foreach (int categoryId in insertCategoryIds)
+            {
+                var insertCategory = Context.Categories.Find(categoryId);
+                if (insertCategory == null) continue;
+                updateEntity.Categories.Add(insertCategory);
+            }
         }
     }
 }

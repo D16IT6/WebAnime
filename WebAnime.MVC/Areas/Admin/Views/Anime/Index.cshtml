@@ -1,10 +1,37 @@
-﻿
+﻿@model IEnumerable<WebAnime.MVC.Areas.Admin.Models.AnimeViewModel>
 @{
     ViewBag.Title = "Trang quản lý anime";
 }
 
-<h2>Trang quản lý anime</h2>
+<h2>
+    Trang quản lý anime @Html.ActionLink("Thêm mới", "Create", null, new { @class = "text-decoration-none btn btn-primary" })
+</h2>
+@if (!Model.Any())
+{
+    <h2>Chưa có dữ liệu gì, vui lòng thêm mới tại @Html.ActionLink("đây", "Create", null, new { @class = "text-decoration-none btn btn-primary" })</h2>
+}
+else
+{
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                @foreach (var anime in Model)
+                {
+                    <div class="col-4 mb-2">
+                        <div class="card">
+                            <img src="@anime.Poster" class="card-img-top" />
+                            <div class="card-body">
+                                <h5 class="card-title">@anime.Title</h5>
+                                <div class="btn-group w-100">
+                                    @Html.ActionLink("Xem chi tiết", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
+                                    <button class="btn btn-danger">Xoá</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
 
-<table>
-
-</table>
+    </div>
+}

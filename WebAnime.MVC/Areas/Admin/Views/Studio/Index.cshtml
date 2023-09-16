@@ -1,0 +1,34 @@
+﻿@model IEnumerable<WebAnime.MVC.Areas.Admin.Models.StudioViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Danh sách studio</h2>
+
+<p>
+    @Html.ActionLink("Tạo studio mới", "Create",null, new { @class = "btn btn-primary" })
+</p>
+<table class="table table-hover table-responsive">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            <div class="btn-group">
+                @Html.ActionLink("Cập nhật", "Update", new { id=item.Id },new{@class="btn btn-primary"})
+                @Html.ActionLink("Xoá", "Delete", new { id=item.Id }, new { @class = "btn btn-danger" })
+            </div>
+        </td>
+    </tr>
+}
+
+</table>

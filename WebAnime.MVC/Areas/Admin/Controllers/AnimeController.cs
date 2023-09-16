@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataModels.Dto;
 using DataModels.EF;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
 
@@ -16,7 +17,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         }
         public ActionResult Index()
         {
-            return View();
+            var animeDto = new AnimeDto();
+            var animeViewModelList = _mapper.Map<IEnumerable<Animes>, IEnumerable<AnimeViewModel>>(animeDto.GetAll());
+            return View(animeViewModelList);
         }
 
         [HttpGet]
@@ -43,6 +46,56 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             LoadEditData();
             ModelState.AddModelError("", @"Lỗi đầu vào, vui lòng kiểm tra lại");
             return View();
+        }
+
+        public ActionResult Update(int id)
+        {
+            LoadEditData();
+            var animeDto = new AnimeDto();
+            var anime = animeDto.GetById(id);
+            if (anime == null) return new HttpNotFoundResult("");
+            var animeViewModel = _mapper.Map<AnimeViewModel>(anime);
+            return View(animeViewModel);
+        }
+        [HttpPost]
+        public ActionResult Update(AnimeViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var animeDto = new AnimeDto();
+                var entity = _mapper.Map<Animes>(model);
+                if (animeDto.Update(entity))
+                {
+                    return RedirectToAction("Index", "Anime");
+                }
+                LoadEditData();
+                ModelState.AddModelError("", @"Lỗi cập nhật, vui lòng thử lại");
+                return View(model);
+            }
+            LoadEditData();
+            ModelState.AddModelError("", @"Lỗi đầu vào, vui lòng kiểm tra lại");
+            return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult Delete(int id)
+        {
+            var animeDto = new AnimeDto();
+            var anime = animeDto.GetById(id);
+            if (anime == null) return new HttpNotFoundResult("");
+            var animeViewModel = _mapper.Map<AnimeViewModel>(anime);
+            return View(animeViewModel);
+        }
+        [HttpPost]
+        public ActionResult Delete(AnimeViewModel model)
+        {
+            var animeDto = new AnimeDto();
+            if (animeDto.Delete(model.Id))
+            {
+                return RedirectToAction("Index", "Anime");
+            }
+            ModelState.AddModelError("", @"Lỗi xoá, vui lòng thử lại");
+            return View(model);
         }
         void LoadEditData()
         {

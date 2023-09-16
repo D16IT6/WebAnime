@@ -1,6 +1,5 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
-using System;
 using System.Collections.Generic;
 
 namespace DataModels.Dto
@@ -19,17 +18,50 @@ namespace DataModels.Dto
 
         public bool Add(Studios entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Context.Studios.Add(entity);
+                Context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool Update(Studios entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var updateEntity = Context.Studios.Find(entity.Id);
+                if (updateEntity == null) return false;
+                updateEntity.Name = entity.Name;
+                Context.SaveChanges();
+                return true;
+            }
+
+            catch
+            {
+                return false;
+            }
         }
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var updateEntity = Context.Studios.Find(id);
+                if (updateEntity == null) return false;
+                Context.Studios.Remove(updateEntity);
+                Context.SaveChanges();
+                return true;
+            }
+
+            catch
+            {
+                return false;
+            }
         }
     }
 }

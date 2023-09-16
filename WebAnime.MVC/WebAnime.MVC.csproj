@@ -1423,6 +1423,7 @@
     <Content Include="Areas\Admin\Views\Episode\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Episode\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Episode\Update.cshtml" />
+    <Content Include="Areas\Admin\Views\Episode\Delete.cshtml" />
     <None Include="Resources\Library\Admin\Jquery\jquery-3.7.1.intellisense.js" />
     <Content Include="Resources\Library\Admin\Jquery\jquery-3.7.1.js" />
     <Content Include="Web.config" />

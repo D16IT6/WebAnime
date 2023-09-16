@@ -3,14 +3,18 @@
 
 @{
     ViewBag.Title = "Thêm tập mới";
-    var anime = ViewBag.Anime as Animes;
-    var servers = ViewBag.Servers as IEnumerable<Servers>;
+    var anime = ViewBag.Anime as Animes ?? new Animes();
+    //var servers = ViewBag.Servers as IEnumerable<Servers>;
+    string serverName = ViewBag.ServerName as string;
 }
 
 <h3>Thêm tập mới cho <span class="text-danger">@anime.Title</span></h3>
+<h4>Server <span class="text-info">@serverName</span></h4>
 @using (Html.BeginForm())
 {
     @Html.ValidationSummary()
+    @Html.HiddenFor(x => x.ServerId)
+    @Html.HiddenFor(x => x.AnimeId)
     <div class="row mb-4">
         @Html.LabelFor(x => x.Title, new { @class = "col-1 col-form-label fw-bold" })
         <div class="col-8">
@@ -22,7 +26,7 @@
     <div class="row mb-4">
         @Html.LabelFor(x => x.Order, new { @class = "col-1 col-form-label fw-bold" })
         <div class="col-8">
-            @Html.TextBoxFor(x => x.Order, new { @class = "form-control", type = "number", min = "1", max = "9999",placeholder="1 tới 9999" })
+            @Html.TextBoxFor(x => x.Order, new { @class = "form-control", type = "number", min = "1", max = "9999", placeholder = "1 tới 9999" })
             @Html.ValidationMessageFor(x => x.Order, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -35,13 +39,6 @@
         </div>
     </div>
 
-    <div class="row mb-4">
-        @Html.LabelFor(x => x.ServerId, new { @class = "col-1 col-form-label fw-bold" })
-        <div class="col-8">
-            @Html.DropDownListFor(x => x.ServerId, new SelectList(servers, "Id", "Name"), new { @class = "form-select" })
-            @Html.ValidationMessageFor(x => x.ServerId, "", new { @class = "text-danger" })
-        </div>
-    </div>
     <div class="row mb-4">
         <div class="col">
             <button type="submit" class="btn btn-primary">Thêm mới</button>

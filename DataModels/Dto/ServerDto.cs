@@ -1,6 +1,7 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataModels.Dto
 {
@@ -15,7 +16,10 @@ namespace DataModels.Dto
         {
             return Context.Servers;
         }
-
+        public Servers GetFirst()
+        {
+            return Context.Servers.FirstOrDefault();
+        }
         public bool Add(Servers entity)
         {
             try

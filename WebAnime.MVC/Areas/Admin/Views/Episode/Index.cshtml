@@ -1,16 +1,35 @@
-﻿@using DataModels.EF
+﻿@using System.Web.UI.WebControls
+@using DataModels.EF
 @model IEnumerable<WebAnime.MVC.Areas.Admin.Models.EpisodeViewModel>
 
 @{
     ViewBag.Title = "Quản lý tập phim";
     var anime = ViewBag.Anime as Animes;
     var servers = ViewBag.Servers as IEnumerable<Servers>;
+
+    var currentServerId = (int)ViewBag.ServerId;
 }
 
 @if (anime != null)
 {
+
+    using (Html.BeginForm())
+    {
+        <div class="row my-3 d-flex justify-content-center">
+            <label class="col-1 col-form-label fw-bold">Loại server</label>
+            <div class="col-4">
+                @Html.DropDownList("ServerFilter", new SelectList(servers, "Id", "Name", currentServerId), new { @class = "form-select" })
+            </div>
+            <div class="col-1">
+                <button class="btn-primary btn w-100">Lọc</button>
+
+            </div>
+        </div>
+
+    }
+
     <h2>Quản lý tập phim @anime.Title</h2>
-    @Html.ActionLink("Thêm tập mới", "Create", new { animeId = anime.Id }, new { @class = "btn btn-primary my-2" })
+    @Html.ActionLink("Thêm tập mới", "Create", new { id = anime.Id, serverId = currentServerId }, new { @class = "btn btn-primary my-2" })
     <table class="table table-hover table-bordered">
         <thead>
             <tr>
@@ -19,6 +38,9 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(m => m.Url)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m.Order)
                 </th>
                 <th>
                     @Html.DisplayNameFor(m => m.ServerId)
@@ -40,6 +62,9 @@
                         <a target="_blank" href="@item.Url" class="text-decoration-none">@item.Url</a>
                     </td>
                     <td>
+                        @item.Order
+                    </td>
+                    <td>
                         @{
                             var selectedServer = (servers ?? throw new InvalidOperationException()).FirstOrDefault(x => x.Id == item.ServerId);
                             if (selectedServer != null)
@@ -54,8 +79,8 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink("Sửa", "Update", "Episode", new { area = "Admin", animeId = item.AnimeId, serverId = item.ServerId, order = item.Order }, new { @class = "btn btn-primary" })
-                            @Html.ActionLink("Xoá", "Delete", "Episode", new { area = "Admin", animeId = item.AnimeId, serverId = item.ServerId, order = item.Order }, new { @class = "btn btn-danger" })
+                            @Html.ActionLink("Sửa", "Update", "Episode", new { area = "Admin", id = item.Id }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Xoá", "Delete", "Episode", new { area = "Admin", id = item.Id }, new { @class = "btn btn-danger" })
 
                         </div>
                     </td>

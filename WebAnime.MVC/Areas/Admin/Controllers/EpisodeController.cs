@@ -14,22 +14,58 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             _mapper = mapper;
         }
-        public ActionResult Index(int animeId)
+
+        [HttpGet]
+        public ActionResult Index(int id, int serverId)
         {
-            LoadEditData(animeId);
+            var serverDto = new ServerDto();
+            var firstServer = serverDto.GetFirst();
+            if (firstServer == null) return new HttpNotFoundResult();
+            LoadEditData(id);
+
+            ViewBag.Servers = serverDto.GetAll();
 
             var episodeDto = new EpisodeDto();
             var episodeViewModelList =
-                _mapper.Map<IEnumerable<Episodes>, IEnumerable<EpisodeViewModel>>(episodeDto.GetAll(animeId));
+                _mapper.Map<IEnumerable<Episodes>, IEnumerable<EpisodeViewModel>>(episodeDto.GetAll(id, serverId));
 
+            ViewBag.ServerId = serverId;
+            return View(episodeViewModelList);
+        }
+        [HttpPost]
+        public ActionResult Index(int id, FormCollection form)
+        {
+            int animeId = id;
+            var serverDto = new ServerDto();
+            var firstServer = serverDto.GetFirst();
+            if (firstServer == null) return new HttpNotFoundResult();
+
+            LoadEditData(animeId);
+            ViewBag.Servers = serverDto.GetAll();
+
+            bool hasServerId = int.TryParse(form["ServerFilter"], out int serverId);
+            if (!hasServerId && serverId != 0) serverId = firstServer.Id;
+            var episodeDto = new EpisodeDto();
+            var episodeViewModelList =
+                _mapper.Map<IEnumerable<Episodes>, IEnumerable<EpisodeViewModel>>(episodeDto.GetAll(animeId, serverId));
+
+            ViewBag.ServerId = serverId;
             return View(episodeViewModelList);
         }
 
         [HttpGet]
-        public ActionResult Create(int animeId)
+        public ActionResult Create(int id, int serverId)
         {
-            LoadEditData(animeId);
-            return View();
+            int animeId = id;
+            var episodeDto = new EpisodeDto();
+            ViewBag.ServerName = episodeDto.GetById(animeId, serverId).Servers.Name;
+            LoadEditData(id);
+            return View(new EpisodeViewModel()
+            {
+                AnimeId = animeId,
+                ServerId = serverId,
+                Order = episodeDto.GetMaxOrderId(id, serverId) + 1
+            });
         }
 
         [HttpPost]
@@ -42,7 +78,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var episode = _mapper.Map<Episodes>(model);
                 if (episodeDto.Add(episode))
                 {
-                    return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = model.AnimeId });
+                    return RedirectToAction("Index", "Episode", new { area = "Admin", id = model.AnimeId, serverId = model.ServerId });
                 }
 
                 ModelState.AddModelError("", @"Lỗi không thêm được, vui lòng thử lại");
@@ -52,13 +88,16 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             return View();
         }
         [HttpGet]
-        public ActionResult Update(int animeId, int serverId, int order)
+        public ActionResult Update(int id)
         {
-            LoadEditData(animeId);
             var episodeDto = new EpisodeDto();
-            var episode = episodeDto.GetById(animeId, serverId, order);
+
+            var episode = episodeDto.GetById(id);
             if (episode == null) return new HttpNotFoundResult();
             var episodeViewModel = _mapper.Map<EpisodeViewModel>(episode);
+
+            LoadEditData(episodeViewModel.AnimeId);
+            ViewBag.Server = new ServerDto().GetById(episodeViewModel.ServerId);
             return View(episodeViewModel);
         }
 
@@ -66,34 +105,52 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public ActionResult Update(EpisodeViewModel model)
         {
             var episodeDto = new EpisodeDto();
+            LoadEditData(model.AnimeId);
 
             if (ModelState.IsValid)
             {
                 var episode = _mapper.Map<Episodes>(model);
                 if (episodeDto.Update(episode))
                 {
-                    return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = model.AnimeId });
+                    return RedirectToAction("Index", "Episode", new { area = "Admin", id = episode.AnimeId, serverId = episode.ServerId });
                 }
 
                 ModelState.AddModelError("", @"Lỗi không cập nhật được, vui lòng thử lại");
-                LoadEditData(model.AnimeId);
                 return View();
             }
             ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng thử lại");
-            LoadEditData(model.AnimeId);
             return View();
         }
 
         [HttpGet]
-        public ActionResult Delete(int animeId, int serverId, int order)
+        public ActionResult Delete(int id)
         {
+            var episodeDto = new EpisodeDto();
+            var episode = episodeDto.GetById(id);
+            if (episode == null) return new HttpNotFoundResult();
+            var episodeViewModel = _mapper.Map<EpisodeViewModel>(episode);
 
+            LoadEditData(episodeViewModel.AnimeId);
+            ViewBag.Server = new ServerDto().GetById(episodeViewModel.ServerId);
+            return View(episodeViewModel);
+        }
+        [HttpPost]
+        public ActionResult Delete(EpisodeViewModel model)
+        {
+            var episodeDto = new EpisodeDto();
+            var deleted = episodeDto.GetById(model.Id);
+            var animeId = deleted.AnimeId;
+            var serverId = deleted.ServerId;
+            if (episodeDto.Delete(model.Id))
+            {
+                return RedirectToAction("Index", "Episode", new { area = "Admin", id = animeId, serverId });
+            }
+            ModelState.AddModelError("", @"Lỗi không xoá được, vui lòng thử lại");
             return View();
+
         }
         private void LoadEditData(int animeId)
         {
-            var serverDto = new ServerDto();
-            ViewBag.Servers = serverDto.GetAll();
 
             var animeDto = new AnimeDto();
             ViewBag.Anime = animeDto.GetById(animeId);

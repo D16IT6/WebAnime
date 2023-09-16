@@ -3,13 +3,17 @@
 
 @{
     ViewBag.Title = "Cập nhật";
-    var anime = ViewBag.Anime as Animes;
-    var servers = ViewBag.Servers as IEnumerable<Servers>;
+    var anime = ViewBag.Anime as Animes ?? new Animes();
+    var server = ViewBag.Server as Servers ?? new Servers();
+    
 }
 
 <h3>Cập nhật cho <span class="text-danger">@anime.Title</span></h3>
+<h4>Server <span class="text-info">@server.Name</span></h4>
 @using (Html.BeginForm())
 {
+    @Html.HiddenFor(x=>x.AnimeId)
+    @Html.HiddenFor(x=>x.ServerId)
     @Html.ValidationSummary(true)
     @Html.AntiForgeryToken()
 
@@ -36,18 +40,10 @@
             @Html.ValidationMessageFor(x => x.Url, "", new { @class = "text-danger" })
         </div>
     </div>
-
-    <div class="row mb-4">
-        @Html.LabelFor(x => x.ServerId, new { @class = "col-1 col-form-label fw-bold" })
-        <div class="col-8">
-            @Html.DropDownListFor(x => x.ServerId, new SelectList(servers, "Id", "Name"), new { @class = "form-select" })
-            @Html.ValidationMessageFor(x => x.ServerId, "", new { @class = "text-danger" })
-        </div>
-    </div>
     <div class="row mb-2">
         <div class="col">
             <button type="submit" class="btn btn-primary">Cập nhật</button>
         </div>
     </div>
 }
-@Html.ActionLink("Quay về","Index",new {@animeId = anime.Id},new {@class="btn btn-primary"})
+@Html.ActionLink("Quay về","Index",new {id = anime.Id,serverId = server.Id},new {@class="btn btn-primary"})

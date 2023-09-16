@@ -7,6 +7,16 @@ namespace DataModels.Dto
 {
     public class EpisodeDto : BaseDto
     {
+
+        public Episodes GetById(int id)
+        {
+            return Context.Episodes.FirstOrDefault(x => x.Id == id);
+        }
+
+        public Episodes GetById(int animeId, int serverId)
+        {
+            return Context.Episodes.FirstOrDefault(x => x.AnimeId == animeId && x.ServerId == serverId);
+        }
         public Episodes GetById(int animeId, int serverId, int order)
         {
             return Context.Episodes.FirstOrDefault(x => x.AnimeId == animeId && x.ServerId == serverId && x.Order == order);
@@ -16,15 +26,20 @@ namespace DataModels.Dto
         {
             return Context.Episodes.Where(x => x.AnimeId == animeId).OrderBy(x => x.Order);
         }
-        public int? GetMaxOrderId(int animeId)
+        public IEnumerable<Episodes> GetAll(int animeId, int serverId)
         {
-            return Context.Episodes.Where(x => x.AnimeId == animeId).Max(x => x.Order);
+            return Context.Episodes.Where(x => x.AnimeId == animeId && x.ServerId == serverId).OrderBy(x => x.Order);
+        }
+        public int GetMaxOrderId(int animeId, int serverId)
+        {
+            var maxOrder = Context.Episodes
+                .Where(x => x.AnimeId == animeId && x.ServerId == serverId)
+                .Select(x => (int?)x.Order)
+                .Max();
+
+            return maxOrder ?? 0;
         }
 
-        public IQueryable<int> GetAllEPs(int animeId)
-        {
-            return Context.Episodes.Where(x => x.AnimeId == animeId).Select(x => x.Order);
-        }
 
         public bool Add(Episodes entity)
         {
@@ -41,12 +56,11 @@ namespace DataModels.Dto
         {
             try
             {
-                var updateEntity = GetById(entity.AnimeId, entity.ServerId, entity.Order);
+                var updateEntity = GetById(entity.AnimeId, entity.ServerId);
                 if (updateEntity == null) { return false; }
                 updateEntity.Order = entity.Order;
                 updateEntity.Title = entity.Title;
-                updateEntity.Url = updateEntity.Url;
-                updateEntity.ServerId = entity.ServerId;
+                updateEntity.Url = entity.Url;
                 Context.SaveChanges();
                 return true;
             }
@@ -54,16 +68,17 @@ namespace DataModels.Dto
 
         }
 
-        public bool Delete(int animeId, int serverId, int order)
+        public bool Delete(int id)
         {
             try
             {
-                var deleteEntity = GetById(animeId, serverId, order);
+                var deleteEntity = GetById(id);
                 if (deleteEntity == null)
                 {
                     return false;
                 }
                 Context.Episodes.Remove(deleteEntity);
+                Context.SaveChanges();
                 return true;
             }
             catch { return false; }

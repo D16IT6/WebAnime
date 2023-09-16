@@ -1,0 +1,17 @@
+﻿@using DataModels.EF
+@model WebAnime.MVC.Areas.Admin.Models.EpisodeViewModel
+
+@{
+    ViewBag.Title = "Xoá tập phim";
+    var anime = ViewBag.Anime as Animes ?? new Animes();
+    var server = ViewBag.Server as Servers ?? new Servers();
+}
+
+<h2>Xoá tập phim của <span class="text-danger">@anime.Title</span>, server <span class="text-danger">@server.Name</span></h2>
+
+<h3>Bạn chắc chắn muốn xoá chứ</h3>
+@using (Html.BeginForm())
+{
+    <button class="btn btn-danger">Xoá</button>
+}
+@Html.ActionLink("Quay về", "Index", new { id = anime.Id, serverId = server.Id }, new { @class = "btn btn-primary mt-2" })

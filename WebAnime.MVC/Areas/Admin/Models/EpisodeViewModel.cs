@@ -4,12 +4,8 @@ namespace WebAnime.MVC.Areas.Admin.Models
 {
     public class EpisodeViewModel
     {
-
+        public int Id { get; set; }
         public int AnimeId { get; set; }
-
-
-        [Required(ErrorMessage = "{0} là bắt buộc")]
-        [Display(Name = "Server")]
         public int ServerId { get; set; }
 
 

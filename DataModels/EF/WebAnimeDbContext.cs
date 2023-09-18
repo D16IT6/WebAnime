@@ -1,4 +1,3 @@
-using DataModels.Migrations;
 using System.Data.Entity;
 
 namespace DataModels.EF
@@ -8,7 +7,8 @@ namespace DataModels.EF
         public WebAnimeDbContext()
             : base("name=WebAnimeDbContext")
         {
-            var init = new MigrateDatabaseToLatestVersion<WebAnimeDbContext, Configuration>();
+            //var init = new MigrateDatabaseToLatestVersion<WebAnimeDbContext, Configuration>();
+            //Database.SetInitializer(init);
         }
 
         public virtual DbSet<AgeRatings> AgeRatings { get; set; }
@@ -56,14 +56,14 @@ namespace DataModels.EF
             modelBuilder.Entity<Servers>()
                 .HasMany(e => e.Episodes)
                 .WithRequired(e => e.Servers)
-                .HasForeignKey(e => e.ServerId)
-                .WillCascadeOnDelete(false);
+                .HasForeignKey(e => e.ServerId);
 
             modelBuilder.Entity<Animes>()
                 .HasMany(e => e.Episodes)
                 .WithRequired(e => e.Animes)
-                .HasForeignKey(e => e.ServerId)
-                .WillCascadeOnDelete(false);
+                .HasForeignKey(e => e.AnimeId);
+
+
         }
 
 

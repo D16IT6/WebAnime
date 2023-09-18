@@ -7,15 +7,12 @@ namespace DataModels.EF
     public partial class Episodes
     {
         [Key]
-        [Column(Order = 1)]
         public int Id { get; set; }
 
-        [Column(Order = 2)]
         [StringLength(255)]
         public string Url { get; set; }
 
         [StringLength(50)]
-        [Column(Order = 3)]
         public string Title { get; set; }
 
         [Column(Order = 4)]

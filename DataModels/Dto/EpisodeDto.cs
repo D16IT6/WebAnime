@@ -45,6 +45,8 @@ namespace DataModels.Dto
         {
             try
             {
+                entity.Animes = Context.Animes.Find(entity.AnimeId);
+                entity.Servers = Context.Servers.Find(entity.ServerId);
                 Context.Episodes.Add(entity);
                 Context.SaveChanges();
                 return true;

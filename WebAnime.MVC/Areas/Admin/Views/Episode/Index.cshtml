@@ -13,12 +13,12 @@
 @if (anime != null)
 {
 
-    using (Html.BeginForm())
+    using (Html.BeginForm("Index","Episode",FormMethod.Get))
     {
         <div class="row my-3 d-flex justify-content-center">
             <label class="col-1 col-form-label fw-bold">Loại server</label>
             <div class="col-4">
-                @Html.DropDownList("ServerFilter", new SelectList(servers, "Id", "Name", currentServerId), new { @class = "form-select" })
+                @Html.DropDownList("serverId", new SelectList(servers, "Id", "Name", currentServerId), new { @class = "form-select" })
             </div>
             <div class="col-1">
                 <button class="btn-primary btn w-100">Lọc</button>

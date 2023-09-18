@@ -13,6 +13,7 @@
 @using (Html.BeginForm())
 {
     @Html.ValidationSummary()
+    @Html.HiddenFor(x => x.Id)
     @Html.HiddenFor(x => x.ServerId)
     @Html.HiddenFor(x => x.AnimeId)
     <div class="row mb-4">

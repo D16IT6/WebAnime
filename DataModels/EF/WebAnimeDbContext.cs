@@ -1,3 +1,4 @@
+using DataModels.Migrations;
 using System.Data.Entity;
 
 namespace DataModels.EF
@@ -7,8 +8,8 @@ namespace DataModels.EF
         public WebAnimeDbContext()
             : base("name=WebAnimeDbContext")
         {
-            //var init = new MigrateDatabaseToLatestVersion<WebAnimeDbContext, Configuration>();
-            //Database.SetInitializer(init);
+            var init = new MigrateDatabaseToLatestVersion<WebAnimeDbContext, Configuration>();
+            Database.SetInitializer(init);
         }
 
         public virtual DbSet<AgeRatings> AgeRatings { get; set; }

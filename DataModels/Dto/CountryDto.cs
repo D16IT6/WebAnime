@@ -1,19 +1,23 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DataModels.Dto
 {
-    public class CountryDto : BaseDto, IRepository<Countries>
+    public class CountryDto : BaseDto
     {
-        public Countries GetById(int id) => Context.Countries.Find(id);
+        public Countries GetById(int id) => Context.Countries.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
 
-        public IEnumerable<Countries> GetAll() => Context.Countries.AsEnumerable();
+        public IEnumerable<Countries> GetAll() => Context.Countries.Where(x => !x.IsDeleted);
         public bool Add(Countries entity)
         {
             try
             {
+                entity.CreatedDate = entity.ModifiedDate = DateTime.Now;
+                entity.IsDeleted = false;
+
                 Context.Countries.Add(entity);
                 Context.SaveChanges();
                 return true;
@@ -27,9 +31,10 @@ namespace DataModels.Dto
 
         public bool Update(Countries entity)
         {
-            var updateEntity = Context.Countries.Find(entity.Id);
+            var updateEntity = Context.Countries.FirstOrDefault(x => !x.IsDeleted && entity.Id == x.Id);
             if (updateEntity == null) return false;
             updateEntity.Name = entity.Name;
+            entity.ModifiedDate = DateTime.Now;
             Context.SaveChanges();
             return true;
         }
@@ -38,9 +43,10 @@ namespace DataModels.Dto
         {
             try
             {
-                var deleteEntity = Context.Countries.Find(id);
+                var deleteEntity = Context.Countries.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
                 if (deleteEntity == null) return false;
-                Context.Countries.Remove(deleteEntity);
+                deleteEntity.IsDeleted = true;
+                deleteEntity.DeletedDate = DateTime.Now;
                 Context.SaveChanges();
                 return true;
             }

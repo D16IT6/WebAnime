@@ -66,19 +66,19 @@
     </Reference>
     <Reference Include="CKFinder, Version=2.6.0.2792, Culture=neutral, PublicKeyToken=579e7adc719a1423, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\ckfinder\bin\Release\CKFinder.dll</HintPath>
+      <HintPath>Resources\Library\Common\ckfinder\bin\Debug\CKFinder.dll</HintPath>
     </Reference>
     <Reference Include="CKFinder_FileEditor, Version=2.1.0.1132, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\ckfinder\bin\Release\CKFinder_FileEditor.dll</HintPath>
+      <HintPath>Resources\Library\Common\ckfinder\bin\Debug\CKFinder_FileEditor.dll</HintPath>
     </Reference>
     <Reference Include="CKFinder_ImageResize, Version=2.1.0.1132, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\ckfinder\bin\Release\CKFinder_ImageResize.dll</HintPath>
+      <HintPath>Resources\Library\Common\ckfinder\bin\Debug\CKFinder_ImageResize.dll</HintPath>
     </Reference>
     <Reference Include="CKFinder_Watermark, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\ckfinder\bin\Release\CKFinder_Watermark.dll</HintPath>
+      <HintPath>Resources\Library\Common\ckfinder\bin\Debug\CKFinder_Watermark.dll</HintPath>
     </Reference>
     <Reference Include="DelegateDecompiler, Version=0.32.0.0, Culture=neutral, PublicKeyToken=93b26a10a04705bd, processorArchitecture=MSIL">
       <HintPath>..\packages\DelegateDecompiler.0.32.0\lib\net45\DelegateDecompiler.dll</HintPath>
@@ -194,6 +194,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Admin\Controllers\1.js" />
     <Content Include="Resources\Library\Admin\JqueryValidation\jquery.validate.js" />
     <Content Include="Resources\Library\Admin\JqueryValidation\jquery.validate.unobtrusive.js" />
     <Content Include="Resources\Library\Common\ckeditor\adapters\jquery.js" />
@@ -538,62 +539,6 @@
     <Content Include="Resources\Library\Common\ckeditor\plugins\templates\templates\images\template2.gif" />
     <Content Include="Resources\Library\Common\ckeditor\plugins\templates\templates\images\template3.gif" />
     <Content Include="Resources\Library\Common\ckeditor\plugins\widget\images\handle.png" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\css\samples.css" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\img\github-top.png" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\img\header-bg.png" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\img\header-separator.png" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\img\logo.png" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\img\logo.svg" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\img\navigation-tip.png" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\index.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\js\sample.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\js\sf.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\ajax.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\api.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\appendto.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\assets\inlineall\logo.png" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\assets\outputxhtml\outputxhtml.css" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\assets\posteddata.php" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\assets\sample.jpg" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\assets\uilanguages\languages.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\datafiltering.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\dialog\assets\my_dialog.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\dialog\dialog.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\divreplace.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\enterkey\enterkey.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\htmlwriter\outputhtml.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\index.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\inlineall.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\inlinebycode.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\inlinetextarea.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\jquery.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\magicline\magicline.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\readonly.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\replacebyclass.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\replacebycode.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\sample.css" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\sample.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\sample_posteddata.php" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\tabindex.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\toolbar\toolbar.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\uicolor.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\uilanguages.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\wysiwygarea\fullpage.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\old\xhtmlstyle.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\css\fontello.css" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\font\fontello.svg" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\font\LICENSE.txt" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\index.html" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\js\abstracttoolbarmodifier.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\js\fulltoolbareditor.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\js\toolbarmodifier.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\js\toolbartextmodifier.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\lib\codemirror\codemirror.css" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\lib\codemirror\codemirror.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\lib\codemirror\javascript.js" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\lib\codemirror\neo.css" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\lib\codemirror\show-hint.css" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\lib\codemirror\show-hint.js" />
     <Content Include="Resources\Library\Common\ckeditor\skins\bootstrapck\.temp\css\dialog.css" />
     <Content Include="Resources\Library\Common\ckeditor\skins\bootstrapck\.temp\css\dialog_ie.css" />
     <Content Include="Resources\Library\Common\ckeditor\skins\bootstrapck\.temp\css\dialog_ie7.css" />
@@ -703,94 +648,14 @@
     <Content Include="Resources\Library\Common\ckeditor\skins\moono-lisa\images\spinner.gif" />
     <Content Include="Resources\Library\Common\ckeditor\styles.js" />
     <Content Include="Resources\Library\Common\ckeditor\vendor\promise.js" />
-    <Content Include="Resources\Library\Common\jQuery-MultiSelect\jquery.multiselect.css" />
-    <Content Include="Resources\Library\Common\jQuery-MultiSelect\jquery.multiselect.js" />
-    <Content Include="Resources\Library\Common\PagedList\PagedList.css" />
-    <Content Include="Global.asax" />
-    <Content Include="Resources\Library\Admin\Bootstrap\css\bootstrap.css" />
-    <Content Include="Resources\Library\Admin\Bootstrap\js\bootstrap.bundle.js" />
-    <Content Include="Resources\Library\Client\css\bootstrap.min.css" />
-    <Content Include="Resources\Library\Client\css\elegant-icons.css" />
-    <Content Include="Resources\Library\Client\css\font-awesome.min.css" />
-    <Content Include="Resources\Library\Client\css\nice-select.css" />
-    <Content Include="Resources\Library\Client\css\owl.carousel.min.css" />
-    <Content Include="Resources\Library\Client\css\plyr.css" />
-    <Content Include="Resources\Library\Client\css\slicknav.min.css" />
-    <Content Include="Resources\Library\Client\css\style.css" />
-    <Content Include="Resources\Library\Client\fonts\ElegantIcons.svg" />
-    <Content Include="Resources\Library\Client\fonts\fontawesome-webfont.svg" />
-    <Content Include="Resources\Library\Client\img\anime\details-pic.jpg" />
-    <Content Include="Resources\Library\Client\img\anime\review-1.jpg" />
-    <Content Include="Resources\Library\Client\img\anime\review-2.jpg" />
-    <Content Include="Resources\Library\Client\img\anime\review-3.jpg" />
-    <Content Include="Resources\Library\Client\img\anime\review-4.jpg" />
-    <Content Include="Resources\Library\Client\img\anime\review-5.jpg" />
-    <Content Include="Resources\Library\Client\img\anime\review-6.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-1.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-10.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-11.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-12.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-2.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-3.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-4.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-5.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-6.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-7.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-8.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\blog-9.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\details\bd-item-1.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\details\bd-item-2.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\details\bd-item-3.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\details\blog-details-pic.jpg" />
-    <Content Include="Resources\Library\Client\img\blog\details\comment-1.png" />
-    <Content Include="Resources\Library\Client\img\blog\details\comment-2.png" />
-    <Content Include="Resources\Library\Client\img\blog\details\comment-3.png" />
-    <Content Include="Resources\Library\Client\img\hero\hero-1.jpg" />
-    <Content Include="Resources\Library\Client\img\live\live-1.jpg" />
-    <Content Include="Resources\Library\Client\img\live\live-2.jpg" />
-    <Content Include="Resources\Library\Client\img\live\live-3.jpg" />
-    <Content Include="Resources\Library\Client\img\live\live-4.jpg" />
-    <Content Include="Resources\Library\Client\img\live\live-5.jpg" />
-    <Content Include="Resources\Library\Client\img\live\live-6.jpg" />
-    <Content Include="Resources\Library\Client\img\logo.png" />
-    <Content Include="Resources\Library\Client\img\normal-breadcrumb.jpg" />
-    <Content Include="Resources\Library\Client\img\popular\popular-1.jpg" />
-    <Content Include="Resources\Library\Client\img\popular\popular-2.jpg" />
-    <Content Include="Resources\Library\Client\img\popular\popular-3.jpg" />
-    <Content Include="Resources\Library\Client\img\popular\popular-4.jpg" />
-    <Content Include="Resources\Library\Client\img\popular\popular-5.jpg" />
-    <Content Include="Resources\Library\Client\img\popular\popular-6.jpg" />
-    <Content Include="Resources\Library\Client\img\recent\recent-1.jpg" />
-    <Content Include="Resources\Library\Client\img\recent\recent-2.jpg" />
-    <Content Include="Resources\Library\Client\img\recent\recent-3.jpg" />
-    <Content Include="Resources\Library\Client\img\recent\recent-4.jpg" />
-    <Content Include="Resources\Library\Client\img\recent\recent-5.jpg" />
-    <Content Include="Resources\Library\Client\img\recent\recent-6.jpg" />
-    <Content Include="Resources\Library\Client\img\sidebar\comment-1.jpg" />
-    <Content Include="Resources\Library\Client\img\sidebar\comment-2.jpg" />
-    <Content Include="Resources\Library\Client\img\sidebar\comment-3.jpg" />
-    <Content Include="Resources\Library\Client\img\sidebar\comment-4.jpg" />
-    <Content Include="Resources\Library\Client\img\sidebar\tv-1.jpg" />
-    <Content Include="Resources\Library\Client\img\sidebar\tv-2.jpg" />
-    <Content Include="Resources\Library\Client\img\sidebar\tv-3.jpg" />
-    <Content Include="Resources\Library\Client\img\sidebar\tv-4.jpg" />
-    <Content Include="Resources\Library\Client\img\sidebar\tv-5.jpg" />
-    <Content Include="Resources\Library\Client\img\trending\trend-1.jpg" />
-    <Content Include="Resources\Library\Client\img\trending\trend-2.jpg" />
-    <Content Include="Resources\Library\Client\img\trending\trend-3.jpg" />
-    <Content Include="Resources\Library\Client\img\trending\trend-4.jpg" />
-    <Content Include="Resources\Library\Client\img\trending\trend-5.jpg" />
-    <Content Include="Resources\Library\Client\img\trending\trend-6.jpg" />
-    <Content Include="Resources\Library\Client\js\bootstrap.min.js" />
-    <Content Include="Resources\Library\Client\js\jquery-3.3.1.min.js" />
-    <Content Include="Resources\Library\Client\js\jquery.nice-select.min.js" />
-    <Content Include="Resources\Library\Client\js\jquery.slicknav.js" />
-    <Content Include="Resources\Library\Client\js\main.js" />
-    <Content Include="Resources\Library\Client\js\mixitup.min.js" />
-    <Content Include="Resources\Library\Client\js\owl.carousel.min.js" />
-    <Content Include="Resources\Library\Client\js\player.js" />
-    <Content Include="Resources\Library\Client\videos\1.mp4" />
-    <Content Include="Resources\Library\Client\videos\anime-watch.jpg" />
+    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder.dll" />
+    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder.pdb" />
+    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_FileEditor.dll" />
+    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_FileEditor.pdb" />
+    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_ImageResize.dll" />
+    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_ImageResize.pdb" />
+    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_Watermark.dll" />
+    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_Watermark.pdb" />
     <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder.dll" />
     <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder_FileEditor.dll" />
     <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder_FileEditor.pdb" />
@@ -1428,6 +1293,94 @@
     <Content Include="Resources\Library\Common\ckfinder\skins\v1\skin.js" />
     <Content Include="Resources\Library\Common\ckfinder\skins\v1\uipanel.css" />
     <Content Include="Resources\Library\Common\ckfinder\translations.txt" />
+    <Content Include="Resources\Library\Common\jQuery-MultiSelect\jquery.multiselect.css" />
+    <Content Include="Resources\Library\Common\jQuery-MultiSelect\jquery.multiselect.js" />
+    <Content Include="Resources\Library\Common\PagedList\PagedList.css" />
+    <Content Include="Global.asax" />
+    <Content Include="Resources\Library\Admin\Bootstrap\css\bootstrap.css" />
+    <Content Include="Resources\Library\Admin\Bootstrap\js\bootstrap.bundle.js" />
+    <Content Include="Resources\Library\Client\css\bootstrap.min.css" />
+    <Content Include="Resources\Library\Client\css\elegant-icons.css" />
+    <Content Include="Resources\Library\Client\css\font-awesome.min.css" />
+    <Content Include="Resources\Library\Client\css\nice-select.css" />
+    <Content Include="Resources\Library\Client\css\owl.carousel.min.css" />
+    <Content Include="Resources\Library\Client\css\plyr.css" />
+    <Content Include="Resources\Library\Client\css\slicknav.min.css" />
+    <Content Include="Resources\Library\Client\css\style.css" />
+    <Content Include="Resources\Library\Client\fonts\ElegantIcons.svg" />
+    <Content Include="Resources\Library\Client\fonts\fontawesome-webfont.svg" />
+    <Content Include="Resources\Library\Client\img\anime\details-pic.jpg" />
+    <Content Include="Resources\Library\Client\img\anime\review-1.jpg" />
+    <Content Include="Resources\Library\Client\img\anime\review-2.jpg" />
+    <Content Include="Resources\Library\Client\img\anime\review-3.jpg" />
+    <Content Include="Resources\Library\Client\img\anime\review-4.jpg" />
+    <Content Include="Resources\Library\Client\img\anime\review-5.jpg" />
+    <Content Include="Resources\Library\Client\img\anime\review-6.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-1.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-10.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-11.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-12.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-2.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-3.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-4.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-5.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-6.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-7.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-8.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\blog-9.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\details\bd-item-1.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\details\bd-item-2.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\details\bd-item-3.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\details\blog-details-pic.jpg" />
+    <Content Include="Resources\Library\Client\img\blog\details\comment-1.png" />
+    <Content Include="Resources\Library\Client\img\blog\details\comment-2.png" />
+    <Content Include="Resources\Library\Client\img\blog\details\comment-3.png" />
+    <Content Include="Resources\Library\Client\img\hero\hero-1.jpg" />
+    <Content Include="Resources\Library\Client\img\live\live-1.jpg" />
+    <Content Include="Resources\Library\Client\img\live\live-2.jpg" />
+    <Content Include="Resources\Library\Client\img\live\live-3.jpg" />
+    <Content Include="Resources\Library\Client\img\live\live-4.jpg" />
+    <Content Include="Resources\Library\Client\img\live\live-5.jpg" />
+    <Content Include="Resources\Library\Client\img\live\live-6.jpg" />
+    <Content Include="Resources\Library\Client\img\logo.png" />
+    <Content Include="Resources\Library\Client\img\normal-breadcrumb.jpg" />
+    <Content Include="Resources\Library\Client\img\popular\popular-1.jpg" />
+    <Content Include="Resources\Library\Client\img\popular\popular-2.jpg" />
+    <Content Include="Resources\Library\Client\img\popular\popular-3.jpg" />
+    <Content Include="Resources\Library\Client\img\popular\popular-4.jpg" />
+    <Content Include="Resources\Library\Client\img\popular\popular-5.jpg" />
+    <Content Include="Resources\Library\Client\img\popular\popular-6.jpg" />
+    <Content Include="Resources\Library\Client\img\recent\recent-1.jpg" />
+    <Content Include="Resources\Library\Client\img\recent\recent-2.jpg" />
+    <Content Include="Resources\Library\Client\img\recent\recent-3.jpg" />
+    <Content Include="Resources\Library\Client\img\recent\recent-4.jpg" />
+    <Content Include="Resources\Library\Client\img\recent\recent-5.jpg" />
+    <Content Include="Resources\Library\Client\img\recent\recent-6.jpg" />
+    <Content Include="Resources\Library\Client\img\sidebar\comment-1.jpg" />
+    <Content Include="Resources\Library\Client\img\sidebar\comment-2.jpg" />
+    <Content Include="Resources\Library\Client\img\sidebar\comment-3.jpg" />
+    <Content Include="Resources\Library\Client\img\sidebar\comment-4.jpg" />
+    <Content Include="Resources\Library\Client\img\sidebar\tv-1.jpg" />
+    <Content Include="Resources\Library\Client\img\sidebar\tv-2.jpg" />
+    <Content Include="Resources\Library\Client\img\sidebar\tv-3.jpg" />
+    <Content Include="Resources\Library\Client\img\sidebar\tv-4.jpg" />
+    <Content Include="Resources\Library\Client\img\sidebar\tv-5.jpg" />
+    <Content Include="Resources\Library\Client\img\trending\trend-1.jpg" />
+    <Content Include="Resources\Library\Client\img\trending\trend-2.jpg" />
+    <Content Include="Resources\Library\Client\img\trending\trend-3.jpg" />
+    <Content Include="Resources\Library\Client\img\trending\trend-4.jpg" />
+    <Content Include="Resources\Library\Client\img\trending\trend-5.jpg" />
+    <Content Include="Resources\Library\Client\img\trending\trend-6.jpg" />
+    <Content Include="Resources\Library\Client\js\bootstrap.min.js" />
+    <Content Include="Resources\Library\Client\js\jquery-3.3.1.min.js" />
+    <Content Include="Resources\Library\Client\js\jquery.nice-select.min.js" />
+    <Content Include="Resources\Library\Client\js\jquery.slicknav.js" />
+    <Content Include="Resources\Library\Client\js\main.js" />
+    <Content Include="Resources\Library\Client\js\mixitup.min.js" />
+    <Content Include="Resources\Library\Client\js\owl.carousel.min.js" />
+    <Content Include="Resources\Library\Client\js\player.js" />
+    <Content Include="Resources\Library\Client\videos\1.mp4" />
+    <Content Include="Resources\Library\Client\videos\anime-watch.jpg" />
     <Content Include="Resources\Library\Admin\Bootstrap\css\bootstrap.css.map" />
     <Content Include="Resources\Library\Admin\Bootstrap\js\bootstrap.bundle.js.map" />
     <Content Include="Areas\Admin\Views\Country\Index.cshtml" />
@@ -1483,12 +1436,6 @@
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="packages.config" />
-    <Content Include="Resources\Library\Common\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
-    <Content Include="Resources\Library\Common\ckfinder\skins\bootstrap\assets\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Resources\Library\Common\ckfinder\skins\bootstrap\assets\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Resources\Library\Common\ckfinder\skins\bootstrap\assets\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="Resources\Library\Common\ckfinder\skins\bootstrap\assets\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="Resources\Library\Common\ckfinder\userfiles\.htaccess" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Resources\Library\Client\fonts\ElegantIcons.eot" />
     <Content Include="Resources\Library\Client\fonts\ElegantIcons.ttf" />
@@ -1524,11 +1471,6 @@
     <Content Include="Resources\Library\Common\ckeditor\plugins\scayt\LICENSE.md" />
     <Content Include="Resources\Library\Common\ckeditor\plugins\scayt\README.md" />
     <Content Include="Resources\Library\Common\ckeditor\README.md" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\font\config.json" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\font\fontello.eot" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\font\fontello.ttf" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\font\fontello.woff" />
-    <Content Include="Resources\Library\Common\ckeditor\samples\toolbarconfigurator\lib\codemirror\LICENSE" />
     <Content Include="Resources\Library\Common\ckeditor\SECURITY.md" />
     <Content Include="Resources\Library\Common\ckeditor\skins\bootstrapck\dev\locations.json" />
     <Content Include="Resources\Library\Common\ckeditor\skins\bootstrapck\readme.md" />
@@ -1559,6 +1501,12 @@
     <Content Include="Resources\Library\Common\ckeditor\skins\kama\readme.md" />
     <Content Include="Resources\Library\Common\ckeditor\skins\moono-dark\readme.md" />
     <Content Include="Resources\Library\Common\ckeditor\skins\moono-lisa\readme.md" />
+    <Content Include="Resources\Library\Common\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
+    <Content Include="Resources\Library\Common\ckfinder\skins\bootstrap\assets\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Resources\Library\Common\ckfinder\skins\bootstrap\assets\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Resources\Library\Common\ckfinder\skins\bootstrap\assets\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Resources\Library\Common\ckfinder\skins\bootstrap\assets\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Resources\Library\Common\ckfinder\userfiles\.htaccess" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

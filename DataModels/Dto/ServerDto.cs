@@ -1,20 +1,21 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DataModels.Dto
 {
-    public class ServerDto : BaseDto, IRepository<Servers>
+    public class ServerDto : BaseDto
     {
         public Servers GetById(int id)
         {
-            return Context.Servers.Find(id);
+            return Context.Servers.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
         }
 
         public IEnumerable<Servers> GetAll()
         {
-            return Context.Servers;
+            return Context.Servers.Where(x => !x.IsDeleted);
         }
         public Servers GetFirst()
         {
@@ -24,6 +25,7 @@ namespace DataModels.Dto
         {
             try
             {
+                entity.ModifiedDate = entity.CreatedDate = DateTime.Now;
                 Context.Servers.Add(entity);
                 Context.SaveChanges();
                 return true;
@@ -36,10 +38,11 @@ namespace DataModels.Dto
 
         public bool Update(Servers entity)
         {
-            var updateEntity = Context.Servers.Find(entity.Id);
+            var updateEntity = GetById(entity.Id);
             if (updateEntity == null) return false;
             updateEntity.Name = entity.Name;
             updateEntity.Description = entity.Description;
+            updateEntity.ModifiedDate = DateTime.Now;
             Context.SaveChanges();
             return true;
         }
@@ -48,9 +51,10 @@ namespace DataModels.Dto
         {
             try
             {
-                var deleteEntity = Context.Servers.Find(id);
+                var deleteEntity = GetById(id);
                 if (deleteEntity == null) return false;
-                Context.Servers.Remove(deleteEntity);
+                deleteEntity.IsDeleted = true;
+                deleteEntity.DeletedDate = DateTime.Now;
                 Context.SaveChanges();
                 return true;
             }

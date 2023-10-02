@@ -1,19 +1,20 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataModels.Dto
 {
-    public class AgeRatingDto : BaseDto, IRepository<AgeRatings>
+    public class AgeRatingDto : BaseDto
     {
         public AgeRatings GetById(int id)
         {
-            return Context.AgeRatings.Find(id);
+            return Context.AgeRatings.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
         }
 
         public IEnumerable<AgeRatings> GetAll()
         {
-            return Context.AgeRatings;
+            return Context.AgeRatings.Where(x => !x.IsDeleted);
         }
 
         public bool Add(AgeRatings entity)

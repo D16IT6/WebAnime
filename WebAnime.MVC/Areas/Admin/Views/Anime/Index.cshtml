@@ -25,7 +25,7 @@ else
                                 <h5 class="card-title">@anime.Title</h5>
                                 <div class="btn-group w-100">
                                     @Html.ActionLink("Chi tiết", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
-                                    @Html.ActionLink("Quản lý tập", "Index", "Episode", new { id = anime.Id, serverId = new ServerDto().GetFirst().Id, area = "Admin" }, new { @class = "btn btn-info text-white" })
+                                    @Html.ActionLink("Quản lý tập", "Index", "Episode", new { animeId = anime.Id, serverId = new ServerDto().GetFirst().Id, area = "Admin" }, new { @class = "btn btn-info text-white" })
                                 </div>
                             </div>
                         </div>

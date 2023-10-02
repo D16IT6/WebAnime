@@ -17,8 +17,9 @@
     {
         <div class="row my-3 d-flex justify-content-center">
             <label class="col-1 col-form-label fw-bold">Loại server</label>
+            @Html.Hidden("animeId", anime.Id)
             <div class="col-4">
-                @Html.DropDownList("serverId", new SelectList(servers, "Id", "Name", currentServerId), new { @class = "form-select" })
+                @Html.DropDownList("serverId", new SelectList(servers, "Id", "Name", currentServerId),new { @class = "form-select" })
             </div>
             <div class="col-1">
                 <button class="btn-primary btn w-100">Lọc</button>
@@ -29,7 +30,7 @@
     }
 
     <h2>Quản lý tập phim @anime.Title</h2>
-    @Html.ActionLink("Thêm tập mới", "Create", new { id = anime.Id, serverId = currentServerId }, new { @class = "btn btn-primary my-2" })
+    @Html.ActionLink("Thêm tập mới", "Create", new { animeId = anime.Id, serverId = currentServerId }, new { @class = "btn btn-primary my-2" })
     <table class="table table-hover table-bordered">
         <thead>
             <tr>
@@ -92,4 +93,10 @@
 else
 {
     <h2>Không thấy anime, vui lòng tải lại</h2>
+}
+@section footerJs
+{
+    <script>
+        
+    </script>
 }

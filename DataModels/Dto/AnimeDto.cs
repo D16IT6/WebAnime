@@ -1,20 +1,21 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DataModels.Dto
 {
-    public class AnimeDto : BaseDto, IRepository<Animes>
+    public class AnimeDto : BaseDto
     {
         public Animes GetById(int id)
         {
-            return Context.Animes.Find(id);
+            return Context.Animes.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
         }
 
         public IEnumerable<Animes> GetAll()
         {
-            return Context.Animes;
+            return Context.Animes.Where(x => !x.IsDeleted);
         }
 
         public bool Add(Animes entity)
@@ -23,7 +24,7 @@ namespace DataModels.Dto
             {
                 foreach (int categoryId in entity.CategoriesId)
                 {
-                    var category = Context.Categories.Find(categoryId);
+                    var category = Context.Categories.FirstOrDefault(x => !x.IsDeleted && x.Id == categoryId);
                     if (category != null)
                     {
                         entity.Categories.Add(category);
@@ -32,12 +33,15 @@ namespace DataModels.Dto
 
                 foreach (int studioId in entity.StudiosId)
                 {
-                    var studio = Context.Studios.Find(studioId);
+                    var studio = Context.Studios.FirstOrDefault(x => !x.IsDeleted && x.Id == studioId);
                     if (studio != null)
                     {
                         entity.Studios.Add(studio);
                     }
                 }
+
+                entity.CreatedDate = entity.ModifiedDate = DateTime.Now;
+                entity.IsDeleted = false;
 
                 Context.Animes.Add(entity);
                 Context.SaveChanges();
@@ -53,13 +57,16 @@ namespace DataModels.Dto
         {
             try
             {
-                var updateEntity = Context.Animes.Find(newEntity.Id);
+                var updateEntity = Context.Animes.FirstOrDefault(x => !x.IsDeleted && x.Id == newEntity.Id);
                 if (updateEntity == null) return false;
                 if (updateEntity.CategoriesId == null) updateEntity.CategoriesId = new int[] { };
                 if (updateEntity.StudiosId == null) updateEntity.StudiosId = new int[] { };
-                UpdateSingleProperties(newEntity, updateEntity);
+
                 UpdateCategories(newEntity, updateEntity);
                 UpdateStudios(newEntity, updateEntity);
+
+                UpdateSingleProperties(newEntity, updateEntity);
+
                 Context.SaveChanges();
 
                 return true;
@@ -75,7 +82,10 @@ namespace DataModels.Dto
             {
                 var deleteEntity = Context.Animes.Find(id);
                 if (deleteEntity == null) return false;
-                Context.Animes.Remove(deleteEntity);
+
+                deleteEntity.IsDeleted = true;
+                deleteEntity.DeletedDate = DateTime.Now;
+
                 Context.SaveChanges();
                 return true;
             }
@@ -99,11 +109,13 @@ namespace DataModels.Dto
             updateEntity.TypeId = newEntity.TypeId;
             updateEntity.CountryId = newEntity.CountryId;
             updateEntity.AgeRatingId = newEntity.AgeRatingId;
+
+            updateEntity.ModifiedDate = DateTime.Now;
         }
 
         private void UpdateStudios(Animes newEntity, Animes updateEntity)
         {
-            var oldStudioIds = updateEntity.Studios.Select(s => s.Id).ToArray();
+            var oldStudioIds = updateEntity.Studios.Where(x => !x.IsDeleted).Select(s => s.Id).ToArray();
             var newStudioIds = newEntity.StudiosId;
 
             var removeStudioIds = oldStudioIds.Except(newStudioIds);
@@ -111,13 +123,13 @@ namespace DataModels.Dto
 
             foreach (int studioId in removeStudioIds)
             {
-                var removeStudio = updateEntity.Studios.FirstOrDefault(x => x.Id == studioId);
+                var removeStudio = updateEntity.Studios.FirstOrDefault(x => x.Id == studioId && !x.IsDeleted);
                 if (removeStudio == null) continue;
                 updateEntity.Studios.Remove(removeStudio);
             }
             foreach (int studioId in insertStudioIds)
             {
-                var insertStudio = Context.Studios.Find(studioId);
+                var insertStudio = Context.Studios.FirstOrDefault(x => x.Id == studioId && !x.IsDeleted);
                 if (insertStudio == null) continue;
                 updateEntity.Studios.Add(insertStudio);
             }
@@ -128,7 +140,7 @@ namespace DataModels.Dto
 
         void UpdateCategories(Animes newEntity, Animes updateEntity)
         {
-            var oldCategoryIds = updateEntity.Categories.Select(x => x.Id).ToArray();
+            var oldCategoryIds = updateEntity.Categories.Where(x => !x.IsDeleted).Select(x => x.Id).ToArray();
 
             var newCategoryIds = newEntity.CategoriesId;
 
@@ -137,14 +149,14 @@ namespace DataModels.Dto
 
             foreach (int categoryId in removeCategoryIds)
             {
-                var removeCategory = updateEntity.Categories.FirstOrDefault(x => x.Id == categoryId);
+                var removeCategory = updateEntity.Categories.FirstOrDefault(x => x.Id == categoryId && !x.IsDeleted);
                 if (removeCategory == null) continue;
                 updateEntity.Categories.Remove(removeCategory);
             }
 
             foreach (int categoryId in insertCategoryIds)
             {
-                var insertCategory = Context.Categories.Find(categoryId);
+                var insertCategory = Context.Categories.FirstOrDefault(x => x.Id == categoryId && !x.IsDeleted);
                 if (insertCategory == null) continue;
                 updateEntity.Categories.Add(insertCategory);
             }

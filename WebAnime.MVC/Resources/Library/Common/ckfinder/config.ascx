@@ -66,7 +66,7 @@
 		Thumbnails.DirectAccess = false;
 		Thumbnails.MaxWidth = 100;
 		Thumbnails.MaxHeight = 100;
-		Thumbnails.Quality = 100;
+		Thumbnails.Quality = 80;
 
 		// Set the maximum size of uploaded images. If an uploaded image is
 		// larger, it gets scaled down proportionally. Set to 0 to disable this
@@ -171,6 +171,13 @@
 
 		ResourceType type;
 
+	    type = ResourceType.Add( "Images" );
+	    type.Url = BaseUrl + "images/";
+	    type.Dir = BaseDir == "" ? "" : BaseDir + "images/";
+	    type.MaxSize = 0;
+	    type.AllowedExtensions = new string[] { "bmp", "gif", "jpeg", "jpg", "png" };
+	    type.DeniedExtensions = new string[] { };
+
 		type = ResourceType.Add( "Files" );
 		type.Url = BaseUrl + "files/";
 		type.Dir = BaseDir == "" ? "" : BaseDir + "files/";
@@ -178,12 +185,7 @@
 		type.AllowedExtensions = new string[] { "7z", "aiff", "asf", "avi", "bmp", "csv", "doc", "docx", "fla", "flv", "gif", "gz", "gzip", "jpeg", "jpg", "mid", "mov", "mp3", "mp4", "mpc", "mpeg", "mpg", "ods", "odt", "pdf", "png", "ppt", "pptx", "pxd", "qt", "ram", "rar", "rm", "rmi", "rmvb", "rtf", "sdc", "sitd", "swf", "sxc", "sxw", "tar", "tgz", "tif", "tiff", "txt", "vsd", "wav", "wma", "wmv", "xls", "xlsx", "zip" };
 		type.DeniedExtensions = new string[] { };
 
-		type = ResourceType.Add( "Images" );
-		type.Url = BaseUrl + "images/";
-		type.Dir = BaseDir == "" ? "" : BaseDir + "images/";
-		type.MaxSize = 0;
-		type.AllowedExtensions = new string[] { "bmp", "gif", "jpeg", "jpg", "png" };
-		type.DeniedExtensions = new string[] { };
+		
 
 		type = ResourceType.Add( "Flash" );
 		type.Url = BaseUrl + "flash/";

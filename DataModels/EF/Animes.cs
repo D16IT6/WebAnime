@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataModels.EF
 {
-    public class Animes
+    public partial class Animes
     {
         public Animes()
         {
@@ -55,11 +55,18 @@ namespace DataModels.EF
 
         public virtual ICollection<Episodes> Episodes { get; set; }
 
+        [DataType(DataType.Date)]
+        public DateTime CreatedDate { get; set; }
+        public int CreatedBy { get; set; }
 
-        [NotMapped] public int[] CategoriesId { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime ModifiedDate { get; set; }
+        public int ModifiedBy { get; set; }
 
-        [NotMapped] public int[] StudiosId { get; set; }
+        public bool IsDeleted { get; set; }
+        public int? DeletedBy { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? DeletedDate { get; set; }
 
-        [NotMapped] public int[] EpisodesId { get; set; }
     }
 }

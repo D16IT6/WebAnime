@@ -2,6 +2,7 @@
 
 namespace DataModels.EF
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
 
     public partial class Episodes
@@ -27,6 +28,19 @@ namespace DataModels.EF
         public virtual Animes Animes { get; set; }
 
         public virtual Servers Servers { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime CreatedDate { get; set; }
+        public int CreatedBy { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime ModifiedDate { get; set; }
+        public int ModifiedBy { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public int? DeletedBy { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? DeletedDate { get; set; }
 
     }
 }

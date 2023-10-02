@@ -1,19 +1,20 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataModels.Dto
 {
-    public class CategoryDto : BaseDto, IRepository<Categories>
+    public class CategoryDto : BaseDto
     {
         public Categories GetById(int id)
         {
-            return Context.Categories.Find(id);
+            return Context.Categories.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
         }
 
         public IEnumerable<Categories> GetAll()
         {
-            return Context.Categories;
+            return Context.Categories.Where(x => !x.IsDeleted);
         }
 
         public bool Add(Categories entity)

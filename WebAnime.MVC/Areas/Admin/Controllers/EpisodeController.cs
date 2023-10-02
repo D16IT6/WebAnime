@@ -16,38 +16,37 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         }
 
         //[HttpGet]
-        public ActionResult Index(int id, int serverId)
+        public ActionResult Index(int animeId, int serverId)
         {
             var serverDto = new ServerDto();
             var firstServer = serverDto.GetFirst();
             if (firstServer == null) return new HttpNotFoundResult();
-            LoadEditData(id);
+            LoadEditData(animeId);
 
             ViewBag.Servers = serverDto.GetAll();
 
             var episodeDto = new EpisodeDto();
             var episodeViewModelList =
-                _mapper.Map<IEnumerable<Episodes>, IEnumerable<EpisodeViewModel>>(episodeDto.GetAll(id, serverId));
+                _mapper.Map<IEnumerable<Episodes>, IEnumerable<EpisodeViewModel>>(episodeDto.GetAll(animeId, serverId));
 
             ViewBag.ServerId = serverId;
             return View(episodeViewModelList);
         }
 
         [HttpGet]
-        public ActionResult Create(int id, int serverId)
+        public ActionResult Create(int animeId, int serverId)
         {
-            int animeId = id;
             var serverDto = new ServerDto();
 
             ViewBag.ServerName = serverDto.GetById(serverId).Name;
-            LoadEditData(id);
+            LoadEditData(animeId);
             var episodeDto = new EpisodeDto();
             return View(new EpisodeViewModel()
             {
                 Id = 0,
                 AnimeId = animeId,
                 ServerId = serverId,
-                Order = episodeDto.GetMaxOrderId(id, serverId) + 1
+                Order = episodeDto.GetMaxOrderId(animeId, serverId) + 1
             });
         }
 
@@ -61,7 +60,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var episode = _mapper.Map<Episodes>(model);
                 if (episodeDto.Add(episode))
                 {
-                    return RedirectToAction("Index", "Episode", new { area = "Admin", id = model.AnimeId, serverId = model.ServerId });
+                    return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = model.AnimeId, serverId = model.ServerId });
                 }
 
                 ModelState.AddModelError("", @"Lỗi không thêm được, vui lòng thử lại");
@@ -95,7 +94,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var episode = _mapper.Map<Episodes>(model);
                 if (episodeDto.Update(episode))
                 {
-                    return RedirectToAction("Index", "Episode", new { area = "Admin", id = episode.AnimeId, serverId = episode.ServerId });
+                    return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = episode.AnimeId, serverId = episode.ServerId });
                 }
 
                 ModelState.AddModelError("", @"Lỗi không cập nhật được, vui lòng thử lại");
@@ -126,7 +125,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             var serverId = deleted.ServerId;
             if (episodeDto.Delete(model.Id))
             {
-                return RedirectToAction("Index", "Episode", new { area = "Admin", id = animeId, serverId });
+                return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = animeId, serverId });
             }
             ModelState.AddModelError("", @"Lỗi không xoá được, vui lòng thử lại");
             return View();

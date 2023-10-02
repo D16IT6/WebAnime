@@ -1,5 +1,6 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,30 +11,30 @@ namespace DataModels.Dto
 
         public Episodes GetById(int id)
         {
-            return Context.Episodes.FirstOrDefault(x => x.Id == id);
+            return Context.Episodes.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
         }
 
         public Episodes GetById(int animeId, int serverId)
         {
-            return Context.Episodes.FirstOrDefault(x => x.AnimeId == animeId && x.ServerId == serverId);
+            return Context.Episodes.FirstOrDefault(x => x.AnimeId == animeId && x.ServerId == serverId && !x.IsDeleted);
         }
         public Episodes GetById(int animeId, int serverId, int order)
         {
-            return Context.Episodes.FirstOrDefault(x => x.AnimeId == animeId && x.ServerId == serverId && x.Order == order);
+            return Context.Episodes.FirstOrDefault(x => x.AnimeId == animeId && x.ServerId == serverId && x.Order == order && !x.IsDeleted);
         }
 
         public IEnumerable<Episodes> GetAll(int animeId)
         {
-            return Context.Episodes.Where(x => x.AnimeId == animeId).OrderBy(x => x.Order);
+            return Context.Episodes.Where(x => x.AnimeId == animeId && !x.IsDeleted).OrderBy(x => x.Order);
         }
         public IEnumerable<Episodes> GetAll(int animeId, int serverId)
         {
-            return Context.Episodes.Where(x => x.AnimeId == animeId && x.ServerId == serverId).OrderBy(x => x.Order);
+            return Context.Episodes.Where(x => x.AnimeId == animeId && x.ServerId == serverId && !x.IsDeleted).OrderBy(x => x.Order);
         }
         public int GetMaxOrderId(int animeId, int serverId)
         {
             var maxOrder = Context.Episodes
-                .Where(x => x.AnimeId == animeId && x.ServerId == serverId)
+                .Where(x => x.AnimeId == animeId && x.ServerId == serverId && !x.IsDeleted)
                 .Select(x => (int?)x.Order)
                 .Max();
 
@@ -45,8 +46,12 @@ namespace DataModels.Dto
         {
             try
             {
-                entity.Animes = Context.Animes.Find(entity.AnimeId);
-                entity.Servers = Context.Servers.Find(entity.ServerId);
+                entity.Animes = Context.Animes.FirstOrDefault(x => x.Id == entity.AnimeId && !x.IsDeleted);
+                entity.Servers = Context.Servers.FirstOrDefault(x => x.Id == entity.ServerId && !x.IsDeleted);
+
+                entity.ModifiedDate = entity.CreatedDate = DateTime.Now;
+                entity.IsDeleted = false;
+
                 Context.Episodes.Add(entity);
                 Context.SaveChanges();
                 return true;
@@ -58,11 +63,16 @@ namespace DataModels.Dto
         {
             try
             {
-                var updateEntity = GetById(entity.AnimeId, entity.ServerId);
+                var updateEntity = GetById(entity.Id);
                 if (updateEntity == null) { return false; }
+
                 updateEntity.Order = entity.Order;
                 updateEntity.Title = entity.Title;
                 updateEntity.Url = entity.Url;
+
+                updateEntity.ModifiedDate = DateTime.Now;
+
+
                 Context.SaveChanges();
                 return true;
             }
@@ -79,7 +89,10 @@ namespace DataModels.Dto
                 {
                     return false;
                 }
-                Context.Episodes.Remove(deleteEntity);
+
+                deleteEntity.IsDeleted = true;
+                deleteEntity.DeletedDate = DateTime.Now;
+
                 Context.SaveChanges();
                 return true;
             }

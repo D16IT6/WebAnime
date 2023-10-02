@@ -12,7 +12,7 @@ namespace DataModels.Helpers
             {
                 var listStudios = new List<Studios>
                 {
-                    new Studios { Name = "Studio Bind" },
+                    new Studios { Name = "Studio Bind"},
                     new Studios { Name = "Mappa" },
                     new Studios { Name = "Studio Jemi" }
                 };
@@ -135,7 +135,7 @@ namespace DataModels.Helpers
         {
             if (!context.Servers.Any())
             {
-                var listServerName = new string[] { "PlayerX", "Doodstream", "StreamTape", "MP4Upload" };
+                var listServerName = new[] { "PlayerX", "Doodstream", "StreamTape", "MP4Upload" };
                 foreach (var s in listServerName)
                 {
                     context.Servers.Add(new Servers()

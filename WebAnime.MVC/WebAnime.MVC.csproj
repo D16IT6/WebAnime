@@ -66,19 +66,19 @@
     </Reference>
     <Reference Include="CKFinder, Version=2.6.0.2792, Culture=neutral, PublicKeyToken=579e7adc719a1423, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\Library\Common\ckfinder\bin\Debug\CKFinder.dll</HintPath>
+      <HintPath>..\..\PracticeOnClass\Web.MVC\Assets\Common\Library\ckfinder\DLL\CKFinder.dll</HintPath>
     </Reference>
     <Reference Include="CKFinder_FileEditor, Version=2.1.0.1132, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\Library\Common\ckfinder\bin\Debug\CKFinder_FileEditor.dll</HintPath>
+      <HintPath>..\..\PracticeOnClass\Web.MVC\Assets\Common\Library\ckfinder\DLL\CKFinder_FileEditor.dll</HintPath>
     </Reference>
     <Reference Include="CKFinder_ImageResize, Version=2.1.0.1132, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\Library\Common\ckfinder\bin\Debug\CKFinder_ImageResize.dll</HintPath>
+      <HintPath>..\..\PracticeOnClass\Web.MVC\Assets\Common\Library\ckfinder\DLL\CKFinder_ImageResize.dll</HintPath>
     </Reference>
     <Reference Include="CKFinder_Watermark, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\Library\Common\ckfinder\bin\Debug\CKFinder_Watermark.dll</HintPath>
+      <HintPath>..\..\PracticeOnClass\Web.MVC\Assets\Common\Library\ckfinder\DLL\CKFinder_Watermark.dll</HintPath>
     </Reference>
     <Reference Include="DelegateDecompiler, Version=0.32.0.0, Culture=neutral, PublicKeyToken=93b26a10a04705bd, processorArchitecture=MSIL">
       <HintPath>..\packages\DelegateDecompiler.0.32.0\lib\net45\DelegateDecompiler.dll</HintPath>
@@ -647,22 +647,10 @@
     <Content Include="Resources\Library\Common\ckeditor\skins\moono-lisa\images\spinner.gif" />
     <Content Include="Resources\Library\Common\ckeditor\styles.js" />
     <Content Include="Resources\Library\Common\ckeditor\vendor\promise.js" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder.dll" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder.pdb" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_FileEditor.dll" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_FileEditor.pdb" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_ImageResize.dll" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_ImageResize.pdb" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_Watermark.dll" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Debug\CKFinder_Watermark.pdb" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder.dll" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder_FileEditor.dll" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder_FileEditor.pdb" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder_ImageResize.dll" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder_ImageResize.pdb" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder_Watermark.dll" />
-    <Content Include="Resources\Library\Common\ckfinder\bin\Release\CKFinder_Watermark.pdb" />
-    <Content Include="Resources\Library\Common\ckfinder\changelog.txt" />
+    <Content Include="Resources\Library\Common\ckfinder\DLL\CKFinder.dll" />
+    <Content Include="Resources\Library\Common\ckfinder\DLL\CKFinder_FileEditor.dll" />
+    <Content Include="Resources\Library\Common\ckfinder\DLL\CKFinder_ImageResize.dll" />
+    <Content Include="Resources\Library\Common\ckfinder\DLL\CKFinder_Watermark.dll" />
     <Content Include="Resources\Library\Common\ckfinder\ckfinder.html" />
     <Content Include="Resources\Library\Common\ckfinder\ckfinder.js" />
     <Content Include="Resources\Library\Common\ckfinder\ckfinder_v1.js" />
@@ -983,7 +971,6 @@
     <Content Include="Resources\Library\Common\ckfinder\help\pl\files\suggestions.html" />
     <Content Include="Resources\Library\Common\ckfinder\help\pl\files\toc.html" />
     <Content Include="Resources\Library\Common\ckfinder\help\pl\index.html" />
-    <Content Include="Resources\Library\Common\ckfinder\install.txt" />
     <Content Include="Resources\Library\Common\ckfinder\lang\bg.js" />
     <Content Include="Resources\Library\Common\ckfinder\lang\ca.js" />
     <Content Include="Resources\Library\Common\ckfinder\lang\cs.js" />
@@ -1025,7 +1012,6 @@
     <Content Include="Resources\Library\Common\ckfinder\lang\zh-cn.js" />
     <Content Include="Resources\Library\Common\ckfinder\lang\zh-tw.js" />
     <Content Include="Resources\Library\Common\ckfinder\lang\_translationstatus.txt" />
-    <Content Include="Resources\Library\Common\ckfinder\license.txt" />
     <Content Include="Resources\Library\Common\ckfinder\plugins\dummy\lang\en.js" />
     <Content Include="Resources\Library\Common\ckfinder\plugins\dummy\lang\pl.js" />
     <Content Include="Resources\Library\Common\ckfinder\plugins\dummy\plugin.js" />
@@ -1291,7 +1277,6 @@
     <Content Include="Resources\Library\Common\ckfinder\skins\v1\richcombo.css" />
     <Content Include="Resources\Library\Common\ckfinder\skins\v1\skin.js" />
     <Content Include="Resources\Library\Common\ckfinder\skins\v1\uipanel.css" />
-    <Content Include="Resources\Library\Common\ckfinder\translations.txt" />
     <Content Include="Resources\Library\Common\jQuery-MultiSelect\jquery.multiselect.css" />
     <Content Include="Resources\Library\Common\jQuery-MultiSelect\jquery.multiselect.js" />
     <Content Include="Resources\Library\Common\PagedList\PagedList.css" />
@@ -1516,7 +1501,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Resources\Library\Common\Identity\" />
     <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>

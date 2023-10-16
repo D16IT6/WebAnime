@@ -2,23 +2,23 @@
 @model WebAnime.MVC.Areas.Admin.Models.AnimeViewModel
 
 @{
-    ViewBag.Title = "Cập nhật anime";
+    ViewBag.Title = "Thêm anime mới";
     var ageRatingsList = ViewBag.AgeRating as IEnumerable<AgeRatings>;
 
-    var categoriesList = ViewBag.Category as IEnumerable<Categories>;
+    var categoriesList = ((ViewBag.Category as IEnumerable<Categories>) ?? Array.Empty<Categories>()).ToArray();
 
     var countryList = ViewBag.Country as IEnumerable<Countries>;
 
     var statusList = ViewBag.Status as IEnumerable<Statuses>;
 
-    var studioList = ViewBag.Studio as IEnumerable<Studios>;
+    var studioList = ((ViewBag.Studio as IEnumerable<Studios>) ?? Array.Empty<Studios>()).ToArray();
 
     var typeList = ViewBag.Type as IEnumerable<Types>;
 }
 
 <h2>Cập nhật anime</h2>
 
-@using (Html.BeginForm("Update", "Anime", FormMethod.Post))
+@using (Html.BeginForm("Create", "Anime", FormMethod.Post, new { @id = "frmCreateAnime" }))
 {
     @Html.ValidationSummary(true)
     <div class="row mb-3">
@@ -38,8 +38,9 @@
     </div>
     <div class="row mb-3">
         @Html.LabelFor(x => x.Synopsis, new { @class = "col-form-label col-xl-2 fw-bold" })
-        <div class="col-xl-10">
-            @Html.TextAreaFor(x => x.Synopsis, new { @class = "form-control" })
+        <div class="col-xl-10 position-relative">
+            @Html.TextArea("SynopsisCkEditor", new { @class = "form-control" })
+            @Html.TextBoxFor(x => x.Synopsis, new { @class = "position-absolute" })
             @Html.ValidationMessageFor(x => x.Synopsis, "", new { @class = "text-danger " })
         </div>
     </div>
@@ -61,11 +62,16 @@
         </div>
     </div>
 
-    <div class="row mb-3">
+    <div class="row mb-3 ">
         @Html.LabelFor(x => x.Release, new { @class = "col-form-label col-xl-2 fw-bold" })
         <div class="col-xl-10">
-            @Html.TextBoxFor(x => x.Release, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Release, "", new { @class = "text-danger " })
+            @Html.Editor("ReleaseDate", new { htmlAttributes = new { @class = "form-control", type = "date" } })
+            @Html.EditorFor(x => x.Release, new
+            {
+                htmlAttributes = new { @class = "position-fixed" }
+            })
+            @Html.ValidationMessageFor(x => x.Release, "", new { @class = "text-danger", value = DateTime.Now })
+
         </div>
     </div>
 
@@ -119,31 +125,31 @@
 
     <div class="row mb-3">
         @Html.LabelFor(x => x.CategoriesId, new { @class = "col-form-label col-xl-2 fw-bold" })
-        <div class="col-xl-10">
-            @Html.ListBoxFor(x => x.CategoriesId, new MultiSelectList(categoriesList, "Id", "Name"))
+        <div class="col-xl-10 position-relative">
+            @Html.ListBox("CategoriesIdFake", new MultiSelectList(categoriesList, "Id", "Name"))
+            @Html.ListBoxFor(x => x.CategoriesId, new MultiSelectList(categoriesList, "Id", "Name"), new { @class = "position-absolute top-0" })
             @Html.ValidationMessageFor(x => x.CategoriesId, "", new { @class = "text-danger " })
         </div>
-
     </div>
 
     <div class="row mb-3">
         @Html.LabelFor(x => x.StudiosId, new { @class = "col-form-label col-xl-2 fw-bold" })
-        <div class="col-xl-7">
-            @Html.ListBoxFor(x => x.StudiosId, new MultiSelectList(studioList, "Id", "Name"))
+        <div class="col-xl-10 position-relative">
+            @Html.ListBox("StudiosIdFake", new MultiSelectList(studioList, "Id", "Name"))
+            @Html.ListBoxFor(x => x.StudiosId, new MultiSelectList(studioList, "Id", "Name"), new { @class = "position-absolute top-0" })
             @Html.ValidationMessageFor(x => x.StudiosId, "", new { @class = "text-danger " })
-        </div>
-        <div class="col-xl-3">
-            @Html.ActionLink(@"Chưa có studio? Thêm mới ngay!","Create","Studio",null,new {@class="btn btn-primary w-100 h-100"})
         </div>
     </div>
     <div class="row">
         <div class="col-6">
-            <button class="btn btn-primary" type="submit" id="btnCreate">Cập nhật</button> 
+            <button class="btn btn-primary" type="submit" id="btnCreate">Tạo mới</button>
             @Html.ActionLink("Về trang chủ", "Index", null, new { @class = "btn btn-primary" })
 
         </div>
     </div>
 }
+
+
 @section footerCss{
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -160,67 +166,123 @@
         .ms-options-wrap > button:after {
             right: 15px;
         }
+
+        #Release, #Synopsis, #StudiosId, #CategoriesId {
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
     </style>
 }
 @section footerJs
 {
     @Html.Partial("_ValidationScriptsPartial")
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
-    <script>
-        $( document ).ready(function() {
-            const editor = window.CKEDITOR.replace('Synopsis');
-            CKFinder.setupCKEditor(editor, "/Resources/Library/Common/ckfinder/");
 
-            editor.on('change', function () {
+    <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
+
+    <script>
+        function LoadRelease() {
+            const releaseValue = $(`#Release`).val().split('/');
+            const year = releaseValue[2].substr(0, 4);
+            const month = releaseValue[1];
+            const day = releaseValue[0];
+            $(`#ReleaseDate`).val(`${year}-${month}-${day}`);
+            $(`#Release`).val(`${year}-${month}-${day}`);
+
+        }
+
+        function LoadSynopsis() {
+            const synopsis = $(`#Synopsis`).val();
+            $(`#SynopsisCkEditor`).val(synopsis);
+        }
+
+        function LoadFake(id, fakeId) {
+            const listId = $(`#${id}`).val();
+            $(`#${fakeId}`).val(listId);
+        }
+
+        function LoadFirst() {
+            LoadRelease();
+            LoadSynopsis();
+            LoadFake(`CategoriesId`, `CategoriesIdFake`);
+            LoadFake(`StudiosId`, `StudiosIdFake`);
+
+        }
+
+        function getMultiSelectCustom(placeHolder) {
+            return {
+                columns: 4,
+                search: true,
+                searchOptions:
+                {
+                    searchText: true
+                },
+                texts: {
+                    placeholder: placeHolder
+
+                },
+                minHeight: 120
+            }
+
+        }
+
+        const editor = window.CKEDITOR.replace('SynopsisCkEditor');
+        CKFinder.setupCKEditor(editor, "/Resources/Library/Common/ckfinder/");
+        LoadFirst();
+
+
+        function getSelectedList(id, fakeId) {
+            const selectedIds = [];
+            //const selectedList = ;
+            $(`#${fakeId}`).val().forEach(x => selectedIds.push(x));
+
+            $(`#${id}`).val(selectedIds);
+        }
+
+        $(`#btnCreate`).click(function(e) {
+            e.preventDefault();
+            const inputHtml = $(`#SynopsisCkEditor`).val();
+            $(`#Synopsis`).val(inputHtml);
+
+            getSelectedList('CategoriesId', 'CategoriesIdFake');
+            getSelectedList('StudiosId', 'StudiosIdFake');
+
+
+            $(`#frmCreateAnime`).submit();
+        });
+
+        editor.on('change',
+            function() {
                 editor.updateElement();
                 $(editor.element.$).trigger('change');
+
             });
 
-            $(`#btnPoster`).click(function () {
-                const ckFinder = new CKFinder();
-                ckFinder.selectActionFunction = function (fileUrl) {
-                    $(`#Poster`).val(fileUrl);
-                };
-                ckFinder.popup();
-            });
-            $(`#Release`).flatpickr({
-                altInput: true,
-                altFormat: "d/m/Y"
-            });
-            $(`select#CategoriesId[multiple]`).multiselect({
-                columns: 4,
-                texts: {
-                    placeholder: 'Chọn thể loại'
-                },
-                search: true,
-                searchOptions:
-                {
-                    searchText: true
-                },
-                minHeight: 120
-            });
-            $(`select#StudiosId[multiple]`).multiselect({
-                columns: 4,
-                search: true,
-                searchOptions:
-                {
-                    searchText: true
-                },
-                texts: {
-                    placeholder: 'Chọn nhà sản xuất'
-
-                },
-                minHeight: 120
-            });
-
-            const listMultiSelect = document.querySelectorAll(`.ms-options-wrap button`);
-            for (const item of listMultiSelect) {
-                item.classList.add(`form-control`);
-                item.classList.add(`border-1`);
-                item.classList.add(`p-2`);
+        $(`#btnPoster`).click(function() {
+            const ckFinder = new CKFinder();
+            ckFinder.selectActionFunction = function(fileUrl) {
+                $(`#Poster`).val(fileUrl);
+            };
+            ckFinder.popup();
+        });
+        $(`#ReleaseDate`).flatpickr({
+            altInput: true,
+            altFormat: "d/m/Y",
+            onChange: function(selectedDate, dateStr) {
+                console.log(dateStr);
+                $('#Release').val(dateStr);
             }
         });
+        $(`select#CategoriesIdFake[multiple]`).multiselect(getMultiSelectCustom('Chọn thể loại'));
+        $(`select#StudiosIdFake[multiple]`).multiselect(getMultiSelectCustom('Chọn nhà sản xuất'));
+
+        const listMultiSelect = document.querySelectorAll(`.ms-options-wrap button`);
+        for (const item of listMultiSelect) {
+            item.classList.add(`form-control`);
+            item.classList.add(`border-1`);
+            item.classList.add(`p-2`);
+        }
     </script>
 
 }

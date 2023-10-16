@@ -123,27 +123,27 @@
             @Html.ListBoxFor(x => x.CategoriesId, new MultiSelectList(categoriesList, "Id", "Name"))
             @Html.ValidationMessageFor(x => x.CategoriesId, "", new { @class = "text-danger " })
         </div>
+
     </div>
 
     <div class="row mb-3">
         @Html.LabelFor(x => x.StudiosId, new { @class = "col-form-label col-xl-2 fw-bold" })
-        <div class="col-xl-10">
+        <div class="col-xl-7">
             @Html.ListBoxFor(x => x.StudiosId, new MultiSelectList(studioList, "Id", "Name"))
             @Html.ValidationMessageFor(x => x.StudiosId, "", new { @class = "text-danger " })
-
+        </div>
+        <div class="col-xl-3">
+            @Html.ActionLink(@"Chưa có studio? Thêm mới ngay!","Create","Studio",null,new {@class="btn btn-primary w-100 h-100"})
         </div>
     </div>
     <div class="row">
-        <div class="col-3">
-            <button class="btn btn-primary" type="submit" id="btnCreate">Cập nhật</button>
+        <div class="col-6">
+            <button class="btn btn-primary" type="submit" id="btnCreate">Cập nhật</button> 
+            @Html.ActionLink("Về trang chủ", "Index", null, new { @class = "btn btn-primary" })
+
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Về trang chủ", "Index","Anime")
-</div>
-
 @section footerCss{
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 

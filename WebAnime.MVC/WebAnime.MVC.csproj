@@ -194,7 +194,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Controllers\1.js" />
     <Content Include="Resources\Library\Admin\JqueryValidation\jquery.validate.js" />
     <Content Include="Resources\Library\Admin\JqueryValidation\jquery.validate.unobtrusive.js" />
     <Content Include="Resources\Library\Common\ckeditor\adapters\jquery.js" />
@@ -1516,8 +1515,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Views\Base\" />
     <Folder Include="Models\" />
     <Folder Include="Resources\Library\Common\Identity\" />
     <Folder Include="Uploads\" />

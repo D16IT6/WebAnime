@@ -1,9 +1,11 @@
+using DataModels.EF.Identity;
 using DataModels.Migrations;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
 
 namespace DataModels.EF
 {
-    public class WebAnimeDbContext : DbContext
+    public class WebAnimeDbContext : IdentityDbContext<Users, Roles, int, UserLogins, UserRoles, UserClaims>
     {
         public WebAnimeDbContext()
             : base("name=WebAnimeDbContext")
@@ -24,6 +26,16 @@ namespace DataModels.EF
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<UserRoles>().HasKey(x => new { x.RoleId, x.UserId });
+            modelBuilder.Entity<UserLogins>().HasKey(x => new { x.UserId, x.ProviderKey, x.LoginProvider });
+
+            modelBuilder.Entity<Users>().ToTable("Users");
+            modelBuilder.Entity<Roles>().ToTable("Roles");
+            modelBuilder.Entity<UserRoles>().ToTable("UserRoles");
+            modelBuilder.Entity<UserLogins>().ToTable("UserLogins");
+            modelBuilder.Entity<UserClaims>().ToTable("UserClaims");
+
+
             modelBuilder.Entity<AgeRatings>()
                 .HasMany(e => e.Animes)
                 .WithOptional(e => e.AgeRatings)
@@ -32,12 +44,12 @@ namespace DataModels.EF
             modelBuilder.Entity<Animes>()
                 .HasMany(e => e.Categories)
                 .WithMany(e => e.Animes)
-                .Map(m => m.ToTable("AnimeCategory").MapLeftKey("AnimeId").MapRightKey("CategoryId"));
+                .Map(m => m.ToTable("AnimeCategories").MapLeftKey("AnimeId").MapRightKey("CategoryId"));
 
             modelBuilder.Entity<Animes>()
                 .HasMany(e => e.Studios)
                 .WithMany(e => e.Animes)
-                .Map(m => m.ToTable("AnimeStudio").MapLeftKey("AnimeId").MapRightKey("StudioId"));
+                .Map(m => m.ToTable("AnimeStudios").MapLeftKey("AnimeId").MapRightKey("StudioId"));
 
             modelBuilder.Entity<Countries>()
                 .HasMany(e => e.Animes)

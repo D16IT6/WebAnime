@@ -109,7 +109,7 @@ namespace DataModels.Helpers
         {
             if (!context.Categories.Any())
             {
-                var listCategoryName = new string[]
+                var listCategoryName = new[]
                 {
                     "Action", "Adventure", "Cartoon", "Comedy", "Dementia", "Demons", "Drama", "Ecchi", "Fantasy",
                     "Game", "Harem", "Historical", "Horror", "Josei", "Kids", "Live Action", "Magic", "Martial Arts",

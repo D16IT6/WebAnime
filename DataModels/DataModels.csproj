@@ -97,7 +97,13 @@
     <Compile Include="Dto\StatusDto.cs" />
     <Compile Include="Dto\StudioDto.cs" />
     <Compile Include="Dto\TypeDto.cs" />
+    <Compile Include="EF\Identity\CustomEntities.cs" />
+    <Compile Include="EF\Identity\RoleManager.cs" />
+    <Compile Include="EF\Identity\UserManager.cs" />
+    <Compile Include="EF\Identity\RoleStore.cs" />
+    <Compile Include="EF\Identity\UserStore.cs" />
     <Compile Include="EF\NotMapped\Animes.cs" />
+    <Compile Include="EF\Test\Model1.cs" />
     <Compile Include="Helpers\BaseDto.cs" />
     <Compile Include="Dto\CountryDto.cs" />
     <Compile Include="EF\AgeRatings.cs" />
@@ -109,13 +115,9 @@
     <Compile Include="EF\Types.cs" />
     <Compile Include="EF\WebAnimeDbContext.cs" />
     <Compile Include="Helpers\LoadFirstData.cs" />
-    <Compile Include="Migrations\202309181554072_v1.cs" />
-    <Compile Include="Migrations\202309181554072_v1.designer.cs">
-      <DependentUpon>202309181554072_v1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202310021001467_UpdateField.cs" />
-    <Compile Include="Migrations\202310021001467_UpdateField.designer.cs">
-      <DependentUpon>202310021001467_UpdateField.cs</DependentUpon>
+    <Compile Include="Migrations\202310161055028_intergrate_AspNet_Identity.cs" />
+    <Compile Include="Migrations\202310161055028_intergrate_AspNet_Identity.designer.cs">
+      <DependentUpon>202310161055028_intergrate_AspNet_Identity.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -127,11 +129,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202309181554072_v1.resx">
-      <DependentUpon>202309181554072_v1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202310021001467_UpdateField.resx">
-      <DependentUpon>202310021001467_UpdateField.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202310161055028_intergrate_AspNet_Identity.resx">
+      <DependentUpon>202310161055028_intergrate_AspNet_Identity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

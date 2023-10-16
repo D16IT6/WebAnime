@@ -7,13 +7,13 @@ namespace DataModels.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class UpdateField : IMigrationMetadata
+    public sealed partial class intergrate_AspNet_Identity : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(UpdateField));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(intergrate_AspNet_Identity));
         
         string IMigrationMetadata.Id
         {
-            get { return "202310021001467_UpdateField"; }
+            get { return "202310161055028_intergrate_AspNet_Identity"; }
         }
         
         string IMigrationMetadata.Source

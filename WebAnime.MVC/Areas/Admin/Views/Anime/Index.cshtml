@@ -9,7 +9,7 @@
 </h2>
 @if (!Model.Any())
 {
-    <h2>Chưa có dữ liệu gì, vui lòng thêm mới tại @Html.ActionLink("đây", "Create", null, new { @class = "text-decoration-none btn btn-primary" })</h2>
+    <h2>Chưa có dữ liệu gì!</h2>
 }
 else
 {
@@ -18,14 +18,15 @@ else
             <div class="row">
                 @foreach (var anime in Model)
                 {
-                    <div class="col-4 mb-2">
+                    <div class="col-xxl-4 mb-2">
                         <div class="card">
                             <img src="@anime.Poster" class="card-img-top" />
                             <div class="card-body">
                                 <h5 class="card-title">@anime.Title</h5>
                                 <div class="btn-group w-100">
-                                    @Html.ActionLink("Chi tiết", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
+                                    @Html.ActionLink("Sửa", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
                                     @Html.ActionLink("Quản lý tập", "Index", "Episode", new { animeId = anime.Id, serverId = new ServerDto().GetFirst().Id, area = "Admin" }, new { @class = "btn btn-info text-white" })
+                                    @Html.ActionLink("Xoá","Delete",new {id =anime.Id },new {@class= "btn btn-danger text-decoration-none" })
                                 </div>
                             </div>
                         </div>

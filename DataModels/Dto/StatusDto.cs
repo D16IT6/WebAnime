@@ -1,36 +1,19 @@
 ﻿using DataModels.EF;
 using DataModels.Helpers;
-using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DataModels.Dto
 {
     public class StatusDto : BaseDto
     {
-        public Statuses GetById(int id)
+        public async Task<IEnumerable<Statuses>> GetAll()
         {
-            return Context.Statuses.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
-        }
-
-        public IEnumerable<Statuses> GetAll()
-        {
-            return Context.Statuses.Where(x => !x.IsDeleted);
-        }
-
-        public bool Add(Statuses entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(Statuses entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Delete(int id)
-        {
-            throw new NotImplementedException();
+            return await Context.Statuses
+                .Where(x => !x.IsDeleted)
+                .ToListAsync();
         }
     }
 }

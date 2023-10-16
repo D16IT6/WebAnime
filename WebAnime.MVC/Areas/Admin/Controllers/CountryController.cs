@@ -2,6 +2,7 @@
 using DataModels.Dto;
 using DataModels.EF;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
 
@@ -10,92 +11,87 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
     public class CountryController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly CountryDto _countryDto;
 
-        public CountryController(IMapper mapper)
+        public CountryController(IMapper mapper, CountryDto countryDto)
         {
             _mapper = mapper;
+            _countryDto = countryDto;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var countryDto = new CountryDto();
-            var countryViewModelList =
-                _mapper.Map<IEnumerable<Countries>, IEnumerable<CountryViewModel>>(countryDto.GetAll());
+            var countryViewModelList = _mapper.Map<IEnumerable<Countries>, IEnumerable<CountryViewModel>>(await _countryDto.GetAll());
             return View(countryViewModelList);
         }
 
         [HttpGet]
-        public ActionResult Create()
+        public ViewResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create(CountryViewModel model)
+        public async Task<ActionResult> Create(CountryViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var countryDto = new CountryDto();
                 var country = _mapper.Map<Countries>(model);
-                if (countryDto.Add(country))
+                if (await _countryDto.Add(country))
                 {
                     return RedirectToAction("Index", "Country");
                 }
 
                 ModelState.AddModelError("", @"Lỗi không thêm được, vui lòng thử lại");
-                return View();
             }
             ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng thử lại");
             return View();
         }
 
         [HttpGet]
-        public ActionResult Update(int id)
+        public async Task<ActionResult> Update(int id)
         {
-            var countryDto = new CountryDto();
-            var countryViewModel = _mapper.Map<CountryViewModel>(countryDto.GetById(id));
+            var countryViewModel = _mapper.Map<CountryViewModel>(await _countryDto.GetById(id));
             if (countryViewModel == null) return HttpNotFound();
-
             return View(countryViewModel);
         }
 
         [HttpPost]
-        public ActionResult Update(CountryViewModel model)
+        public async Task<ActionResult> Update(CountryViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var countryDto = new CountryDto();
                 var country = _mapper.Map<Countries>(model);
-                if (countryDto.Update(country))
+                if (await _countryDto.Update(country))
                 {
                     return RedirectToAction("Index", "Country");
                 }
 
                 ModelState.AddModelError("", @"Lỗi không cập nhật được, vui lòng thử lại");
-                return View();
             }
             ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng thử lại");
             return View();
         }
+
         [HttpGet]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var countryDto = new CountryDto();
-            var countryViewModel = _mapper.Map<CountryViewModel>(countryDto.GetById(id));
+            var countryViewModel = _mapper.Map<CountryViewModel>(await _countryDto.GetById(id));
             if (countryViewModel == null) return HttpNotFound();
             return View(countryViewModel);
         }
 
         [HttpPost]
-        public ActionResult Delete(CountryViewModel model)
+        public async Task<ActionResult> Delete(CountryViewModel model)
         {
-            var countryDto = new CountryDto();
-            if (countryDto.Delete(model.Id))
+            if (await _countryDto.Delete(model.Id))
             {
                 return RedirectToAction("Index", "Country");
             }
             ModelState.AddModelError("", @"Lỗi không xoá được, vui lòng thử lại");
-            return View(); ;
+            return View();
         }
+
+
     }
 }

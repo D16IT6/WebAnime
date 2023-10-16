@@ -1,4 +1,5 @@
 using AutoMapper;
+using DataModels.Dto;
 using Ninject;
 using Ninject.Web.Common.WebHost;
 using System.Reflection;
@@ -26,6 +27,15 @@ namespace WebAnime.MVC
         private static void RegisterServices(IKernel kernel)
         {
             kernel.Bind<IMapper>().ToConstant(AutoMapperConfiguration.Configure());
+            kernel.Bind<AnimeDto>().To<AnimeDto>();
+            kernel.Bind<AgeRatingDto>().To<AgeRatingDto>();
+            kernel.Bind<CategoryDto>().To<CategoryDto>();
+            kernel.Bind<CountryDto>().To<CountryDto>();
+            kernel.Bind<EpisodeDto>().To<EpisodeDto>();
+            kernel.Bind<ServerDto>().To<ServerDto>();
+            kernel.Bind<StatusDto>().To<StatusDto>();
+            kernel.Bind<StudioDto>().To<StudioDto>();
+            kernel.Bind<TypeDto>().To<TypeDto>();
         }
     }
 }

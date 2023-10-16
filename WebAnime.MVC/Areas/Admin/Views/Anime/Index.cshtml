@@ -1,9 +1,32 @@
-﻿@using DataModels.Dto
+﻿@using System.Text
+@using DataModels.EF
 @model IEnumerable<WebAnime.MVC.Areas.Admin.Models.AnimeViewModel>
 @{
     ViewBag.Title = "Trang quản lý anime";
+    int firstServerId = (int)ViewBag.FirstServerId;
+    Categories[] categoryList = ViewBag.categoryList;
 }
-
+@functions {
+    string GetCategories(Categories[] categoryList, int[] categoryListIds)
+    {
+        var length = categoryListIds.Length;
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length - 1; ++i)
+        {
+            builder.Append($"{categoryList[categoryListIds[i]].Name}, ");
+            if (i == 2)
+            {
+                builder.Append("...");
+                break;
+            }
+        }
+        if (categoryListIds.Length < 3)
+        {
+            builder.Append($"{categoryList[categoryListIds[length - 1]].Name}.");
+        }
+        return builder.ToString();
+    }
+}
 <h2>
     Trang quản lý anime @Html.ActionLink("Thêm mới", "Create", null, new { @class = "text-decoration-none btn btn-primary" })
 </h2>
@@ -13,27 +36,61 @@
 }
 else
 {
-    <div class="row">
-        <div class="col-8">
-            <div class="row">
-                @foreach (var anime in Model)
-                {
-                    <div class="col-xxl-4 mb-2">
-                        <div class="card">
-                            <img src="@anime.Poster" class="card-img-top" />
-                            <div class="card-body">
-                                <h5 class="card-title">@anime.Title</h5>
-                                <div class="btn-group w-100">
-                                    @Html.ActionLink("Sửa", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
-                                    @Html.ActionLink("Quản lý tập", "Index", "Episode", new { animeId = anime.Id, serverId = new ServerDto().GetFirst().Id, area = "Admin" }, new { @class = "btn btn-info text-white" })
-                                    @Html.ActionLink("Xoá","Delete",new {id =anime.Id },new {@class= "btn btn-danger text-decoration-none" })
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Tiêu đề
+                </th>
+                <th>
+                    Tiêu đề gốc
+                </th>
+                <th>Thời lượng</th>
+                <th>
+                    Số tập dự kiến
+                </th>
 
-    </div>
+                <th>
+                    Ngày phát hành
+                </th>
+                <th>
+                    Thể loại
+                </th>
+                <th>
+                    Chức năng
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var anime in Model)
+            {
+                <tr>
+                    <td>@anime.Title</td>
+                    <td>@anime.OriginalTitle</td>
+                    <td>@anime.Duration phút</td>
+                    <th>@anime.TotalEpisodes</th>
+                    <td>
+                        @if (anime.Release != null)
+                        {
+                            @anime.Release.Value.ToShortDateString()
+                        }
+                        else
+                        {
+                            <text>Không rõ</text>
+                        }
+                    </td>
+                    <td>@GetCategories(categoryList, anime.CategoriesId)</td>
+
+                    <td>
+                        <div class="btn-group w-100">
+                            @Html.ActionLink("Sửa", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
+                            @Html.ActionLink("Tập phim", "Index", "Episode", new { animeId = anime.Id, serverId = firstServerId, area = "Admin" }, new { @class = "btn btn-info text-white" })
+                            @Html.ActionLink("Xoá", "Delete", new { id = anime.Id }, new { @class = "btn btn-danger text-decoration-none" })
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }

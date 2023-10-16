@@ -2,32 +2,39 @@
 using DataModels.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DataModels.Dto
 {
     public class ServerDto : BaseDto
     {
-        public Servers GetById(int id)
+        public async Task<Servers> GetById(int id)
         {
-            return Context.Servers.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
+            return await Context.Servers
+                .FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
         }
 
-        public IEnumerable<Servers> GetAll()
+        public async Task<IEnumerable<Servers>> GetAll()
         {
-            return Context.Servers.Where(x => !x.IsDeleted);
+            return await Context.Servers
+                .Where(x => !x.IsDeleted)
+                .ToListAsync();
         }
-        public Servers GetFirst()
+
+        public async Task<Servers> GetFirst()
         {
-            return Context.Servers.FirstOrDefault();
+            return await Context.Servers.FirstOrDefaultAsync();
         }
-        public bool Add(Servers entity)
+
+        public async Task<bool> Add(Servers entity)
         {
             try
             {
                 entity.ModifiedDate = entity.CreatedDate = DateTime.Now;
                 Context.Servers.Add(entity);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 return true;
             }
             catch
@@ -36,26 +43,27 @@ namespace DataModels.Dto
             }
         }
 
-        public bool Update(Servers entity)
+
+        public async Task<bool> Update(Servers entity)
         {
-            var updateEntity = GetById(entity.Id);
+            var updateEntity = await GetById(entity.Id);
             if (updateEntity == null) return false;
             updateEntity.Name = entity.Name;
             updateEntity.Description = entity.Description;
             updateEntity.ModifiedDate = DateTime.Now;
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
             return true;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             try
             {
-                var deleteEntity = GetById(id);
+                var deleteEntity = await GetById(id);
                 if (deleteEntity == null) return false;
                 deleteEntity.IsDeleted = true;
                 deleteEntity.DeletedDate = DateTime.Now;
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 return true;
             }
             catch

@@ -2,6 +2,7 @@
 using DataModels.Dto;
 using DataModels.EF;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
 
@@ -10,16 +11,18 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
     public class ServerController : Controller
     {
         private readonly IMapper _mapper;
-        public ServerController(IMapper mapper)
+        private readonly ServerDto _serverDto;
+        public ServerController(IMapper mapper, ServerDto serverDto)
         {
             _mapper = mapper;
+            this._serverDto = serverDto;
         }
         [HttpGet]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var serverDto = new ServerDto();
+
             var serverViewModelList =
-                _mapper.Map<IEnumerable<Servers>, IEnumerable<ServerViewModel>>(serverDto.GetAll());
+                _mapper.Map<IEnumerable<Servers>, IEnumerable<ServerViewModel>>(await _serverDto.GetAll());
             return View(serverViewModelList);
         }
 
@@ -29,13 +32,13 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Create(ServerViewModel model)
+        public async Task<ActionResult> Create(ServerViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var serverDto = new ServerDto();
+
                 var server = _mapper.Map<Servers>(model);
-                if (serverDto.Add(server))
+                if (await _serverDto.Add(server))
                 {
                     return RedirectToAction("Index");
                 }
@@ -46,23 +49,23 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             return View();
         }
         [HttpGet]
-        public ActionResult Update(int id)
+        public async Task<ActionResult> Update(int id)
         {
-            var serverDto = new ServerDto();
-            var serverViewModel = _mapper.Map<ServerViewModel>(serverDto.GetById(id));
+
+            var serverViewModel = _mapper.Map<ServerViewModel>(await _serverDto.GetById(id));
             if (serverViewModel == null) return HttpNotFound();
 
             return View(serverViewModel);
         }
 
         [HttpPost]
-        public ActionResult Update(ServerViewModel model)
+        public async Task<ActionResult> Update(ServerViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var serverDto = new ServerDto();
+
                 var server = _mapper.Map<Servers>(model);
-                if (serverDto.Update(server))
+                if (await _serverDto.Update(server))
                 {
                     return RedirectToAction("Index");
                 }
@@ -74,18 +77,18 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             return View();
         }
         [HttpGet]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var serverDto = new ServerDto();
-            var serverViewModel = _mapper.Map<ServerViewModel>(serverDto.GetById(id));
+
+            var serverViewModel = _mapper.Map<ServerViewModel>(await _serverDto.GetById(id));
             if (serverViewModel == null) return HttpNotFound();
             return View(serverViewModel);
         }
         [HttpPost]
-        public ActionResult Delete(ServerViewModel model)
+        public async Task<ActionResult> Delete(ServerViewModel model)
         {
-            var serverDto = new ServerDto();
-            if (serverDto.Delete(model.Id))
+
+            if (await _serverDto.Delete(model.Id))
             {
                 return RedirectToAction("Index");
             }

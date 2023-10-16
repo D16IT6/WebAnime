@@ -2,6 +2,7 @@
 using DataModels.Dto;
 using DataModels.EF;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
 
@@ -10,134 +11,122 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
     public class EpisodeController : Controller
     {
         private readonly IMapper _mapper;
-        public EpisodeController(IMapper mapper)
+        private readonly ServerDto _serverDto;
+        private readonly EpisodeDto _episodeDto;
+        private readonly AnimeDto _animeDto;
+        public EpisodeController(IMapper mapper, ServerDto serverDto, EpisodeDto episodeDto, AnimeDto animeDto)
         {
             _mapper = mapper;
+            _serverDto = serverDto;
+            _episodeDto = episodeDto;
+            _animeDto = animeDto;
         }
 
-        //[HttpGet]
-        public ActionResult Index(int animeId, int serverId)
+        public async Task<ActionResult> Index(int animeId, int serverId)
         {
-            var serverDto = new ServerDto();
-            var firstServer = serverDto.GetFirst();
-            if (firstServer == null) return new HttpNotFoundResult();
-            LoadEditData(animeId);
+            var firstServer = await _serverDto.GetFirst();
+            if (firstServer == null) return HttpNotFound();
 
-            ViewBag.Servers = serverDto.GetAll();
+            await LoadEditData(animeId);
+            ViewBag.Servers = await _serverDto.GetAll();
 
-            var episodeDto = new EpisodeDto();
-            var episodeViewModelList =
-                _mapper.Map<IEnumerable<Episodes>, IEnumerable<EpisodeViewModel>>(episodeDto.GetAll(animeId, serverId));
-
+            var episodeViewModelList = _mapper.Map<IEnumerable<Episodes>, IEnumerable<EpisodeViewModel>>(await _episodeDto.GetAll(animeId, serverId));
             ViewBag.ServerId = serverId;
+
             return View(episodeViewModelList);
         }
 
         [HttpGet]
-        public ActionResult Create(int animeId, int serverId)
+        public async Task<ActionResult> Create(int animeId, int serverId)
         {
-            var serverDto = new ServerDto();
+            var server = await _serverDto.GetById(serverId);
+            ViewBag.ServerName = server.Name;
+            await LoadEditData(animeId);
 
-            ViewBag.ServerName = serverDto.GetById(serverId).Name;
-            LoadEditData(animeId);
-            var episodeDto = new EpisodeDto();
             return View(new EpisodeViewModel()
             {
                 Id = 0,
                 AnimeId = animeId,
                 ServerId = serverId,
-                Order = episodeDto.GetMaxOrderId(animeId, serverId) + 1
+                Order = await _episodeDto.GetMaxOrderId(animeId, serverId) + 1
             });
         }
 
         [HttpPost]
-        public ActionResult Create(EpisodeViewModel model)
+        public async Task<ActionResult> Create(EpisodeViewModel model)
         {
-            var episodeDto = new EpisodeDto();
-
             if (ModelState.IsValid)
             {
                 var episode = _mapper.Map<Episodes>(model);
-                if (episodeDto.Add(episode))
+                if (await _episodeDto.Add(episode))
                 {
                     return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = model.AnimeId, serverId = model.ServerId });
                 }
-
                 ModelState.AddModelError("", @"Lỗi không thêm được, vui lòng thử lại");
-                return View();
             }
-            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng thử lại");
+            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng kiểm tra lại");
             return View();
         }
+
         [HttpGet]
-        public ActionResult Update(int id)
+        public async Task<ActionResult> Update(int id)
         {
-            var episodeDto = new EpisodeDto();
-
-            var episode = episodeDto.GetById(id);
-            if (episode == null) return new HttpNotFoundResult();
+            var episode = await _episodeDto.GetById(id);
+            if (episode == null) return HttpNotFound();
             var episodeViewModel = _mapper.Map<EpisodeViewModel>(episode);
-
-            LoadEditData(episodeViewModel.AnimeId);
-            ViewBag.Server = new ServerDto().GetById(episodeViewModel.ServerId);
+            await LoadEditData(episodeViewModel.AnimeId);
+            ViewBag.Server = await _serverDto.GetById(episodeViewModel.ServerId);
             return View(episodeViewModel);
         }
 
         [HttpPost]
-        public ActionResult Update(EpisodeViewModel model)
+        public async Task<ActionResult> Update(EpisodeViewModel model)
         {
-            var episodeDto = new EpisodeDto();
-            LoadEditData(model.AnimeId);
+            await LoadEditData(model.AnimeId);
 
             if (ModelState.IsValid)
             {
                 var episode = _mapper.Map<Episodes>(model);
-                if (episodeDto.Update(episode))
+                if (await _episodeDto.Update(episode))
                 {
                     return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = episode.AnimeId, serverId = episode.ServerId });
                 }
-
                 ModelState.AddModelError("", @"Lỗi không cập nhật được, vui lòng thử lại");
-                return View();
             }
-            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng thử lại");
+            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng kiểm tra lại");
             return View();
         }
 
         [HttpGet]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var episodeDto = new EpisodeDto();
-            var episode = episodeDto.GetById(id);
-            if (episode == null) return new HttpNotFoundResult();
+            var episode = await _episodeDto.GetById(id);
+            if (episode == null) return HttpNotFound();
             var episodeViewModel = _mapper.Map<EpisodeViewModel>(episode);
-
-            LoadEditData(episodeViewModel.AnimeId);
-            ViewBag.Server = new ServerDto().GetById(episodeViewModel.ServerId);
+            await LoadEditData(episodeViewModel.AnimeId);
+            ViewBag.Server = await _serverDto.GetById(episodeViewModel.ServerId);
             return View(episodeViewModel);
         }
+
         [HttpPost]
-        public ActionResult Delete(EpisodeViewModel model)
+        public async Task<ActionResult> Delete(EpisodeViewModel model)
         {
-            var episodeDto = new EpisodeDto();
-            var deleted = episodeDto.GetById(model.Id);
+            var deleted = await _episodeDto.GetById(model.Id);
             var animeId = deleted.AnimeId;
             var serverId = deleted.ServerId;
-            if (episodeDto.Delete(model.Id))
+
+            if (await _episodeDto.Delete(model.Id))
             {
                 return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = animeId, serverId });
             }
             ModelState.AddModelError("", @"Lỗi không xoá được, vui lòng thử lại");
             return View();
-
         }
-        private void LoadEditData(int animeId)
+
+        async Task LoadEditData(int animeId)
         {
-
-            var animeDto = new AnimeDto();
-            ViewBag.Anime = animeDto.GetById(animeId);
+            ViewBag.Anime = await _animeDto.GetById(animeId);
         }
-
 
 
     }

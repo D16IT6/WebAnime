@@ -9,27 +9,27 @@
     <div class="col-12">
         @using (Html.BeginForm())
         {
-            @Html.ValidationSummary()
-            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(false, "")
+
             <div class="row mt-2">
-                @Html.LabelFor(x => x.UserName,new {@class="col-form-label col-4"})
+                @Html.LabelFor(x => x.UserName, new { @class = "col-form-label col-4" })
                 <div class="col-4">
-                    @Html.TextBoxFor(x => x.UserName,new{@class="form-control"})
-                    @Html.ValidationMessageFor(x => x.UserName,"", new {@class="text-danger"})
+                    @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.UserName, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="row mt-2">
-                @Html.LabelFor(x => x.Password,new {@class="col-form-label col-4"})
+                @Html.LabelFor(x => x.Password, new { @class = "col-form-label col-4" })
                 <div class="col-4">
-                    @Html.PasswordFor(x => x.Password, new{@class="form-control"})
-                    @Html.ValidationMessageFor(x => x.Password,"", new {@class="text-danger"})
+                    @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
 
                 </div>
             </div>
 
             <div class="row mt-2">
-                @Html.LabelFor(x => x.RememberMe,new {@class="form-check-label col-4"})
+                @Html.LabelFor(x => x.RememberMe, new { @class = "form-check-label col-4" })
 
                 <div class="col-4">
                     @Html.CheckBoxFor(x => x.RememberMe, new { @class = "form-check-input" })

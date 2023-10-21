@@ -3,7 +3,6 @@ using DataModels.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
@@ -42,26 +41,53 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-
-                SignInStatus signInStatus =
-                    await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, true);
                 Users user = await _userManager.FindByNameAsync(model.UserName);
+
+                if (user != null)
+                {
+                    if (user.AccessFailedCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
+                    {
+                        await _userManager.SetLockoutEnabledAsync(user.Id, true);
+                    }
+                }
+                else
+                {
+                    int loginFailCount = (int)(Session[SessionConstants.LOGIN_FAIL_COUNT] ?? 0);
+
+                    if (loginFailCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
+                    {
+                        ModelState.AddModelError("FakeLogin", @"Bạn đang cố đăng nhập vì điều gì?");
+                        ModelState.AddModelError("Hint", @"Chưa có tài khoản? Hãy liên hệ admin để được cấp");
+                        ModelState.AddModelError("AdminFb", @"Facebook: https://facebook.com/vuthemanh1707");
+                        Session.Remove(SessionConstants.LOGIN_FAIL_COUNT);
+
+                        return View();
+                    }
+                    ModelState.AddModelError("",
+                        $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - loginFailCount} lượt)");
+
+                    loginFailCount++;
+                    Session[SessionConstants.LOGIN_FAIL_COUNT] = loginFailCount;
+
+                    return View(model);
+
+                }
+                SignInStatus signInStatus =
+                    await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
 
                 switch (signInStatus)
                 {
 
                     case SignInStatus.Success:
-
+                        Session.Remove(SessionConstants.LOGIN_FAIL_COUNT);
                         if (Session[SessionConstants.USER_LOGIN] == null)
                         {
-
-                            if (user != null)
-                                Session.Add(SessionConstants.USER_LOGIN, new UserSession()
-                                {
-                                    Id = user.Id,
-                                    FullName = user.FullName,
-                                    UserName = user.UserName,
-                                });
+                            Session.Add(SessionConstants.USER_LOGIN, new UserSession()
+                            {
+                                Id = user.Id,
+                                FullName = user.FullName,
+                                UserName = user.UserName,
+                            });
                         }
 
                         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
@@ -74,11 +100,12 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     case SignInStatus.LockedOut:
                         ModelState.AddModelError("LockoutMessage",
                             $@"Tài khoản của bạn đã bị khóa do đăng nhập sai quá {AuthConstants.MaxFailedAccessAttemptsBeforeLockout} lần hoặc bị admin khóa.");
-                        ModelState.AddModelError("LogoutHint", $@"Vui lòng thử lại sau {AuthConstants.LockoutMinutes} phút. hoặc liên hệ admin");
-
+                        ModelState.AddModelError("LogoutHint", $@"Vui lòng thử lại sau {AuthConstants.LockoutMinutes} phút. hoặc liên hệ admin.");
                         return View();
+
                     case SignInStatus.Failure:
                     default:
+
                         if (user != null)
                             ModelState.AddModelError("",
                                 $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - user.AccessFailedCount} lượt)");

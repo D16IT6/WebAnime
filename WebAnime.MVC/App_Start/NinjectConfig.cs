@@ -85,7 +85,7 @@ namespace WebAnime.MVC
 
 
                 return userManager;
-            }).InSingletonScope();
+            });
         }
     }
 }

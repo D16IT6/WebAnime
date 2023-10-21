@@ -1,7 +1,9 @@
 ﻿using DataModels.EF.Identity;
+using DataModels.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
@@ -40,13 +42,30 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                Users user = await _userManager.FindByNameAsync(model.UserName);
+
+                if (user != null)
+                {
+                    if (user.AccessFailedCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
+                    {
+                        //user.LockoutEnabled = true;
+                        //user.LockoutEndDateUtc = DateTime.Now.AddMinutes(AuthConstants.LockoutMinutes);
+
+                        await _userManager.SetLockoutEnabledAsync(user.Id, true);
+                        await _userManager.SetLockoutEndDateAsync(user.Id, DateTime.Now.AddMinutes(AuthConstants.LockoutMinutes));
+                        ModelState.AddModelError("", $@"Tài khoản của bạn đã bị khóa do đăng nhập sai quá {AuthConstants.MaxFailedAccessAttemptsBeforeLockout} lần. 
+Vui lòng thử lại sau {AuthConstants.LockoutMinutes} phút.");
+                        return View();
+
+                    }
+                }
+
                 SignInStatus signInStatus =
                     await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, true);
 
                 switch (signInStatus)
                 {
                     case SignInStatus.Success:
-                        Users user = await _userManager.FindAsync(model.UserName, model.Password);
 
                         if (Session[SessionConstants.USER_LOGIN] == null)
                         {
@@ -66,10 +85,12 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                         return RedirectToAction("Index", "Home");
                     case SignInStatus.LockedOut:
+                        ModelState.AddModelError("", @"Tài khoản của bạn đã bị khóa do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau 5 phút.");
+
                         return View("Lockout");
                     case SignInStatus.Failure:
                     default:
-                        ModelState.AddModelError("", @"Đăng nhập thất bại, vui lòng thử lại");
+                        ModelState.AddModelError("", $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - user.AccessFailedCount} lượt)");
                         return View(model);
                 }
 
@@ -86,6 +107,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public ActionResult LogOut()
         {
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            Session.Remove(SessionConstants.USER_LOGIN);
             return RedirectToAction("Login");
         }
     }

@@ -15,6 +15,7 @@
                 @Html.LabelFor(x => x.UserName,new {@class="col-form-label col-4"})
                 <div class="col-4">
                     @Html.TextBoxFor(x => x.UserName,new{@class="form-control"})
+                    @Html.ValidationMessageFor(x => x.UserName,"", new {@class="text-danger"})
                 </div>
             </div>
 
@@ -22,6 +23,8 @@
                 @Html.LabelFor(x => x.Password,new {@class="col-form-label col-4"})
                 <div class="col-4">
                     @Html.PasswordFor(x => x.Password, new{@class="form-control"})
+                    @Html.ValidationMessageFor(x => x.Password,"", new {@class="text-danger"})
+
                 </div>
             </div>
 
@@ -42,3 +45,10 @@
     </div>
 
 </div>
+
+@section footerJs
+{
+    @{
+        Html.RenderPartial("_ValidationScriptsPartial");
+    }
+}

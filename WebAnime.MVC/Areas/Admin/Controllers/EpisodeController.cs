@@ -48,7 +48,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 Id = 0,
                 AnimeId = animeId,
                 ServerId = serverId,
-                Order = await _episodeDto.GetMaxOrderId(animeId, serverId) + 1
+                SortOrder = await _episodeDto.GetMaxOrderId(animeId, serverId) + 1
             });
         }
 
@@ -62,9 +62,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 {
                     return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = model.AnimeId, serverId = model.ServerId });
                 }
-                ModelState.AddModelError("", @"Lỗi không thêm được, vui lòng thử lại");
+                ModelState.AddModelError(string.Empty, @"Lỗi không thêm được, vui lòng thử lại");
             }
-            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng kiểm tra lại");
+            ModelState.AddModelError(string.Empty, @"Đầu vào lỗi, vui lòng kiểm tra lại");
             return View();
         }
 
@@ -91,9 +91,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 {
                     return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = episode.AnimeId, serverId = episode.ServerId });
                 }
-                ModelState.AddModelError("", @"Lỗi không cập nhật được, vui lòng thử lại");
+                ModelState.AddModelError(string.Empty, @"Lỗi không cập nhật được, vui lòng thử lại");
             }
-            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng kiểm tra lại");
+            ModelState.AddModelError(string.Empty, @"Đầu vào lỗi, vui lòng kiểm tra lại");
             return View();
         }
 
@@ -119,7 +119,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = animeId, serverId });
             }
-            ModelState.AddModelError("", @"Lỗi không xoá được, vui lòng thử lại");
+            ModelState.AddModelError(string.Empty, @"Lỗi không xoá được, vui lòng thử lại");
             return View();
         }
 

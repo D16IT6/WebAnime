@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class intergrate_AspNet_Identity : DbMigration
+    public partial class Intergrate_Aspnet_Identity : DbMigration
     {
         public override void Up()
         {
@@ -13,13 +13,13 @@
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(maxLength: 50),
-                        CreatedDate = c.DateTime(nullable: false),
-                        CreatedBy = c.Int(nullable: false),
-                        ModifiedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.Int(nullable: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        DeletedBy = c.Int(),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.Int(),
+                        ModifiedDate = c.DateTime(),
+                        ModifiedBy = c.Int(),
                         DeletedDate = c.DateTime(),
+                        DeletedBy = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -41,13 +41,13 @@
                         TypeId = c.Int(),
                         CountryId = c.Int(),
                         AgeRatingId = c.Int(),
-                        CreatedDate = c.DateTime(nullable: false),
-                        CreatedBy = c.Int(nullable: false),
-                        ModifiedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.Int(nullable: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        DeletedBy = c.Int(),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.Int(),
+                        ModifiedDate = c.DateTime(),
+                        ModifiedBy = c.Int(),
                         DeletedDate = c.DateTime(),
+                        DeletedBy = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Countries", t => t.CountryId)
@@ -65,13 +65,13 @@
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(maxLength: 50),
-                        CreatedDate = c.DateTime(nullable: false),
-                        CreatedBy = c.Int(nullable: false),
-                        ModifiedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.Int(nullable: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        DeletedBy = c.Int(),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.Int(),
+                        ModifiedDate = c.DateTime(),
+                        ModifiedBy = c.Int(),
                         DeletedDate = c.DateTime(),
+                        DeletedBy = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -81,13 +81,13 @@
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(maxLength: 50),
-                        CreatedDate = c.DateTime(nullable: false),
-                        CreatedBy = c.Int(nullable: false),
-                        ModifiedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.Int(nullable: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        DeletedBy = c.Int(),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.Int(),
+                        ModifiedDate = c.DateTime(),
+                        ModifiedBy = c.Int(),
                         DeletedDate = c.DateTime(),
+                        DeletedBy = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -101,13 +101,13 @@
                         Id = c.Int(nullable: false, identity: true),
                         Url = c.String(maxLength: 255),
                         Title = c.String(maxLength: 50),
-                        CreatedDate = c.DateTime(nullable: false),
-                        CreatedBy = c.Int(nullable: false),
-                        ModifiedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.Int(nullable: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        DeletedBy = c.Int(),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.Int(),
+                        ModifiedDate = c.DateTime(),
+                        ModifiedBy = c.Int(),
                         DeletedDate = c.DateTime(),
+                        DeletedBy = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Servers", t => t.ServerId, cascadeDelete: true)
@@ -122,13 +122,13 @@
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(maxLength: 50),
                         Description = c.String(),
-                        CreatedDate = c.DateTime(nullable: false),
-                        CreatedBy = c.Int(nullable: false),
-                        ModifiedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.Int(nullable: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        DeletedBy = c.Int(),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.Int(),
+                        ModifiedDate = c.DateTime(),
+                        ModifiedBy = c.Int(),
                         DeletedDate = c.DateTime(),
+                        DeletedBy = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -138,13 +138,13 @@
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(maxLength: 50),
-                        CreatedDate = c.DateTime(nullable: false),
-                        CreatedBy = c.Int(nullable: false),
-                        ModifiedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.Int(nullable: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        DeletedBy = c.Int(),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.Int(),
+                        ModifiedDate = c.DateTime(),
+                        ModifiedBy = c.Int(),
                         DeletedDate = c.DateTime(),
+                        DeletedBy = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -154,13 +154,13 @@
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(maxLength: 50),
-                        CreatedDate = c.DateTime(nullable: false),
-                        CreatedBy = c.Int(nullable: false),
-                        ModifiedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.Int(nullable: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        DeletedBy = c.Int(),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.Int(),
+                        ModifiedDate = c.DateTime(),
+                        ModifiedBy = c.Int(),
                         DeletedDate = c.DateTime(),
+                        DeletedBy = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -170,39 +170,21 @@
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(maxLength: 50),
-                        CreatedDate = c.DateTime(nullable: false),
-                        CreatedBy = c.Int(nullable: false),
-                        ModifiedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.Int(nullable: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        DeletedBy = c.Int(),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.Int(),
+                        ModifiedDate = c.DateTime(),
+                        ModifiedBy = c.Int(),
                         DeletedDate = c.DateTime(),
+                        DeletedBy = c.Int(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.Roles",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.UserRoles",
-                c => new
-                    {
-                        RoleId = c.Int(nullable: false),
-                        UserId = c.Int(nullable: false),
-                        Roles_Id = c.Int(),
-                        Users_Id = c.Int(),
-                    })
-                .PrimaryKey(t => new { t.RoleId, t.UserId })
-                .ForeignKey("dbo.Roles", t => t.Roles_Id)
-                .ForeignKey("dbo.Users", t => t.Users_Id)
-                .Index(t => t.Roles_Id)
-                .Index(t => t.Users_Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Users", t => t.CreatedBy)
+                .ForeignKey("dbo.Users", t => t.DeletedBy)
+                .ForeignKey("dbo.Users", t => t.ModifiedBy)
+                .Index(t => t.CreatedBy)
+                .Index(t => t.ModifiedBy)
+                .Index(t => t.DeletedBy);
             
             CreateTable(
                 "dbo.Users",
@@ -252,6 +234,30 @@
                 .Index(t => t.Users_Id);
             
             CreateTable(
+                "dbo.UserRoles",
+                c => new
+                    {
+                        RoleId = c.Int(nullable: false),
+                        UserId = c.Int(nullable: false),
+                        Users_Id = c.Int(),
+                        Roles_Id = c.Int(),
+                    })
+                .PrimaryKey(t => new { t.RoleId, t.UserId })
+                .ForeignKey("dbo.Users", t => t.Users_Id)
+                .ForeignKey("dbo.Roles", t => t.Roles_Id)
+                .Index(t => t.Users_Id)
+                .Index(t => t.Roles_Id);
+            
+            CreateTable(
+                "dbo.Roles",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
                 "dbo.AnimeCategories",
                 c => new
                     {
@@ -281,11 +287,14 @@
         
         public override void Down()
         {
+            DropForeignKey("dbo.UserRoles", "Roles_Id", "dbo.Roles");
+            DropForeignKey("dbo.Animes", "AgeRatingId", "dbo.AgeRatings");
+            DropForeignKey("dbo.Types", "ModifiedBy", "dbo.Users");
+            DropForeignKey("dbo.Types", "DeletedBy", "dbo.Users");
+            DropForeignKey("dbo.Types", "CreatedBy", "dbo.Users");
             DropForeignKey("dbo.UserRoles", "Users_Id", "dbo.Users");
             DropForeignKey("dbo.UserLogins", "Users_Id", "dbo.Users");
             DropForeignKey("dbo.UserClaims", "Users_Id", "dbo.Users");
-            DropForeignKey("dbo.UserRoles", "Roles_Id", "dbo.Roles");
-            DropForeignKey("dbo.Animes", "AgeRatingId", "dbo.AgeRatings");
             DropForeignKey("dbo.Animes", "TypeId", "dbo.Types");
             DropForeignKey("dbo.AnimeStudios", "StudioId", "dbo.Studios");
             DropForeignKey("dbo.AnimeStudios", "AnimeId", "dbo.Animes");
@@ -299,10 +308,13 @@
             DropIndex("dbo.AnimeStudios", new[] { "AnimeId" });
             DropIndex("dbo.AnimeCategories", new[] { "CategoryId" });
             DropIndex("dbo.AnimeCategories", new[] { "AnimeId" });
+            DropIndex("dbo.UserRoles", new[] { "Roles_Id" });
+            DropIndex("dbo.UserRoles", new[] { "Users_Id" });
             DropIndex("dbo.UserLogins", new[] { "Users_Id" });
             DropIndex("dbo.UserClaims", new[] { "Users_Id" });
-            DropIndex("dbo.UserRoles", new[] { "Users_Id" });
-            DropIndex("dbo.UserRoles", new[] { "Roles_Id" });
+            DropIndex("dbo.Types", new[] { "DeletedBy" });
+            DropIndex("dbo.Types", new[] { "ModifiedBy" });
+            DropIndex("dbo.Types", new[] { "CreatedBy" });
             DropIndex("dbo.Episodes", new[] { "ServerId" });
             DropIndex("dbo.Episodes", new[] { "AnimeId" });
             DropIndex("dbo.Animes", new[] { "AgeRatingId" });
@@ -311,11 +323,11 @@
             DropIndex("dbo.Animes", new[] { "StatusId" });
             DropTable("dbo.AnimeStudios");
             DropTable("dbo.AnimeCategories");
+            DropTable("dbo.Roles");
+            DropTable("dbo.UserRoles");
             DropTable("dbo.UserLogins");
             DropTable("dbo.UserClaims");
             DropTable("dbo.Users");
-            DropTable("dbo.UserRoles");
-            DropTable("dbo.Roles");
             DropTable("dbo.Types");
             DropTable("dbo.Studios");
             DropTable("dbo.Statuses");

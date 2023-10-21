@@ -64,10 +64,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Anime");
                 }
                 await LoadEditData();
-                ModelState.AddModelError("", @"Lỗi thêm mới, vui lòng thử lại");
+                ModelState.AddModelError(string.Empty, @"Lỗi thêm mới, vui lòng thử lại");
             }
             await LoadEditData();
-            ModelState.AddModelError("", @"Lỗi đầu vào, vui lòng kiểm tra lại");
+            ModelState.AddModelError(string.Empty, @"Lỗi đầu vào, vui lòng kiểm tra lại");
             return View();
         }
 
@@ -76,7 +76,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             await LoadEditData();
             var anime = await _animeDto.GetById(id);
-            if (anime == null) return HttpNotFound("");
+            if (anime == null) return HttpNotFound(string.Empty);
             var animeViewModel = _mapper.Map<AnimeViewModel>(anime);
             return View(animeViewModel);
         }
@@ -92,10 +92,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Anime");
                 }
                 await LoadEditData();
-                ModelState.AddModelError("", @"Lỗi cập nhật, vui lòng thử lại");
+                ModelState.AddModelError(string.Empty, @"Lỗi cập nhật, vui lòng thử lại");
             }
             await LoadEditData();
-            ModelState.AddModelError("", @"Lỗi đầu vào, vui lòng kiểm tra lại");
+            ModelState.AddModelError(string.Empty, @"Lỗi đầu vào, vui lòng kiểm tra lại");
             return View(model);
         }
 
@@ -103,7 +103,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             var anime = await _animeDto.GetById(id);
-            if (anime == null) return HttpNotFound("");
+            if (anime == null) return HttpNotFound(string.Empty);
             var animeViewModel = _mapper.Map<AnimeViewModel>(anime);
             return View(animeViewModel);
         }
@@ -115,7 +115,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Anime");
             }
-            ModelState.AddModelError("", @"Lỗi xoá, vui lòng thử lại");
+            ModelState.AddModelError(string.Empty, @"Lỗi xoá, vui lòng thử lại");
             return View(model);
         }
 

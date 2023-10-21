@@ -16,13 +16,22 @@ namespace DataModels.EF
 
         public virtual DbSet<AgeRatings> AgeRatings { get; set; }
         public virtual DbSet<Animes> Animes { get; set; }
+        public virtual DbSet<BlogComments> BlogComments { get; set; }
+        public virtual DbSet<Blogs> Blogs { get; set; }
         public virtual DbSet<Categories> Categories { get; set; }
+        public virtual DbSet<Comments> Comments { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
+        public virtual DbSet<Episodes> Episodes { get; set; }
+        public virtual DbSet<Favorites> Favorites { get; set; }
+        public virtual DbSet<FavoriteStatuses> FavoriteStatuses { get; set; }
+        public virtual DbSet<Ratings> Ratings { get; set; }
+        public virtual DbSet<Schedules> Schedules { get; set; }
+        public virtual DbSet<Servers> Servers { get; set; }
+
         public virtual DbSet<Statuses> Statuses { get; set; }
         public virtual DbSet<Studios> Studios { get; set; }
         public virtual DbSet<Types> Types { get; set; }
-        public virtual DbSet<Servers> Servers { get; set; }
-        public virtual DbSet<Episodes> Episodes { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -50,6 +59,8 @@ namespace DataModels.EF
                 .HasMany(e => e.Studios)
                 .WithMany(e => e.Animes)
                 .Map(m => m.ToTable("AnimeStudios").MapLeftKey("AnimeId").MapRightKey("StudioId"));
+
+
 
             modelBuilder.Entity<Countries>()
                 .HasMany(e => e.Animes)

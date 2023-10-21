@@ -2,6 +2,7 @@
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
+
     public class HomeController : Controller
     {
         // GET: Admin/Home

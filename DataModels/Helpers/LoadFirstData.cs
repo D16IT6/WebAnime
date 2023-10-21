@@ -1,4 +1,5 @@
 ﻿using DataModels.EF;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,9 +13,9 @@ namespace DataModels.Helpers
             {
                 var listStudios = new List<Studios>
                 {
-                    new Studios { Name = "Studio Bind"},
-                    new Studios { Name = "Mappa" },
-                    new Studios { Name = "Studio Jemi" }
+                    new Studios { Name = "Studio Bind",CreatedDate = DateTime.Now},
+                    new Studios { Name = "Mappa" ,CreatedDate = DateTime.Now},
+                    new Studios { Name = "Studio Jemi",CreatedDate = DateTime.Now }
                 };
                 context.Studios.AddRange(listStudios);
                 context.SaveChanges();
@@ -27,10 +28,10 @@ namespace DataModels.Helpers
             {
                 var listTypes = new List<Types>
                 {
-                    new Types { Name = "TV Series" },
-                    new Types { Name = "Movies" },
-                    new Types { Name = "Bluray" },
-                    new Types { Name = "OVA" }
+                    new Types { Name = "TV Series",CreatedDate = DateTime.Now },
+                    new Types { Name = "Movies",CreatedDate = DateTime.Now },
+                    new Types { Name = "Bluray",CreatedDate = DateTime.Now },
+                    new Types { Name = "OVA" ,CreatedDate = DateTime.Now}
                 };
                 context.Types.AddRange(listTypes);
                 context.SaveChanges();
@@ -45,15 +46,15 @@ namespace DataModels.Helpers
                 {
                     new Statuses
                     {
-                        Name = "Đã hoàn thành"
+                        Name = "Đã hoàn thành",CreatedDate = DateTime.Now
                     },
                     new Statuses
                     {
-                        Name = "Chưa hoàn thành"
+                        Name = "Chưa hoàn thành",CreatedDate = DateTime.Now
                     },
                     new Statuses
                     {
-                        Name = "Chưa phát sóng"
+                        Name = "Chưa phát sóng",CreatedDate = DateTime.Now
                     }
                 };
                 context.Statuses.AddRange(listStatuses);
@@ -67,10 +68,10 @@ namespace DataModels.Helpers
             {
                 var listAgeRatings = new List<AgeRatings>
                 {
-                    new AgeRatings { Name = "Mọi lứa tuổi" },
-                    new AgeRatings { Name = "Trẻ em (dưới 13 tuổi)" },
-                    new AgeRatings { Name = "13+" },
-                    new AgeRatings { Name = "18+" }
+                    new AgeRatings { Name = "Mọi lứa tuổi" ,CreatedDate = DateTime.Now},
+                    new AgeRatings { Name = "Trẻ em (dưới 13 tuổi)" ,CreatedDate = DateTime.Now},
+                    new AgeRatings { Name = "13+",CreatedDate = DateTime.Now },
+                    new AgeRatings { Name = "18+" ,CreatedDate = DateTime.Now}
                 };
                 context.AgeRatings.AddRange(listAgeRatings);
                 context.SaveChanges();
@@ -85,19 +86,19 @@ namespace DataModels.Helpers
                 {
                     new Countries
                     {
-                        Name = "Nhật Bản"
+                        Name = "Nhật Bản",CreatedDate = DateTime.Now
                     },
                     new Countries
                     {
-                        Name = "Trung Quốc"
+                        Name = "Trung Quốc",CreatedDate = DateTime.Now
                     },
                     new Countries
                     {
-                        Name = "Hàn Quốc"
+                        Name = "Hàn Quốc",CreatedDate = DateTime.Now
                     },
                     new Countries
                     {
-                        Name = "Quốc gia khác"
+                        Name = "Quốc gia khác",CreatedDate = DateTime.Now
                     }
                 };
                 context.Countries.AddRange(listCountries);
@@ -123,7 +124,8 @@ namespace DataModels.Helpers
                 {
                     context.Categories.Add(new Categories()
                     {
-                        Name = listCategoryName[i]
+                        Name = listCategoryName[i],
+                        CreatedDate = DateTime.Now
                     });
                 }
 
@@ -140,7 +142,8 @@ namespace DataModels.Helpers
                 {
                     context.Servers.Add(new Servers()
                     {
-                        Name = s
+                        Name = s,
+                        CreatedDate = DateTime.Now
                     });
                 }
 

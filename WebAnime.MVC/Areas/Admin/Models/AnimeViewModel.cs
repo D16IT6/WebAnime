@@ -26,11 +26,13 @@ namespace WebAnime.MVC.Areas.Admin.Models
 
         [Display(Name = "Ảnh bìa")]
         [Required(ErrorMessage = "{0} là bắt buộc")]
-        [StringLength(250)] public string Poster { get; set; }
+        [StringLength(255, ErrorMessage = "{0} phải dài từ {2} tới {1} ký tự", MinimumLength = 2)]
+        public string Poster { get; set; }
 
         [Display(Name = "Thời lượng(phút)")]
         [Required(ErrorMessage = "{0} là bắt buộc")]
-        [Range(1, 1000, ErrorMessage = "{0} phải từ {1} tới {2} phút")] public int Duration { get; set; }
+        [Range(1, 1000, ErrorMessage = "{0} phải từ {1} tới {2} phút")]
+        public int Duration { get; set; }
 
         [Display(Name = "Ngày phát hành")]
         [Required(ErrorMessage = "{0} là bắt buộc")]

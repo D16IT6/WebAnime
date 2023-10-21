@@ -17,7 +17,7 @@ namespace DataModels.EF
         public string Title { get; set; }
 
         [Column(Order = 4)]
-        public int Order { get; set; }
+        public int SortOrder { get; set; }
 
         [Column(Order = 5)]
         public int AnimeId { get; set; }
@@ -29,18 +29,16 @@ namespace DataModels.EF
 
         public virtual Servers Servers { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime CreatedDate { get; set; }
-        public int CreatedBy { get; set; }
+        [DataType(DataType.DateTime)] public DateTime? CreatedDate { get; set; }
+        public int? CreatedBy { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime ModifiedDate { get; set; }
-        public int ModifiedBy { get; set; }
+        [DataType(DataType.DateTime)] public DateTime? ModifiedDate { get; set; }
+        public int? ModifiedBy { get; set; }
+
+        [DataType(DataType.DateTime)] public DateTime? DeletedDate { get; set; }
+        public int? DeletedBy { get; set; }
 
         public bool IsDeleted { get; set; }
-        public int? DeletedBy { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime? DeletedDate { get; set; }
 
     }
 }

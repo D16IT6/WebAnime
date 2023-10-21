@@ -9,7 +9,7 @@ namespace WebAnime.MVC.Areas.Admin.Models
         public int ServerId { get; set; }
 
 
-        [StringLength(255, ErrorMessage = "{0} phải dài từ {2} tới {1} ký tự", MinimumLength = 2)]
+        [StringLength(255, ErrorMessage = "{0} phải dài từ {2} tới {1} ký tự", MinimumLength = 1)]
         [Required(ErrorMessage = "{0} là bắt buộc")]
         [Display(Name = "Url")]
         public string Url { get; set; }
@@ -17,7 +17,7 @@ namespace WebAnime.MVC.Areas.Admin.Models
         [Display(Name = "Thứ tự")]
         [Required(ErrorMessage = "{0} là bắt buộc")]
         [Range(1, 9999, ErrorMessage = "{0} phải từ {1} tới {2}")]
-        public int Order { get; set; }
+        public int SortOrder { get; set; }
 
         [StringLength(50, MinimumLength = 2, ErrorMessage = "{0} phải dài từ {2} tới {1} ký tự")]
         [Required(ErrorMessage = "{0} là bắt buộc")]

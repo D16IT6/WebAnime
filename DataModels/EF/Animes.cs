@@ -7,11 +7,6 @@ namespace DataModels.EF
 {
     public partial class Animes
     {
-        public Animes()
-        {
-            Categories = new HashSet<Categories>();
-            Studios = new HashSet<Studios>();
-        }
 
         public int Id { get; set; }
 
@@ -49,24 +44,27 @@ namespace DataModels.EF
 
         public virtual Types Types { get; set; }
 
+        public virtual Schedules Shedule { get; set; }
+
         public virtual ICollection<Categories> Categories { get; set; }
 
         public virtual ICollection<Studios> Studios { get; set; }
 
         public virtual ICollection<Episodes> Episodes { get; set; }
+        public virtual ICollection<Ratings> Ratings { get; set; }
+        public virtual ICollection<Comments> Comments { get; set; }
+        public virtual ICollection<Favorites> Favorites { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime CreatedDate { get; set; }
-        public int CreatedBy { get; set; }
+        [DataType(DataType.DateTime)] public DateTime? CreatedDate { get; set; }
+        public int? CreatedBy { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime ModifiedDate { get; set; }
-        public int ModifiedBy { get; set; }
+        [DataType(DataType.DateTime)] public DateTime? ModifiedDate { get; set; }
+        public int? ModifiedBy { get; set; }
+
+        [DataType(DataType.DateTime)] public DateTime? DeletedDate { get; set; }
+        public int? DeletedBy { get; set; }
 
         public bool IsDeleted { get; set; }
-        public int? DeletedBy { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime? DeletedDate { get; set; }
 
     }
 }

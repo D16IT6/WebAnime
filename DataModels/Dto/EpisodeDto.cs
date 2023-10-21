@@ -20,7 +20,7 @@ namespace DataModels.Dto
         {
             return await Context.Episodes
                             .Where(x => x.AnimeId == animeId && x.ServerId == serverId && !x.IsDeleted)
-                            .OrderBy(x => x.Order)
+                            .OrderBy(x => x.SortOrder)
                             .ToListAsync();
         }
 
@@ -28,7 +28,7 @@ namespace DataModels.Dto
         {
             var maxOrder = await Context.Episodes
                 .Where(x => x.AnimeId == animeId && x.ServerId == serverId && !x.IsDeleted)
-                .Select(x => (int?)x.Order)
+                .Select(x => (int?)x.SortOrder)
                 .MaxAsync();
 
             return maxOrder ?? 0;
@@ -61,7 +61,7 @@ namespace DataModels.Dto
                 var updateEntity = await GetById(entity.Id);
                 if (updateEntity == null) return false;
 
-                updateEntity.Order = entity.Order;
+                updateEntity.SortOrder = entity.SortOrder;
                 updateEntity.Title = entity.Title;
                 updateEntity.Url = entity.Url;
 

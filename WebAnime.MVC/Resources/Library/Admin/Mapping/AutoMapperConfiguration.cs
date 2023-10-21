@@ -1,6 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using DataModels.EF;
-using System.Linq;
 using WebAnime.MVC.Areas.Admin.Models;
 
 namespace WebAnime.MVC.Resources.Library.Admin.Mapping
@@ -17,21 +17,15 @@ namespace WebAnime.MVC.Resources.Library.Admin.Mapping
 
 
                     cfg.CreateMap<Animes, AnimeViewModel>()
-                    .ForMember(
-                        destinationMember: x => x.StudiosId,
-                        memberOptions: option =>
-                        {
-                            option.MapFrom(src => src.Studios.Select(x => x.Id).ToArray());
-                        }
-                    )
-                    .ForMember(
-                        destinationMember: x => x.CategoriesId,
-                        memberOptions: option =>
-                        {
-                            option.MapFrom(src => src.Categories.Select(x => x.Id).ToArray());
-                        }
-                    )
-                    ;
+                        .ForMember(
+                            x => x.StudiosId,
+                            option => { option.MapFrom(src => src.Studios.Select(x => x.Id).ToArray()); }
+                        )
+                        .ForMember(
+                            x => x.CategoriesId,
+                            option => { option.MapFrom(src => src.Categories.Select(x => x.Id).ToArray()); }
+                        )
+                        ;
                     cfg.CreateMap<AnimeViewModel, Animes>();
 
                     cfg.CreateMap<StudioViewModel, Studios>();
@@ -48,5 +42,4 @@ namespace WebAnime.MVC.Resources.Library.Admin.Mapping
             return config.CreateMapper();
         }
     }
-
 }

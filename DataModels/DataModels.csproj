@@ -15,6 +15,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <_MigrateToProjectGuid>51dc4e8e-e39e-4f54-bbb1-c2b14067ab01</_MigrateToProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
@@ -97,13 +100,19 @@
     <Compile Include="Dto\StatusDto.cs" />
     <Compile Include="Dto\StudioDto.cs" />
     <Compile Include="Dto\TypeDto.cs" />
+    <Compile Include="EF\BlogComments.cs" />
+    <Compile Include="EF\Blogs.cs" />
+    <Compile Include="EF\Comments.cs" />
+    <Compile Include="EF\Favorites.cs" />
+    <Compile Include="EF\FavoriteStatuses.cs" />
     <Compile Include="EF\Identity\CustomEntities.cs" />
     <Compile Include="EF\Identity\RoleManager.cs" />
     <Compile Include="EF\Identity\UserManager.cs" />
     <Compile Include="EF\Identity\RoleStore.cs" />
     <Compile Include="EF\Identity\UserStore.cs" />
     <Compile Include="EF\NotMapped\Animes.cs" />
-    <Compile Include="EF\Test\Model1.cs" />
+    <Compile Include="EF\Ratings.cs" />
+    <Compile Include="EF\Schedules.cs" />
     <Compile Include="Helpers\BaseDto.cs" />
     <Compile Include="Dto\CountryDto.cs" />
     <Compile Include="EF\AgeRatings.cs" />
@@ -115,9 +124,13 @@
     <Compile Include="EF\Types.cs" />
     <Compile Include="EF\WebAnimeDbContext.cs" />
     <Compile Include="Helpers\LoadFirstData.cs" />
-    <Compile Include="Migrations\202310161055028_intergrate_AspNet_Identity.cs" />
-    <Compile Include="Migrations\202310161055028_intergrate_AspNet_Identity.designer.cs">
-      <DependentUpon>202310161055028_intergrate_AspNet_Identity.cs</DependentUpon>
+    <Compile Include="Migrations\202310191613371_Intergrate_Aspnet_Identity.cs" />
+    <Compile Include="Migrations\202310191613371_Intergrate_Aspnet_Identity.designer.cs">
+      <DependentUpon>202310191613371_Intergrate_Aspnet_Identity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202310210622434_Update_Some_Tables.cs" />
+    <Compile Include="Migrations\202310210622434_Update_Some_Tables.designer.cs">
+      <DependentUpon>202310210622434_Update_Some_Tables.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -129,11 +142,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202310161055028_intergrate_AspNet_Identity.resx">
-      <DependentUpon>202310161055028_intergrate_AspNet_Identity.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202310191613371_Intergrate_Aspnet_Identity.resx">
+      <DependentUpon>202310191613371_Intergrate_Aspnet_Identity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310210622434_Update_Some_Tables.resx">
+      <DependentUpon>202310210622434_Update_Some_Tables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

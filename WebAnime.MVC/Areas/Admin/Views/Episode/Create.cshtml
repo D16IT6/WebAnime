@@ -25,10 +25,10 @@
     </div>
 
     <div class="row mb-4">
-        @Html.LabelFor(x => x.Order, new { @class = "col-1 col-form-label fw-bold" })
+        @Html.LabelFor(x => x.SortOrder, new { @class = "col-1 col-form-label fw-bold" })
         <div class="col-8">
-            @Html.TextBoxFor(x => x.Order, new { @class = "form-control", type = "number", min = "1", max = "9999", placeholder = "1 tới 9999" })
-            @Html.ValidationMessageFor(x => x.Order, "", new { @class = "text-danger" })
+            @Html.TextBoxFor(x => x.SortOrder, new { @class = "form-control", type = "number", min = "1", max = "9999", placeholder = "1 tới 9999" })
+            @Html.ValidationMessageFor(x => x.SortOrder, "", new { @class = "text-danger" })
         </div>
     </div>
 

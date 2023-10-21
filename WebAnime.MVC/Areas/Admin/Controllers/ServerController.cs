@@ -42,10 +42,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 {
                     return RedirectToAction("Index");
                 }
-                ModelState.AddModelError("", @"Lỗi không thêm được, vui lòng thử lại");
+                ModelState.AddModelError(string.Empty, @"Lỗi không thêm được, vui lòng thử lại");
                 return View();
             }
-            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng thử lại");
+            ModelState.AddModelError(string.Empty, @"Đầu vào lỗi, vui lòng thử lại");
             return View();
         }
         [HttpGet]
@@ -70,10 +70,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     return RedirectToAction("Index");
                 }
 
-                ModelState.AddModelError("", @"Lỗi không cập nhật được, vui lòng thử lại");
+                ModelState.AddModelError(string.Empty, @"Lỗi không cập nhật được, vui lòng thử lại");
                 return View();
             }
-            ModelState.AddModelError("", @"Đầu vào lỗi, vui lòng thử lại");
+            ModelState.AddModelError(string.Empty, @"Đầu vào lỗi, vui lòng thử lại");
             return View();
         }
         [HttpGet]
@@ -92,7 +92,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index");
             }
-            ModelState.AddModelError("", @"Lỗi không xoá được, vui lòng thử lại");
+            ModelState.AddModelError(string.Empty, @"Lỗi không xoá được, vui lòng thử lại");
             return View(); ;
         }
     }

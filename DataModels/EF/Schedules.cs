@@ -10,6 +10,9 @@ namespace DataModels.EF
         public int Id { get; set; }
         [Range(1, 7)]
         public int DayOfWeek { get; set; }
+        [Required]
+        [Column(TypeName = "datetime")]
+        public DateTime Time { get; set; }
         public Animes Anime { get; set; }
         [DataType(DataType.DateTime)] public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }

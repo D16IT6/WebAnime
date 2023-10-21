@@ -8,6 +8,7 @@ using WebAnime.MVC.Areas.Admin.Models;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class EpisodeController : Controller
     {
         private readonly IMapper _mapper;

@@ -1391,30 +1391,41 @@
     <Content Include="Areas\Admin\Views\Episode\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Episode\Update.cshtml" />
     <Content Include="Areas\Admin\Views\Episode\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Auth\Login.cshtml" />
+    <Content Include="Areas\Admin\Views\Auth\LockOut.cshtml" />
+    <Content Include="Areas\Admin\Views\User\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\User\Create.cshtml" />
     <None Include="Resources\Library\Admin\Jquery\jquery-3.7.1.intellisense.js" />
     <Content Include="Resources\Library\Admin\Jquery\jquery-3.7.1.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\NinjectConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AnimeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AuthController.cs" />
     <Compile Include="Areas\Admin\Controllers\CountryController.cs" />
     <Compile Include="Areas\Admin\Controllers\EpisodeController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ServerController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Models\AnimeViewModel.cs" />
     <Compile Include="Areas\Admin\Models\CountryViewModel.cs" />
     <Compile Include="Areas\Admin\Controllers\StudioController.cs" />
     <Compile Include="Areas\Admin\Models\EpisodeViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ServerViewModel.cs" />
     <Compile Include="Areas\Admin\Models\StudioViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\LoginViewModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\SessionConstants.cs" />
+    <Compile Include="Helpers\Session\UserSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Library\Admin\Mapping\AutoMapperConfiguration.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />

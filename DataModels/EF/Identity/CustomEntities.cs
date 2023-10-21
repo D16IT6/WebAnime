@@ -8,6 +8,8 @@ namespace DataModels.EF.Identity
     public class Users : IdentityUser<int, UserLogins, UserRoles, UserClaims>
     {
         public DateTime? BirthDay { get; set; }
+        [MaxLength(250)]
+        public string FullName { get; set; }
         [DataType(DataType.DateTime)] public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
 

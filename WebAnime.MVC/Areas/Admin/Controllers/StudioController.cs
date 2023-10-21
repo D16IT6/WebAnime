@@ -8,6 +8,7 @@ using WebAnime.MVC.Areas.Admin.Models;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class StudioController : Controller
     {
         private readonly IMapper _mapper;

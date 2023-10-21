@@ -124,6 +124,8 @@
     <Compile Include="EF\Types.cs" />
     <Compile Include="EF\WebAnimeDbContext.cs" />
     <Compile Include="Helpers\LoadFirstData.cs" />
+    <Compile Include="Helpers\RoleManagerExtensions.cs" />
+    <Compile Include="Helpers\UserManagerExtensions.cs" />
     <Compile Include="Migrations\202310191613371_Intergrate_Aspnet_Identity.cs" />
     <Compile Include="Migrations\202310191613371_Intergrate_Aspnet_Identity.designer.cs">
       <DependentUpon>202310191613371_Intergrate_Aspnet_Identity.cs</DependentUpon>

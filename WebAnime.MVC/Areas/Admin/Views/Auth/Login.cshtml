@@ -1,0 +1,44 @@
+﻿@model WebAnime.MVC.Areas.Admin.Models.LoginViewModel
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary()
+            @Html.AntiForgeryToken()
+            <div class="row mt-2">
+                @Html.LabelFor(x => x.UserName,new {@class="col-form-label col-4"})
+                <div class="col-4">
+                    @Html.TextBoxFor(x => x.UserName,new{@class="form-control"})
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                @Html.LabelFor(x => x.Password,new {@class="col-form-label col-4"})
+                <div class="col-4">
+                    @Html.PasswordFor(x => x.Password, new{@class="form-control"})
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                @Html.LabelFor(x => x.RememberMe,new {@class="form-check-label col-4"})
+
+                <div class="col-4">
+                    @Html.CheckBoxFor(x => x.RememberMe, new { @class = "form-check-input" })
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-4">
+                    <button class="btn btn-primary">Đăng nhập</button>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>

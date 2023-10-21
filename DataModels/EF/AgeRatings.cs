@@ -12,7 +12,7 @@ namespace DataModels.EF
 
         [StringLength(50)] public string? Name { get; set; }
 
-        public virtual ICollection<Animes> Animes { get; set; }
+        public virtual ICollection<Animes>? Animes { get; set; }
 
         [DataType(DataType.DateTime)] public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }

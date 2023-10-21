@@ -8,6 +8,7 @@ using WebAnime.MVC.Areas.Admin.Models;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CountryController : Controller
     {
         private readonly IMapper _mapper;

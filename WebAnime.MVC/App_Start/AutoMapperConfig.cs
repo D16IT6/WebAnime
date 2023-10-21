@@ -1,13 +1,13 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using DataModels.EF;
+using System.Linq;
 using WebAnime.MVC.Areas.Admin.Models;
 
-namespace WebAnime.MVC.Resources.Library.Admin.Mapping
+namespace WebAnime.MVC
 {
-    public class AutoMapperConfiguration
+    public class AutoMapperConfig
     {
-        public static IMapper Configure()
+        public static IMapper RegisterAutoMapper()
         {
             var config = new MapperConfiguration(
                 cfg =>

@@ -8,7 +8,6 @@ using Ninject.Web.Common;
 using System;
 using System.Reflection;
 using System.Web;
-using WebAnime.MVC.Resources.Library.Admin.Mapping;
 
 namespace WebAnime.MVC
 {
@@ -43,7 +42,7 @@ namespace WebAnime.MVC
                 );
             kernel.Bind<WebAnimeDbContext>().ToSelf();
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
-            kernel.Bind<IMapper>().ToConstant(AutoMapperConfiguration.Configure());
+            kernel.Bind<IMapper>().ToConstant(AutoMapperConfig.RegisterAutoMapper());
 
             RegisterIdentityStores(kernel);
             RegisterIdentityManagers(kernel);
@@ -82,8 +81,11 @@ namespace WebAnime.MVC
             kernel.Bind<UserManager<Users, int>>().ToMethod(ninjectContext =>
             {
                 var userStore = ninjectContext.Kernel.Get<UserStore>();
-                return new UserManager(userStore);
-            });
+                var userManager = new UserManager(userStore);
+
+
+                return userManager;
+            }).InSingletonScope();
         }
     }
 }

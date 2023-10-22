@@ -1395,6 +1395,8 @@
     <Content Include="Areas\Admin\Views\Auth\LockOut.cshtml" />
     <Content Include="Areas\Admin\Views\User\Index.cshtml" />
     <Content Include="Areas\Admin\Views\User\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\User\Update.cshtml" />
+    <Content Include="Areas\Admin\Views\User\Delete.cshtml" />
     <None Include="Resources\Library\Admin\Jquery\jquery-3.7.1.intellisense.js" />
     <Content Include="Resources\Library\Admin\Jquery\jquery-3.7.1.js" />
     <Content Include="Web.config" />
@@ -1418,6 +1420,7 @@
     <Compile Include="Areas\Admin\Models\ServerViewModel.cs" />
     <Compile Include="Areas\Admin\Models\StudioViewModel.cs" />
     <Compile Include="Areas\Admin\Models\LoginViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\UserViewModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

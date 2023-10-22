@@ -1,0 +1,16 @@
+﻿@model WebAnime.MVC.Areas.Admin.Models.UserViewModel
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Xóa tài khoản</h2>
+<h3 class="text-danger">
+    Bạn chắc chắn muốn xóa @Model.UserName ?
+</h3>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    @Html.ActionLink("Quay về trang chủ","Index",null,new{@class="btn btn-primary"})
+
+}

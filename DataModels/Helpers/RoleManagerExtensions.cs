@@ -1,5 +1,6 @@
 ﻿using DataModels.EF.Identity;
 using Microsoft.AspNet.Identity;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace DataModels.Helpers
@@ -19,6 +20,19 @@ namespace DataModels.Helpers
             }
 
             return roleManager;
+        }
+
+        public static IEnumerable<int> GetRoleIdsFromUser(this RoleManager roleManager, UserManager userManager, int userId)
+        {
+            var roleList = userManager.GetRoles(userId);
+            foreach (var roleName in roleList)
+            {
+                var role = roleManager.FindByName(roleName);
+                if (role != null)
+                {
+                    yield return role.Id;
+                }
+            }
         }
     }
 }

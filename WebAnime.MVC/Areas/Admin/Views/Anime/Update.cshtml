@@ -240,7 +240,7 @@
             $(`#${id}`).val(selectedIds);
         }
 
-        $(`#btnCreate`).click(function(e) {
+        $(`#btnCreate`).click(function (e) {
             e.preventDefault();
             const inputHtml = $(`#SynopsisCkEditor`).val();
             $(`#Synopsis`).val(inputHtml);
@@ -253,15 +253,15 @@
         });
 
         editor.on('change',
-            function() {
+            function () {
                 editor.updateElement();
                 $(editor.element.$).trigger('change');
 
             });
 
-        $(`#btnPoster`).click(function() {
+        $(`#btnPoster`).click(function () {
             const ckFinder = new CKFinder();
-            ckFinder.selectActionFunction = function(fileUrl) {
+            ckFinder.selectActionFunction = function (fileUrl) {
                 $(`#Poster`).val(fileUrl);
             };
             ckFinder.popup();
@@ -269,7 +269,7 @@
         $(`#ReleaseDate`).flatpickr({
             altInput: true,
             altFormat: "d/m/Y",
-            onChange: function(selectedDate, dateStr) {
+            onChange: function (selectedDate, dateStr) {
                 console.log(dateStr);
                 $('#Release').val(dateStr);
             }

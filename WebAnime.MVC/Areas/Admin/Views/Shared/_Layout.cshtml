@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNet.Identity
-@using WebAnime.MVC.Helpers.Session
+﻿@using WebAnime.MVC.Helpers.Session
 <!doctype html>
 <html lang="en">
 <head>
@@ -57,7 +56,7 @@
                         </li>
                     }
                     <li class="nav-item">
-                        @if (Session[WebAnime.MVC.Helpers.SessionConstants.USER_LOGIN] is UserSession userSession)
+                        @if (Session[WebAnime.MVC.Helpers.SessionConstants.UserLogin] is UserSession userSession)
                         {
                             <div class="nav-link">
                                 <span class="text-center">Xin chào <span class="text-danger">@userSession.FullName</span></span>

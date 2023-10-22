@@ -52,14 +52,14 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 }
                 else
                 {
-                    int loginFailCount = (int)(Session[SessionConstants.LOGIN_FAIL_COUNT] ?? 0);
+                    int loginFailCount = (int)(Session[SessionConstants.LoginFailCount] ?? 0);
 
                     if (loginFailCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
                     {
                         ModelState.AddModelError("FakeLogin", @"Bạn đang cố đăng nhập vì điều gì?");
                         ModelState.AddModelError("Hint", @"Chưa có tài khoản? Hãy liên hệ admin để được cấp");
                         ModelState.AddModelError("AdminFb", @"Facebook: https://facebook.com/vuthemanh1707");
-                        Session.Remove(SessionConstants.LOGIN_FAIL_COUNT);
+                        Session.Remove(SessionConstants.LoginFailCount);
 
                         return View();
                     }
@@ -67,7 +67,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                         $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - loginFailCount} lượt)");
 
                     loginFailCount++;
-                    Session[SessionConstants.LOGIN_FAIL_COUNT] = loginFailCount;
+                    Session[SessionConstants.LoginFailCount] = loginFailCount;
 
                     return View(model);
 
@@ -79,10 +79,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 {
 
                     case SignInStatus.Success:
-                        Session.Remove(SessionConstants.LOGIN_FAIL_COUNT);
-                        if (Session[SessionConstants.USER_LOGIN] == null)
+                        Session.Remove(SessionConstants.LoginFailCount);
+                        await _userManager.SetLockoutEnabledAsync(user.Id, false);
+                        if (Session[SessionConstants.UserLogin] == null)
                         {
-                            Session.Add(SessionConstants.USER_LOGIN, new UserSession()
+                            Session.Add(SessionConstants.UserLogin, new UserSession()
                             {
                                 Id = user.Id,
                                 FullName = user.FullName,
@@ -105,10 +106,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                     case SignInStatus.Failure:
                     default:
-
-                        if (user != null)
-                            ModelState.AddModelError("",
-                                $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - user.AccessFailedCount} lượt)");
+                        ModelState.AddModelError("",
+                            $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - user.AccessFailedCount} lượt)");
                         return View(model);
                 }
 
@@ -117,15 +116,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             return View(model);
         }
 
-        public ActionResult LockOut()
-        {
-            return View();
-        }
-
         public ActionResult LogOut()
         {
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            Session.Remove(SessionConstants.USER_LOGIN);
+            Session.Remove(SessionConstants.UserLogin);
             return RedirectToAction("Login");
         }
     }

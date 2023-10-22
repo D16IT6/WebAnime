@@ -28,7 +28,10 @@ namespace DataModels.EF.Identity
 
     }
 
-    public class Roles : IdentityRole<int, UserRoles> { }
+    public class Roles : IdentityRole<int, UserRoles>
+    {
+
+    }
 
     public class UserLogins : IdentityUserLogin<int>
     {

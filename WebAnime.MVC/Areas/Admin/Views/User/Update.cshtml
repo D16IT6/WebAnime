@@ -1,15 +1,16 @@
 ﻿@using Roles = DataModels.EF.Identity.Roles
 @model WebAnime.MVC.Areas.Admin.Models.UserViewModel
 @{
-    ViewBag.Title = "Create";
-    var roleList = ViewBag.Roles as IEnumerable<Roles> ?? new List<Roles>();
-    var roleListSelectList = new SelectList(roleList, "Id", "Name");
+    ViewBag.Title = "Update";
+    var roleList = ViewBag.Roles as List<Roles> ?? new List<Roles>();
 }
-
-<h2>Tạo tài khoản quản trị mới</h2>
+<h2>Cập nhật thông tin tài khoản</h2>
 
 @using (Html.BeginForm())
 {
+    @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x=>x.Password)
+    @Html.HiddenFor(x=>x.ReTypePassword)
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
     <div class="row mb-2">
@@ -27,25 +28,26 @@
 
         </div>
     </div>
-    <div class="row mb-2">
-        @Html.LabelFor(x => x.Password, new { @class = "col-form-label col-2" })
-        <div class="col-4">
-            @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+    @*<div class="row mb-2">
+            @Html.LabelFor(x => x.Password, new { @class = "col-form-label col-2" })
+            <div class="col-4">
+                @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
 
+            </div>
         </div>
-    </div>
-    <div class="row mb-2">
-        @Html.LabelFor(x => x.ReTypePassword, new { @class = "col-form-label col-2" })
-        <div class="col-4">
-            @Html.PasswordFor(x => x.ReTypePassword, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.ReTypePassword, "", new { @class = "text-danger" })
+        <div class="row mb-2">
+            @Html.LabelFor(x => x.ReTypePassword, new { @class = "col-form-label col-2" })
+            <div class="col-4">
+                @Html.PasswordFor(x => x.ReTypePassword, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.ReTypePassword, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
 
-        </div>
-    </div>
     <div class="row mb-2">
         @Html.LabelFor(x => x.BirthDay, new { @class = "col-form-label col-2" })
         <div class="col-4">
+            @*@Html.Editor("BirthDayFake", new { htmlAttributes = new { @class = "form-control", type = "date", value = Model.BirthDay.ToString("dd/MM/yyyy") } })*@
             @Html.TextBoxFor(x => x.BirthDay, new { @class = "form-control" })
             @Html.ValidationMessageFor(x => x.BirthDay, "", new { @class = "text-danger" })
 
@@ -62,7 +64,7 @@
     <div class="row mb-2">
         @Html.LabelFor(x => x.PhoneNumber, new { @class = "col-form-label col-2" })
         <div class="col-4">
-            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", type = "tel" })
+            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", type = "tel",pattern="[0-9]"})
             @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
 
         </div>
@@ -71,14 +73,15 @@
     <div class="row mb-2">
         @Html.LabelFor(x => x.RoleListIds, new { @class = "col-form-label col-2" })
         <div class="col-4">
-            @Html.DropDownListFor(x => x.RoleListIds, roleListSelectList, new { @class = "form-select", @pattern = "[0-9]",required="" })
+            @*@Html.ListBox("RoleListIdsFake", new MultiSelectList(roleList, "Id", "Name", Model.RoleListIds))*@
+            @Html.ListBoxFor(x => x.RoleListIds, new MultiSelectList(roleList, "Id", "Name"))
             @Html.ValidationMessageFor(x => x.RoleListIds, "", new { @class = "text-danger" })
 
         </div>
     </div>
     <div class="row mb-2">
         <div class="col-3">
-            <button class="btn btn-primary">Tạo mới</button>
+            <button class="btn btn-primary">Cập nhật</button>
         </div>
     </div>
 }
@@ -90,13 +93,16 @@
     @Html.Partial("_ValidationScriptsPartial")
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
+
+        const birthDay = $(`#BirthDay`).val().substr(0, 10).split('/');
+        const year = birthDay[2];
+        const month = birthDay[1];
+        const day = birthDay[0];
+        $(`#BirthDay`).val(`${year}-${month}-${day}`);
         $(`#BirthDay`).flatpickr({
             altInput: true,
             altFormat: "d/m/Y"
-            //onChange: function (selectedDate, dateStr) {
-            //    console.log(dateStr);
-            //    $('#Release').val(dateStr);
-            //}
         });
+
     </script>
 }

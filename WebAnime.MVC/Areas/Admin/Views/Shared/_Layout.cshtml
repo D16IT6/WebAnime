@@ -1,77 +1,518 @@
-﻿@using WebAnime.MVC.Helpers.Session
-<!doctype html>
+﻿@using System.Web.UI.HtmlControls
+@using WebAnime.MVC.Helpers
+@using WebAnime.MVC.Helpers.Session
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@ViewBag.Title</title>
+    <!--  Title -->
+    <title>Admin anime</title>
+    <!--  Required Meta Tag -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="handheldfriendly" content="true" />
+    <meta name="MobileOptimized" content="width" />
+    <meta name="description" content="Mordenize" />
+    <meta name="author" content="" />
+    <meta name="keywords" content="Mordenize" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--  Favicon -->
+    <link rel="shortcut icon" type="image/png" href="~/Resources/Library/Admin/Theme/images/logos/favicon.ico" />
     @RenderSection("headerCss", false)
-    <link href="~/Resources/Library/Admin/Bootstrap/css/bootstrap.css" rel="stylesheet" />
+
+    <!-- Owl Carousel  -->
+    <link rel="stylesheet" href="~/Resources/Library/Admin/Theme/libs/owl.carousel/dist/assets/owl.carousel.min.css">
+
+    <!-- Core Css -->
+    <link id="themeColors" rel="stylesheet" href="~/Resources/Library/Admin/Theme/css/style.min.css" />
     @RenderSection("footerCss", false)
+
 </head>
-
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary align-items-stretch">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        @Html.ActionLink("Trang chủ", "Index", "Home", new { area = "Admin" }, new { @class = "nav-link" })
-                    </li>
-
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Chức năng
-                            </a>
-                            <ul class="dropdown-menu">
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <li>
-                                        @Html.ActionLink("Quản lý quốc gia", "Index", "Country", new { area = "Admin" }, new { @class = "dropdown-item" })
-                                    </li>
-                                }
-                                <li>
-                                    @Html.ActionLink("Quản lý studio", "Index", "Studio", new { area = "Admin" }, new { @class = "dropdown-item" })
-                                </li>
-                                <li>
-                                    @Html.ActionLink("Quản lý anime", "Index", "Anime", new { area = "Admin" }, new { @class = "dropdown-item" })
-                                </li>
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <li>
-                                        @Html.ActionLink("Quản lý server", "Index", "Server", new { area = "Admin" }, new { @class = "dropdown-item" })
-                                    </li>
-                                }
-                                <li>
-                                    @Html.ActionLink("Đăng xuất", "LogOut", "Auth", new { area = "Admin" }, new { @class = "dropdown-item" })
-                                </li>
-
-                            </ul>
+    <!-- Preloader -->
+    <div class="preloader">
+        <img src="~/Resources/Library/Admin/Theme/images/logos/favicon.ico" alt="loader" class="lds-ripple img-fluid" />
+    </div>
+    <!-- Preloader -->
+    <div class="preloader">
+        <img src="~/Resources/Library/Admin/Theme/images/logos/favicon.ico" alt="loader" class="lds-ripple img-fluid" />
+    </div>
+    <!--  Body Wrapper -->
+    <div class="page-wrapper" id="main-wrapper" data-theme="blue_theme" data-layout="vertical" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+        <!-- Sidebar Start -->
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div>
+                <div class="brand-logo d-flex align-items-center justify-content-between">
+                    <a href="./index.html" class="text-nowrap logo-img">
+                        <img src="~/Resources/Library/Admin/Theme/images/logos/dark-logo.svg" class="dark-logo" width="180" alt="" />
+                        <img src="~/Resources/Library/Admin/Theme/images/logos/light-logo.svg" class="light-logo" width="180" alt="" />
+                    </a>
+                    <div class="close-btn d-lg-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                        <i class="ti ti-x fs-8 text-muted"></i>
+                    </div>
+                </div>
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar>
+                    <ul class="sidebarnav">
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            @*<span class="hide-menu"></span>*@
+                            @if (Session[SessionConstants.UserLogin] != null)
+                            {
+                                var userSession = Session[SessionConstants.UserLogin] as UserSession;
+                                <span class="hide-menu">Xin chào @userSession.FullName</span>
+                            }
                         </li>
-                    }
-                    <li class="nav-item">
-                        @if (Session[WebAnime.MVC.Helpers.SessionConstants.UserLogin] is UserSession userSession)
+                        <!-- =================== -->
+                        <!-- Dashboard -->
+                        <!-- =================== -->
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="@Url.Action("Index","Home",new{@area="Admin"})" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-aperture"></i>
+                                </span>
+                                <span class="hide-menu">Trang chủ</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="@Url.Action("Index","User",new{@area="Admin"})" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-aperture"></i>
+                                </span>
+                                <span class="hide-menu">Người dùng</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="@Url.Action("Index","Anime",new{@area="Admin"})" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-aperture"></i>
+                                </span>
+                                <span class="hide-menu">Anime</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="@Url.Action("Index","Country",new{@area="Admin"})" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-aperture"></i>
+                                </span>
+                                <span class="hide-menu">Quốc gia</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="@Url.Action("Index","Server",new{@area="Admin"})" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-aperture"></i>
+                                </span>
+                                <span class="hide-menu">Server</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="@Url.Action("Index","Studio",new{@area="Admin"})" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-aperture"></i>
+                                </span>
+                                <span class="hide-menu">Studio</span>
+                            </a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
                         {
-                            <div class="nav-link">
-                                <span class="text-center">Xin chào <span class="text-danger">@userSession.FullName</span></span>
-                            </div>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="@Url.Action("Logout","Auth",new{@area="Admin"})" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-aperture"></i>
+                                    </span>
+                                    <span class="hide-menu">Đăng xuất</span>
+                                </a>
+                            </li>
                         }
+                    </ul>
+
+                </nav>
+                <div class="fixed-profile p-3 bg-light-secondary rounded sidebar-ad mt-3">
+                    <div class="hstack gap-3">
+                        <div class="john-img">
+                            <img src="~/Resources/Library/Admin/Theme/images/profile/user-1.jpg" class="rounded-circle" width="40" height="40" alt="">
+                        </div>
+                        <div class="john-title">
+                            <h6 class="mb-0 fs-4 fw-semibold">Mathew</h6>
+                            <span class="fs-2 text-dark">Designer</span>
+                        </div>
+                        <button class="border-0 bg-transparent text-primary ms-auto" tabindex="0" type="button" aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="logout">
+                            <i class="ti ti-power fs-6"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!--  Sidebar End -->
+        <!--  Main wrapper -->
+        <div class="body-wrapper">
+            <!--  Header Start -->
+            <header class="app-header">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link sidebartoggler nav-icon-hover ms-n3" id="headerCollapse" href="javascript:void(0)">
+                                <i class="ti ti-menu-2"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav quick-links d-none d-lg-flex">
+                        <li class="nav-item dropdown-hover d-none d-lg-block">
+                            @Html.ActionLink("Trang chủ", "Index", "Home", new { area = "Admin" }, new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item dropdown-hover d-none d-lg-block">
+                            @Html.ActionLink("Người dùng", "Index", "User", new { area = "Admin" }, new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item dropdown-hover d-none d-lg-block">
+                            @Html.ActionLink("Anime", "Index", "Anime", new { area = "Admin" }, new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item dropdown-hover d-none d-lg-block">
+                            @Html.ActionLink("Quốc gia", "Index", "Country", new { area = "Admin" }, new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item dropdown-hover d-none d-lg-block">
+                            @Html.ActionLink("Server", "Index", "Server", new { area = "Admin" }, new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item dropdown-hover d-none d-lg-block">
+                            @Html.ActionLink("Studio", "Index", "Studio", new { area = "Admin" }, new { @class = "nav-link" })
+                        </li>
+
+                    </ul>
+                    <div class="d-block d-lg-none">
+                        <img src="~/Resources/Library/Admin/Theme/images/logos/dark-logo.svg" class="dark-logo" width="180" alt="" />
+                        <img src="~/Resources/Library/Admin/Theme/images/logos/light-logo.svg" class="light-logo" width="180" alt="" />
+                    </div>
+                    <button class="navbar-toggler p-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="p-2">
+                            <i class="ti ti-dot1s fs-7"></i>
+                        </span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <a href="javascript:void(0)" class="nav-link d-flex d-lg-none align-items-center justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobilenavbar" aria-controls="offcanvasWithBothOptions">
+                                <i class="ti ti-align-justified fs-7"></i>
+                            </a>
+                            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+            <!--  Header End -->
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </div>
+        <div class="dark-transparent sidebartoggler"></div>
+        <div class="dark-transparent sidebartoggler"></div>
+    </div>
+    <!--  Shopping Cart -->
+    <div class="offcanvas offcanvas-end shopping-cart" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header py-4">
+            <h5 class="offcanvas-title fs-5 fw-semibold" id="offcanvasRightLabel">Shopping Cart</h5>
+            <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm">5 new</span>
+        </div>
+        <div class="offcanvas-body h-100 px-4 pt-0" data-simplebar>
+            <ul class="mb-0">
+                <li class="pb-7">
+                    <div class="d-flex align-items-center">
+                        <img src="~/Resources/Library/Admin/Theme/images/products/product-1.jpg" width="95" height="75" class="rounded-1 me-9 flex-shrink-0" alt="" />
+                        <div>
+                            <h6 class="mb-1">Supreme toys cooker</h6>
+                            <p class="mb-0 text-muted fs-2">Kitchenware Item</p>
+                            <div class="d-flex align-items-center justify-content-between mt-2">
+                                <h6 class="fs-2 fw-semibold mb-0 text-muted">$250</h6>
+                                <div class="input-group input-group-sm w-50">
+                                    <button class="btn border-0 round-20 minus p-0 bg-light-success text-success " type="button" id="add1"> - </button>
+                                    <input type="text" class="form-control round-20 bg-transparent text-muted fs-2 border-0  text-center qty" placeholder="" aria-label="Example text with button addon" aria-describedby="add1" value="1" />
+                                    <button class="btn text-success bg-light-success  p-0 round-20 border-0 add" type="button" id="addo2"> + </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="pb-7">
+                    <div class="d-flex align-items-center">
+                        <img src="~/Resources/Library/Admin/Theme/images/products/product-2.jpg" width="95" height="75" class="rounded-1 me-9 flex-shrink-0" alt="" />
+                        <div>
+                            <h6 class="mb-1">Supreme toys cooker</h6>
+                            <p class="mb-0 text-muted fs-2">Kitchenware Item</p>
+                            <div class="d-flex align-items-center justify-content-between mt-2">
+                                <h6 class="fs-2 fw-semibold mb-0 text-muted">$250</h6>
+                                <div class="input-group input-group-sm w-50">
+                                    <button class="btn border-0 round-20 minus p-0 bg-light-success text-success " type="button" id="add2"> - </button>
+                                    <input type="text" class="form-control round-20 bg-transparent text-muted fs-2 border-0  text-center qty" placeholder="" aria-label="Example text with button addon" aria-describedby="add2" value="1" />
+                                    <button class="btn text-success bg-light-success  p-0 round-20 border-0 add" type="button" id="addon34"> + </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="pb-7">
+                    <div class="d-flex align-items-center">
+                        <img src="~/Resources/Library/Admin/Theme/images/products/product-3.jpg" width="95" height="75" class="rounded-1 me-9 flex-shrink-0" alt="" />
+                        <div>
+                            <h6 class="mb-1">Supreme toys cooker</h6>
+                            <p class="mb-0 text-muted fs-2">Kitchenware Item</p>
+                            <div class="d-flex align-items-center justify-content-between mt-2">
+                                <h6 class="fs-2 fw-semibold mb-0 text-muted">$250</h6>
+                                <div class="input-group input-group-sm w-50">
+                                    <button class="btn border-0 round-20 minus p-0 bg-light-success text-success " type="button" id="add3"> - </button>
+                                    <input type="text" class="form-control round-20 bg-transparent text-muted fs-2 border-0  text-center qty" placeholder="" aria-label="Example text with button addon" aria-describedby="add3" value="1" />
+                                    <button class="btn text-success bg-light-success  p-0 round-20 border-0 add" type="button" id="addon3"> + </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="align-bottom">
+                <div class="d-flex align-items-center pb-7">
+                    <span class="text-dark fs-3">Sub Total</span>
+                    <div class="ms-auto">
+                        <span class="text-dark fw-semibold fs-3">$2530</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center pb-7">
+                    <span class="text-dark fs-3">Total</span>
+                    <div class="ms-auto">
+                        <span class="text-dark fw-semibold fs-3">$6830</span>
+                    </div>
+                </div>
+                <a href="./eco-checkout.html" class="btn btn-outline-primary w-100">Go to shopping cart</a>
+            </div>
+        </div>
+    </div>
+
+    <!--  Mobilenavbar -->
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="mobilenavbar" aria-labelledby="offcanvasWithBothOptionsLabel">
+        <nav class="sidebar-nav scroll-sidebar">
+            <div class="offcanvas-header justify-content-between">
+                <img src="~/Resources/Library/Admin/Theme/images/logos/favicon.ico" alt="" class="img-fluid">
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body profile-dropdown mobile-navbar" data-simplebar="" data-simplebar>
+                <ul id="sidebarnav">
+                    <li class="sidebar-item">
+                        <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-apps"></i>
+                            </span>
+                            <span class="hide-menu">Apps</span>
+                        </a>
+                        <ul aria-expanded="false" class="collapse first-level my-3">
+                            <li class="sidebar-item py-2">
+                                <a href="#" class="d-flex align-items-center">
+                                    <div class="bg-light rounded-1 me-3 p-6 d-flex align-items-center justify-content-center">
+                                        <img src="~/Resources/Library/Admin/Theme/images/svgs/icon-dd-chat.svg" alt="" class="img-fluid" width="24" height="24">
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <h6 class="mb-1 bg-hover-primary">Chat Application</h6>
+                                        <span class="fs-2 d-block fw-normal text-muted">New messages arrived</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="sidebar-item py-2">
+                                <a href="#" class="d-flex align-items-center">
+                                    <div class="bg-light rounded-1 me-3 p-6 d-flex align-items-center justify-content-center">
+                                        <img src="~/Resources/Library/Admin/Theme/images/svgs/icon-dd-invoice.svg" alt="" class="img-fluid" width="24" height="24">
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <h6 class="mb-1 bg-hover-primary">Invoice App</h6>
+                                        <span class="fs-2 d-block fw-normal text-muted">Get latest invoice</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="sidebar-item py-2">
+                                <a href="#" class="d-flex align-items-center">
+                                    <div class="bg-light rounded-1 me-3 p-6 d-flex align-items-center justify-content-center">
+                                        <img src="~/Resources/Library/Admin/Theme/images/svgs/icon-dd-mobile.svg" alt="" class="img-fluid" width="24" height="24">
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <h6 class="mb-1 bg-hover-primary">Contact Application</h6>
+                                        <span class="fs-2 d-block fw-normal text-muted">2 Unsaved Contacts</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="sidebar-item py-2">
+                                <a href="#" class="d-flex align-items-center">
+                                    <div class="bg-light rounded-1 me-3 p-6 d-flex align-items-center justify-content-center">
+                                        <img src="~/Resources/Library/Admin/Theme/images/svgs/icon-dd-message-box.svg" alt="" class="img-fluid" width="24" height="24">
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <h6 class="mb-1 bg-hover-primary">Email App</h6>
+                                        <span class="fs-2 d-block fw-normal text-muted">Get new emails</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="sidebar-item py-2">
+                                <a href="#" class="d-flex align-items-center">
+                                    <div class="bg-light rounded-1 me-3 p-6 d-flex align-items-center justify-content-center">
+                                        <img src="~/Resources/Library/Admin/Theme/images/svgs/icon-dd-cart.svg" alt="" class="img-fluid" width="24" height="24">
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <h6 class="mb-1 bg-hover-primary">User Profile</h6>
+                                        <span class="fs-2 d-block fw-normal text-muted">learn more information</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="sidebar-item py-2">
+                                <a href="#" class="d-flex align-items-center">
+                                    <div class="bg-light rounded-1 me-3 p-6 d-flex align-items-center justify-content-center">
+                                        <img src="~/Resources/Library/Admin/Theme/images/svgs/icon-dd-date.svg" alt="" class="img-fluid" width="24" height="24">
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <h6 class="mb-1 bg-hover-primary">Calendar App</h6>
+                                        <span class="fs-2 d-block fw-normal text-muted">Get dates</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="sidebar-item py-2">
+                                <a href="#" class="d-flex align-items-center">
+                                    <div class="bg-light rounded-1 me-3 p-6 d-flex align-items-center justify-content-center">
+                                        <img src="~/Resources/Library/Admin/Theme/images/svgs/icon-dd-lifebuoy.svg" alt="" class="img-fluid" width="24" height="24">
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <h6 class="mb-1 bg-hover-primary">Contact List Table</h6>
+                                        <span class="fs-2 d-block fw-normal text-muted">Add new contact</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="sidebar-item py-2">
+                                <a href="#" class="d-flex align-items-center">
+                                    <div class="bg-light rounded-1 me-3 p-6 d-flex align-items-center justify-content-center">
+                                        <img src="~/Resources/Library/Admin/Theme/images/svgs/icon-dd-application.svg" alt="" class="img-fluid" width="24" height="24">
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <h6 class="mb-1 bg-hover-primary">Notes Application</h6>
+                                        <span class="fs-2 d-block fw-normal text-muted">To-do and Daily tasks</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <ul class="px-8 mt-7 mb-4">
+                                <li class="sidebar-item mb-3">
+                                    <h5 class="fs-5 fw-semibold">Quick Links</h5>
+                                </li>
+                                <li class="sidebar-item py-2">
+                                    <a class="fw-semibold text-dark" href="#">Pricing Page</a>
+                                </li>
+                                <li class="sidebar-item py-2">
+                                    <a class="fw-semibold text-dark" href="#">Authentication Design</a>
+                                </li>
+                                <li class="sidebar-item py-2">
+                                    <a class="fw-semibold text-dark" href="#">Register Now</a>
+                                </li>
+                                <li class="sidebar-item py-2">
+                                    <a class="fw-semibold text-dark" href="#">404 Error Page</a>
+                                </li>
+                                <li class="sidebar-item py-2">
+                                    <a class="fw-semibold text-dark" href="#">Notes App</a>
+                                </li>
+                                <li class="sidebar-item py-2">
+                                    <a class="fw-semibold text-dark" href="#">User Application</a>
+                                </li>
+                                <li class="sidebar-item py-2">
+                                    <a class="fw-semibold text-dark" href="#">Account Settings</a>
+                                </li>
+                            </ul>
+                        </ul>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="app-chat.html" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-message-dots"></i>
+                            </span>
+                            <span class="hide-menu">Chat</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="app-calendar.html" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-calendar"></i>
+                            </span>
+                            <span class="hide-menu">Calendar</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="app-email.html" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-mail"></i>
+                            </span>
+                            <span class="hide-menu">Email</span>
+                        </a>
                     </li>
                 </ul>
             </div>
-        </div>
-    </nav>
-    <div class="container">
-        @RenderBody()
+        </nav>
     </div>
-    @RenderSection("headerJs", false)
+
+    <!--  Customizer -->
+    <button class="btn btn-primary p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+        <i class="ti ti-settings fs-7" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Settings"></i>
+    </button>
+    <div class="offcanvas offcanvas-end customizer" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" data-simplebar="">
+        <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
+            <h4 class="offcanvas-title fw-semibold" id="offcanvasExampleLabel">Settings</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-4">
+            <div class="container-option pb-4">
+                <h6 class="fw-semibold fs-4 mb-1">Container Option</h6>
+                <div class="d-flex align-items-center gap-3 my-3">
+                    <a href="javascript:void(0)" class="rounded-2 p-9 customizer-box hover-img d-flex align-items-center gap-2 boxed-width text-dark">
+                        <i class="ti ti-layout-distribute-vertical fs-7 text-primary"></i>
+                        <span class="text-dark">Boxed</span>
+                    </a>
+                    <a href="javascript:void(0)" class="rounded-2 p-9 customizer-box hover-img d-flex align-items-center gap-2 full-width text-dark">
+                        <i class="ti ti-layout-distribute-horizontal fs-7"></i>
+                        <span class="text-dark">Full</span>
+                    </a>
+                </div>
+            </div>
+            <div class="sidebar-type pb-4">
+                <h6 class="fw-semibold fs-4 mb-1">Sidebar Type</h6>
+                <div class="d-flex align-items-center gap-3 my-3">
+                    <a href="javascript:void(0)" class="rounded-2 p-9 customizer-box hover-img d-flex align-items-center gap-2 fullsidebar">
+                        <i class="ti ti-layout-sidebar-right fs-7"></i>
+                        <span class="text-dark">Full</span>
+                    </a>
+                    <a href="javascript:void(0)" class="rounded-2 p-9 customizer-box hover-img d-flex align-items-center text-dark sidebartoggler gap-2">
+                        <i class="ti ti-layout-sidebar fs-7"></i>
+                        <span class="text-dark">Collapse</span>
+                    </a>
+                </div>
+            </div>
+            <div class="card-with pb-4">
+                <h6 class="fw-semibold fs-4 mb-1">Card With</h6>
+                <div class="d-flex align-items-center gap-3 my-3">
+                    <a href="javascript:void(0)" class="rounded-2 p-9 customizer-box hover-img d-flex align-items-center gap-2 text-dark cardborder">
+                        <i class="ti ti-border-outer fs-7"></i>
+                        <span class="text-dark">Border</span>
+                    </a>
+                    <a href="javascript:void(0)" class="rounded-2 p-9 customizer-box hover-img d-flex align-items-center gap-2 cardshadow">
+                        <i class="ti ti-border-none fs-7"></i>
+                        <span class="text-dark">Shadow</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  Customizer -->
+    <!--  Import Js Files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="~/Resources/Library/Admin/Theme/libs/simplebar/dist/simplebar.min.js"></script>
+    <script src="~/Resources/Library/Admin/Theme/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!--  core files -->
+    <script src="~/Resources/Library/Admin/Theme/js/app.min.js"></script>
+    <script src="~/Resources/Library/Admin/Theme/js/app.init.js"></script>
+    <script src="~/Resources/Library/Admin/Theme/js/app-style-switcher.js"></script>
+    <script src="~/Resources/Library/Admin/Theme/js/sidebarmenu.js"></script>
+    <script src="~/Resources/Library/Admin/Theme/js/custom.js"></script>
+    <!--  current page js files -->
+    <script src="~/Resources/Library/Admin/Theme/libs/owl.carousel/dist/owl.carousel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script src="~/Resources/Library/Common/ckfinder/ckfinder.js"></script>
     <script src="~/Resources/Library/Common/ckeditor/ckeditor.js"></script>

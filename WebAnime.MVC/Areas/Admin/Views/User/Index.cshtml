@@ -5,82 +5,60 @@
 
 <h2>Danh sách tài khoản</h2>
 
-<table class="table table-hover table-bordered">
+<table class="table border text-nowrap customize-table mb-0 align-middle">
     <thead>
-        <tr class="text-center">
-            <th>
-                @Html.DisplayNameFor(x => x.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.BirthDay)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.LockoutEnabled)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(x => x.LockoutEndDateUtc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.RoleList)
-            </th>
-            <th>Chức năng</th>
-        </tr>
+    <tr class="text-center">
+        <th>
+            @Html.DisplayNameFor(x => x.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.BirthDay)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.PhoneNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.RoleList)
+        </th>
+        <th>Chức năng</th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>
-                    @user.UserName
-                </td>
-                <td>
-                    @user.FullName
-                </td>
-                <td>
-                    @user.BirthDay.ToString("dd/MM/yyyy")
-                </td>
-                <td>
-                    @user.Email
-                </td>
-                <td>
-                    @user.PhoneNumber
-                </td>
-                <td>
-                    @user.LockoutEnabled
-                </td>
-                <td>
-                    @{
-                        var time = (user.LockoutEndDateUtc ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day - 2)).AddHours(7);
-                        if (time > DateTime.Now)
-                        {
-                            <text>@time.ToString("dd/MM/yyyy - HH:mm:ss")</text>
-                        }
-                        else
-                        {
-                            <text>Chưa bị khóa</text>
-                        }
-                    }
-                </td>
-                <td>
-                    @String.Join(",", user.RoleList)
-                </td>
-                <td>
-                    <div class="btn btn-group d-flex justify-content-center">
-                        @Html.ActionLink("Sửa", "Update", new { @id = user.Id }, new { @class = "btn btn-primary" })
-                        @Html.ActionLink("Xóa", "Delete", new { @id = user.Id }, new { @class = "btn btn-danger" })
-                    </div>
-                </td>
-            </tr>
-        }
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>
+                @user.UserName
+            </td>
+            <td>
+                @user.FullName
+            </td>
+            <td>
+                @user.BirthDay.ToString("dd/MM/yyyy")
+            </td>
+            <td>
+                @user.Email
+            </td>
+            <td>
+                @user.PhoneNumber
+            </td>
+           
+            <td>
+                @String.Join(",", user.RoleList)
+            </td>
+            <td>
+                <div class="btn btn-group d-flex justify-content-center">
+                    @Html.ActionLink("Sửa", "Update", new { @id = user.Id }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Xóa", "Delete", new { @id = user.Id }, new { @class = "btn btn-danger" })
+                </div>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>

@@ -1,8 +1,11 @@
 ﻿using DataModels.EF.Identity;
 using DataModels.Helpers;
+using DataModels.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
@@ -23,6 +26,14 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             _authenticationManager = authenticationManager;
             _signInManager = signInManager;
             _userManager = userManager;
+
+            var dataProtectorProvider = OwinConfig.DataProtectionProvider;
+
+            var provider = dataProtectorProvider.Create("WebAnime.MVC.Token");
+            _userManager.UserTokenProvider = new DataProtectorTokenProvider<Users, int>(provider)
+            {
+                TokenLifespan = TimeSpan.FromHours(1)
+            };
         }
 
         [HttpGet]
@@ -116,16 +127,102 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             return View(model);
         }
         [Authorize]
-        public ActionResult LogOut()
+        public async Task<ActionResult> LogOut()
         {
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             Session.Remove(SessionConstants.UserLogin);
-            return RedirectToAction("Login");
+            return await Task.FromResult<ActionResult>(RedirectToAction("Login"));
         }
 
-        public ActionResult FotgotPassword()
+        [HttpGet]
+        public async Task<ActionResult> ForgotPassword()
         {
-            return View();
+            return await Task.FromResult<ActionResult>(View());
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user.Id)))
+                {
+                    return View("ForgotPasswordConfirmation");
+                }
+                string resetCode = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
+
+                var callbackUrl = Url.Action("ResetPassword", "Auth", new { area = "Admin", userId = user.Id, resetCode = resetCode },
+                    protocol: Request.Url.Scheme);
+
+
+                StringBuilder bodyBuilder = new StringBuilder();
+                bodyBuilder.AppendLine(
+                    $"<p>Xin chào <strong>{user.FullName}</strong>, bạn đã yêu cầu khôi phục mật khẩu!</p>");
+                bodyBuilder.AppendLine(
+                    $"<p>Để khôi phục mật khẩu của bạn, vui lòng bấm vào <a href=\"{callbackUrl}\">Đây</a>");
+                bodyBuilder.AppendLine("<p>Thư sẽ hết hạn sau 1 giờ.</p>");
+                bodyBuilder.AppendLine("<h3>Cảm ơn bạn!</h3>");
+                bool isSendEmail = await EmailService.SendMailAsync(new IdentityMessage()
+                {
+                    Body = bodyBuilder.ToString(),
+                    Destination = user.Email,
+                    Subject = "Xác nhận khôi phục mật khẩu"
+                });
+                if (isSendEmail)
+                {
+                    return RedirectToAction("ForgotPasswordConfirmation", "Auth");
+                }
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ResetPassword(int userId, string resetCode)
+        {
+            if (resetCode == null)
+                return new HttpNotFoundResult();
+
+            return await Task.FromResult(View(new ResetPasswordViewModel()
+            {
+                UserId = userId,
+                ResetCode = resetCode
+            }));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!model.Password.Equals(model.ConfirmPassword))
+                {
+                    ModelState.AddModelError("PasswordError", @"Mật khẩu xác nhận không đúng, vui lòng thử lại");
+                    return View(model);
+                }
+                IdentityResult result = await _userManager.ResetPasswordAsync(model.UserId, model.ResetCode, model.Password);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Login", "Auth", new { area = "Admin" });
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error, error);
+                }
+                return View(model);
+            }
+            ModelState.AddModelError("TotalError", @"Có lỗi xảy ra, vui lòng thử lại");
+            return View(model);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult> ForgotPasswordConfirmation()
+        {
+            return await Task.FromResult(View());
         }
     }
 }

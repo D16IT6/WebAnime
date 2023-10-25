@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.DataProtection;
 using Owin;
 using System;
 
@@ -8,6 +9,8 @@ namespace WebAnime.MVC
 {
     public class OwinConfig
     {
+        public static IDataProtectionProvider DataProtectionProvider { get; set; }
+
         public static void AuthConfig(IAppBuilder app)
         {
             // Configure the db context, user manager and signin manager to use a single instance per request
@@ -33,6 +36,8 @@ namespace WebAnime.MVC
             // Once you check this option, your second step of verification during the login process will be remembered on the device where you logged in from.
             // This is similar to the RememberMe option when you log in.
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
+
+            DataProtectionProvider = app.GetDataProtectionProvider();
 
             // Uncomment the following lines to enable logging in with third party login providers
             //app.UseMicrosoftAccountAuthentication(

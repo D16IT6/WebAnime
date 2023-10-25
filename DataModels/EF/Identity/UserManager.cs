@@ -1,11 +1,11 @@
 ﻿using DataModels.Helpers;
 using Microsoft.AspNet.Identity;
 using System;
-
 namespace DataModels.EF.Identity
 {
     public class UserManager : UserManager<Users, int>
     {
+
         public UserManager(IUserStore<Users, int> store) : base(store)
         {
             ResigterAuth(this);
@@ -35,9 +35,11 @@ namespace DataModels.EF.Identity
             userManager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(AuthConstants.LockoutMinutes);
             userManager.MaxFailedAccessAttemptsBeforeLockout = AuthConstants.MaxFailedAccessAttemptsBeforeLockout;
 
+
             //implement later
             //userManager.EmailService = new EmailService();
             //userManager.SmsService = new Abc();
+
         }
     }
 }

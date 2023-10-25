@@ -2,6 +2,7 @@
 using DataModels.EF;
 using DataModels.EF.Identity;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Ninject;
 using Ninject.Web.Common;
@@ -81,8 +82,8 @@ namespace WebAnime.MVC
             kernel.Bind<UserManager<Users, int>>().ToMethod(ninjectContext =>
             {
                 var userStore = ninjectContext.Kernel.Get<UserStore>();
-                var userManager = new UserManager(userStore);
 
+                var userManager = new UserManager(userStore);
 
                 return userManager;
             });

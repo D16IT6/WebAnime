@@ -24,6 +24,7 @@
 
     <!-- Core Css -->
     <link id="themeColors" rel="stylesheet" href="~/Resources/Library/Admin/Theme/css/style.min.css" />
+    <!--Custom Css-->
     @RenderSection("footerCss", false)
 
 </head>
@@ -57,10 +58,15 @@
                         <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                             @*<span class="hide-menu"></span>*@
-                            @if (Session[SessionConstants.UserLogin] != null)
-                            {
+                            @{
                                 var userSession = Session[SessionConstants.UserLogin] as UserSession;
-                                <span class="hide-menu">Xin chào @userSession.FullName</span>
+                                <span class="hide-menu">
+                                    Xin chào
+                                    @if (userSession != null)
+                                    {
+                                        @userSession.FullName
+                                    }
+                                </span>
                             }
                         </li>
                         <!-- =================== -->
@@ -504,18 +510,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <script src="~/Resources/Library/Admin/Theme/libs/simplebar/dist/simplebar.min.js"></script>
-    <script src="~/Resources/Library/Admin/Theme/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Resources/Library/Admin/Bootstrap/js/bootstrap.bundle.js"></script>
     <!--  core files -->
     <script src="~/Resources/Library/Admin/Theme/js/app.min.js"></script>
     <script src="~/Resources/Library/Admin/Theme/js/app.init.js"></script>
     <script src="~/Resources/Library/Admin/Theme/js/app-style-switcher.js"></script>
     <script src="~/Resources/Library/Admin/Theme/js/sidebarmenu.js"></script>
     <script src="~/Resources/Library/Admin/Theme/js/custom.js"></script>
-    <!--  current page js files -->
-    <script src="~/Resources/Library/Admin/Theme/libs/owl.carousel/dist/owl.carousel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script src="~/Resources/Library/Common/ckfinder/ckfinder.js"></script>
     <script src="~/Resources/Library/Common/ckeditor/ckeditor.js"></script>
+    <!--  current page js files -->
+
     @RenderSection("footerJs", false)
 </body>
 </html>

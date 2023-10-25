@@ -28,8 +28,8 @@ namespace DataModels.EF.Identity
                 RequireDigit = true,
                 RequireLowercase = true,
                 RequireUppercase = true,
-            };
 
+            };
             // Configure user lockout defaults
             userManager.UserLockoutEnabledByDefault = true;
             userManager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(AuthConstants.LockoutMinutes);

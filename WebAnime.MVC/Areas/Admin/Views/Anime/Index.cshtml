@@ -27,9 +27,16 @@
         return builder.ToString();
     }
 }
-<h2>
-    Trang quản lý anime @Html.ActionLink("Thêm mới", "Create", null, new { @class = "text-decoration-none btn btn-primary" })
-</h2>
+<div class="row">
+    <div class="col-auto">
+        <h2>
+            Trang quản lý anime 
+        </h2>
+    </div>
+    <div class="col-auto">
+        @Html.ActionLink("Thêm mới", "Create", null, new { @class = "text-decoration-none btn btn-primary" })
+    </div>
+</div>
 @if (!Model.Any())
 {
     <h2>Chưa có dữ liệu gì!</h2>

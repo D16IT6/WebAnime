@@ -3,7 +3,15 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Danh sách tài khoản</h2>
+<div class="row mb-3">
+    <div class="col-auto">
+        <h2>Danh sách tài khoản</h2>
+    </div>
+    <div class="col">
+        @Html.ActionLink("Tạo mới","Create",new{@area="Admin"},new{@class="btn btn-primary"})
+
+    </div>
+</div>
 
 <table class="table border text-nowrap customize-table mb-0 align-middle">
     <thead>

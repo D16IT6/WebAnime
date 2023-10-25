@@ -3,14 +3,15 @@
 @{
     ViewBag.Title = "Update";
     var roleList = ViewBag.Roles as List<Roles> ?? new List<Roles>();
+    var dateBuilder = $"{Model.BirthDay.Year}-{Model.BirthDay.Month.ToString().PadLeft(2,'0')}-{Model.BirthDay.Day.ToString().PadLeft(2, '0')}";
 }
 <h2>Cập nhật thông tin tài khoản</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Update","User",FormMethod.Post,new{id= "frmUpdateUser" }))
 {
     @Html.HiddenFor(x => x.Id)
-    @Html.HiddenFor(x=>x.Password)
-    @Html.HiddenFor(x=>x.ReTypePassword)
+    @Html.HiddenFor(x => x.Password)
+    @Html.HiddenFor(x => x.ReTypePassword)
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
     <div class="row mb-2">
@@ -28,27 +29,16 @@
 
         </div>
     </div>
-    @*<div class="row mb-2">
-            @Html.LabelFor(x => x.Password, new { @class = "col-form-label col-2" })
-            <div class="col-4">
-                @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
-
-            </div>
-        </div>
-        <div class="row mb-2">
-            @Html.LabelFor(x => x.ReTypePassword, new { @class = "col-form-label col-2" })
-            <div class="col-4">
-                @Html.PasswordFor(x => x.ReTypePassword, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.ReTypePassword, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
-
     <div class="row mb-2">
         @Html.LabelFor(x => x.BirthDay, new { @class = "col-form-label col-2" })
         <div class="col-4">
-            @*@Html.Editor("BirthDayFake", new { htmlAttributes = new { @class = "form-control", type = "date", value = Model.BirthDay.ToString("dd/MM/yyyy") } })*@
-            @Html.TextBoxFor(x => x.BirthDay, new { @class = "form-control" })
+            @Html.Editor("BirthDayFake", new { htmlAttributes = new { @class = "form-control", type = "date"} })
+            @Html.EditorFor(x => x.BirthDay,new{htmlAttributes =
+                new {
+                    @class = "form-control position-absolute",
+                    type="date",
+                    data_value= dateBuilder
+                } })
             @Html.ValidationMessageFor(x => x.BirthDay, "", new { @class = "text-danger" })
 
         </div>
@@ -64,45 +54,126 @@
     <div class="row mb-2">
         @Html.LabelFor(x => x.PhoneNumber, new { @class = "col-form-label col-2" })
         <div class="col-4">
-            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", type = "tel",pattern="[0-9]"})
+            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", type = "tel", pattern = "[0-9]" })
             @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
 
         </div>
     </div>
 
-    <div class="row mb-2">
+    <div class="row mb-2 ">
         @Html.LabelFor(x => x.RoleListIds, new { @class = "col-form-label col-2" })
-        <div class="col-4">
-            @*@Html.ListBox("RoleListIdsFake", new MultiSelectList(roleList, "Id", "Name", Model.RoleListIds))*@
-            @Html.ListBoxFor(x => x.RoleListIds, new MultiSelectList(roleList, "Id", "Name"))
+        <div class="col-4 position-relative">
+
+            @{
+                var rolesEnumerable = roleList.ToArray();
+            }
+            @Html.ListBox("RoleListIdsFake", new MultiSelectList(rolesEnumerable, "Id", "Name"))
+            @Html.ListBoxFor(x => x.RoleListIds, new MultiSelectList(rolesEnumerable, "Id", "Name"),new{@class="position-absolute"})
             @Html.ValidationMessageFor(x => x.RoleListIds, "", new { @class = "text-danger" })
 
         </div>
     </div>
     <div class="row mb-2">
         <div class="col-3">
-            <button class="btn btn-primary">Cập nhật</button>
+            <button class="btn btn-primary" id="btnUpdate">Cập nhật</button>
         </div>
     </div>
 }
 @section footerCss{
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.css" rel="stylesheet" />
+
+    <style>
+        .ms-options-wrap button {
+            border-color: rgb(222, 226, 230);
+        }
+
+        .ms-options-wrap button span {
+            font-size: 16px;
+        }
+
+        .ms-options-wrap > button:after {
+            right: 15px;
+        }
+        #BirthDay, #RoleListIds {
+            opacity: 0;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: -10000;
+        }
+    </style>
 
 }
 @section footerJs{
     @Html.Partial("_ValidationScriptsPartial")
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
+    <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
 
-        const birthDay = $(`#BirthDay`).val().substr(0, 10).split('/');
-        const year = birthDay[2];
-        const month = birthDay[1];
-        const day = birthDay[0];
-        $(`#BirthDay`).val(`${year}-${month}-${day}`);
-        $(`#BirthDay`).flatpickr({
+    <script>
+        console.log($(`#BirthDay`).data('value'));
+        $(`#BirthDayFake`).val($(`#BirthDay`).data('value'));
+
+        function loadFromBToA(a, b) {
+            const bValue = $(`#${b}`).val();
+
+            $(`#${a}`).val(bValue);
+        }
+
+        function setMultiSelectValue(id, fakeId) {
+            const selectedIds = [];
+            $(`#${id}`).val().forEach(x => selectedIds.push(x));
+            console.log(selectedIds);
+            $(`#${fakeId}`).val(selectedIds);
+        }
+
+        function bindingData() { 
+
+            setMultiSelectValue('RoleListIds', 'RoleListIdsFake');
+
+        }
+
+        bindingData();
+
+        
+
+        $(`#btnUpdate`).click(function(e) {
+            e.preventDefault();
+
+            loadFromBToA('BirthDay', 'BirthDayFake');
+            loadFromBToA('RoleListIds', 'RoleListIdsFake');
+
+
+            $(`#frmUpdateUser`).submit();
+
+        });
+
+
+        $(`#BirthDayFake`).flatpickr({
             altInput: true,
             altFormat: "d/m/Y"
         });
+
+        $(`#RoleListIdsFake`).multiselect({
+            search: true,
+            searchOptions:
+            {
+                searchText: true
+            },
+            texts: {
+                placeholder: 'Chọn quyền'
+
+            },
+            minHeight: 120
+        });
+
+        const listMultiSelect = document.querySelectorAll(`.ms-options-wrap button`);
+        for (const item of listMultiSelect) {
+            item.classList.add(`form-control`);
+            item.classList.add(`border-1`);
+            item.classList.add(`p-2`);
+        }
 
     </script>
 }

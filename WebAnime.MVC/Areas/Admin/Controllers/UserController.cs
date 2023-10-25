@@ -13,6 +13,7 @@ using WebAnime.MVC.Helpers.Session;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly UserManager _userManager;

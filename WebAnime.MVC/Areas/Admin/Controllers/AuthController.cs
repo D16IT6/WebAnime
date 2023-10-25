@@ -115,12 +115,17 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             ModelState.AddModelError("", @"Đầu vào chưa hợp lệ");
             return View(model);
         }
-
+        [Authorize]
         public ActionResult LogOut()
         {
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             Session.Remove(SessionConstants.UserLogin);
             return RedirectToAction("Login");
+        }
+
+        public ActionResult FotgotPassword()
+        {
+            return View();
         }
     }
 }

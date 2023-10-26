@@ -47,6 +47,8 @@ namespace WebAnime.MVC
 
             RegisterIdentityStores(kernel);
             RegisterIdentityManagers(kernel);
+
+            //kernel.Bind<>()
         }
 
         public static T GetService<T>()
@@ -83,10 +85,10 @@ namespace WebAnime.MVC
             {
                 var userStore = ninjectContext.Kernel.Get<UserStore>();
 
-                var userManager = new UserManager(userStore);
-
-                return userManager;
+                return new UserManager(userStore);
             });
+
+
         }
     }
 }

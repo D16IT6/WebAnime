@@ -1,0 +1,15 @@
+﻿@model WebAnime.MVC.Areas.Admin.Models.BlogViewModel
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Xóa bài viết</h2>
+<h3>Bạn chắc chắn muốn xóa bài "@Model.Title" chứ?</h3>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    @Html.ActionLink("Về trang chủ", "Index", "Blog", new { area = "Admin" }, new { @class = "btn btn-primary" })
+}

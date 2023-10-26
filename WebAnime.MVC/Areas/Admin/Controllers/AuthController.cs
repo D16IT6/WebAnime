@@ -29,7 +29,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
             var dataProtectorProvider = OwinConfig.DataProtectionProvider;
 
-            var provider = dataProtectorProvider.Create("WebAnime.MVC.Token");
+            var provider = dataProtectorProvider.Create("WebAnime.MVC.ResetPasswordToken");
             _userManager.UserTokenProvider = new DataProtectorTokenProvider<Users, int>(provider)
             {
                 TokenLifespan = TimeSpan.FromHours(1)
@@ -41,7 +41,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return new HttpNotFoundResult("Aready login");
+                return RedirectToAction("Index", "Home", new { area = "Admin" });
             }
             return await Task.FromResult<ActionResult>(View());
         }
@@ -153,26 +153,29 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 }
                 string resetCode = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
 
-                var callbackUrl = Url.Action("ResetPassword", "Auth", new { area = "Admin", userId = user.Id, resetCode = resetCode },
-                    protocol: Request.Url.Scheme);
+                if (Request.Url != null)
+                {
+                    var callbackUrl = Url.Action("ResetPassword", "Auth", new { area = "Admin", userId = user.Id, resetCode },
+                        protocol: Request.Url.Scheme);
 
 
-                StringBuilder bodyBuilder = new StringBuilder();
-                bodyBuilder.AppendLine(
-                    $"<p>Xin chào <strong>{user.FullName}</strong>, bạn đã yêu cầu khôi phục mật khẩu!</p>");
-                bodyBuilder.AppendLine(
-                    $"<p>Để khôi phục mật khẩu của bạn, vui lòng bấm vào <a href=\"{callbackUrl}\">Đây</a>");
-                bodyBuilder.AppendLine("<p>Thư sẽ hết hạn sau 1 giờ.</p>");
-                bodyBuilder.AppendLine("<h3>Cảm ơn bạn!</h3>");
-                bool isSendEmail = await EmailService.SendMailAsync(new IdentityMessage()
-                {
-                    Body = bodyBuilder.ToString(),
-                    Destination = user.Email,
-                    Subject = "Xác nhận khôi phục mật khẩu"
-                });
-                if (isSendEmail)
-                {
-                    return RedirectToAction("ForgotPasswordConfirmation", "Auth");
+                    StringBuilder bodyBuilder = new StringBuilder();
+                    bodyBuilder.AppendLine(
+                        $"<p>Xin chào <strong>{user.FullName}</strong>, bạn đã yêu cầu khôi phục mật khẩu!</p>");
+                    bodyBuilder.AppendLine(
+                        $"<p>Để khôi phục mật khẩu của bạn, vui lòng bấm vào <a href=\"{callbackUrl}\">Đây</a>");
+                    bodyBuilder.AppendLine("<p>Thư sẽ hết hạn sau 1 giờ.</p>");
+                    bodyBuilder.AppendLine("<h3>Cảm ơn bạn!</h3>");
+                    bool isSendEmail = await EmailService.SendMailAsync(new IdentityMessage()
+                    {
+                        Body = bodyBuilder.ToString(),
+                        Destination = user.Email,
+                        Subject = "Xác nhận khôi phục mật khẩu"
+                    });
+                    if (isSendEmail)
+                    {
+                        return RedirectToAction("ForgotPasswordConfirmation", "Auth", new { area = "Admin", fromForgot = true });
+                    }
                 }
             }
             return View(model);
@@ -216,13 +219,13 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             ModelState.AddModelError("TotalError", @"Có lỗi xảy ra, vui lòng thử lại");
             return View(model);
         }
-
-
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult> ForgotPasswordConfirmation()
+        public async Task<ActionResult> ForgotPasswordConfirmation(bool? fromForgot)
         {
-            return await Task.FromResult(View());
+            if (fromForgot.HasValue && fromForgot.Value)
+                return await Task.FromResult(View());
+            return RedirectToAction("NotFound", "Error");
         }
     }
 }

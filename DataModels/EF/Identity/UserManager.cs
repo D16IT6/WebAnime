@@ -1,6 +1,7 @@
 ﻿using DataModels.Helpers;
 using Microsoft.AspNet.Identity;
 using System;
+
 namespace DataModels.EF.Identity
 {
     public class UserManager : UserManager<Users, int>
@@ -11,10 +12,10 @@ namespace DataModels.EF.Identity
             ResigterAuth(this);
         }
 
-        private void ResigterAuth(UserManager userManager)
+        private static void ResigterAuth(UserManager userManager)
         {
             //register user validator
-            this.UserValidator = new UserValidator<Users, int>(userManager)
+            userManager.UserValidator = new UserValidator<Users, int>(userManager)
             {
                 AllowOnlyAlphanumericUserNames = false,
                 RequireUniqueEmail = true,

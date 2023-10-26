@@ -13,9 +13,12 @@ namespace DataModels.Helpers
             {
                 var listStudios = new List<Studios>
                 {
-                    new Studios { Name = "Studio Bind",CreatedDate = DateTime.Now},
-                    new Studios { Name = "Mappa" ,CreatedDate = DateTime.Now},
-                    new Studios { Name = "Studio Jemi",CreatedDate = DateTime.Now }
+                    new Studios { Name = "Studio Bind",CreatedDate = DateTime.Now,
+                        CreatedBy = 1},
+                    new Studios { Name = "Mappa" ,CreatedDate = DateTime.Now,
+                        CreatedBy = 1},
+                    new Studios { Name = "Studio Jemi",CreatedDate = DateTime.Now,
+                        CreatedBy = 1 }
                 };
                 context.Studios.AddRange(listStudios);
                 context.SaveChanges();
@@ -28,10 +31,14 @@ namespace DataModels.Helpers
             {
                 var listTypes = new List<Types>
                 {
-                    new Types { Name = "TV Series",CreatedDate = DateTime.Now },
-                    new Types { Name = "Movies",CreatedDate = DateTime.Now },
-                    new Types { Name = "Bluray",CreatedDate = DateTime.Now },
-                    new Types { Name = "OVA" ,CreatedDate = DateTime.Now}
+                    new Types { Name = "TV Series",CreatedDate = DateTime.Now,
+                        CreatedBy = 1 },
+                    new Types { Name = "Movies",CreatedDate = DateTime.Now,
+                        CreatedBy = 1 },
+                    new Types { Name = "Bluray",CreatedDate = DateTime.Now,
+                        CreatedBy = 1 },
+                    new Types { Name = "OVA" ,CreatedDate = DateTime.Now,
+                        CreatedBy = 1}
                 };
                 context.Types.AddRange(listTypes);
                 context.SaveChanges();
@@ -46,15 +53,18 @@ namespace DataModels.Helpers
                 {
                     new Statuses
                     {
-                        Name = "Đã hoàn thành",CreatedDate = DateTime.Now
+                        Name = "Đã hoàn thành",CreatedDate = DateTime.Now,
+                        CreatedBy = 1
                     },
                     new Statuses
                     {
-                        Name = "Chưa hoàn thành",CreatedDate = DateTime.Now
+                        Name = "Chưa hoàn thành",CreatedDate = DateTime.Now,
+                        CreatedBy = 1
                     },
                     new Statuses
                     {
-                        Name = "Chưa phát sóng",CreatedDate = DateTime.Now
+                        Name = "Chưa phát sóng",CreatedDate = DateTime.Now,
+                        CreatedBy = 1
                     }
                 };
                 context.Statuses.AddRange(listStatuses);
@@ -68,10 +78,14 @@ namespace DataModels.Helpers
             {
                 var listAgeRatings = new List<AgeRatings>
                 {
-                    new AgeRatings { Name = "Mọi lứa tuổi" ,CreatedDate = DateTime.Now},
-                    new AgeRatings { Name = "Trẻ em (dưới 13 tuổi)" ,CreatedDate = DateTime.Now},
-                    new AgeRatings { Name = "13+",CreatedDate = DateTime.Now },
-                    new AgeRatings { Name = "18+" ,CreatedDate = DateTime.Now}
+                    new AgeRatings { Name = "Mọi lứa tuổi" ,CreatedDate = DateTime.Now,
+                        CreatedBy = 1},
+                    new AgeRatings { Name = "Trẻ em (dưới 13 tuổi)" ,CreatedDate = DateTime.Now,
+                        CreatedBy = 1},
+                    new AgeRatings { Name = "13+",CreatedDate = DateTime.Now ,
+                        CreatedBy = 1},
+                    new AgeRatings { Name = "18+" ,CreatedDate = DateTime.Now,
+                        CreatedBy = 1}
                 };
                 context.AgeRatings.AddRange(listAgeRatings);
                 context.SaveChanges();
@@ -86,19 +100,23 @@ namespace DataModels.Helpers
                 {
                     new Countries
                     {
-                        Name = "Nhật Bản",CreatedDate = DateTime.Now
+                        Name = "Nhật Bản",CreatedDate = DateTime.Now,
+                        CreatedBy = 1
                     },
                     new Countries
                     {
-                        Name = "Trung Quốc",CreatedDate = DateTime.Now
+                        Name = "Trung Quốc",CreatedDate = DateTime.Now,
+                        CreatedBy = 1
                     },
                     new Countries
                     {
-                        Name = "Hàn Quốc",CreatedDate = DateTime.Now
+                        Name = "Hàn Quốc",CreatedDate = DateTime.Now,
+                        CreatedBy = 1
                     },
                     new Countries
                     {
-                        Name = "Quốc gia khác",CreatedDate = DateTime.Now
+                        Name = "Quốc gia khác",CreatedDate = DateTime.Now,
+                        CreatedBy = 1
                     }
                 };
                 context.Countries.AddRange(listCountries);
@@ -125,7 +143,8 @@ namespace DataModels.Helpers
                     context.Categories.Add(new Categories()
                     {
                         Name = listCategoryName[i],
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now,
+                        CreatedBy = 1
                     });
                 }
 
@@ -143,7 +162,27 @@ namespace DataModels.Helpers
                     context.Servers.Add(new Servers()
                     {
                         Name = s,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now,
+                        CreatedBy = 1
+                    });
+                }
+
+                context.SaveChanges();
+            }
+        }
+
+        public static void LoadBlogCategories(this WebAnimeDbContext context)
+        {
+            if (!context.BlogCategories.Any())
+            {
+                var listBlogCategories = new[] { "Anime", "Manga ", "Light Novel", "Game", "Cosplay" };
+                foreach (var s in listBlogCategories)
+                {
+                    context.BlogCategories.Add(new BlogCategories()
+                    {
+                        Name = s,
+                        CreatedDate = DateTime.Now,
+                        CreatedBy = 1
                     });
                 }
 

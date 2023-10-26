@@ -158,6 +158,9 @@
     <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="Slugify.Core, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Slugify.Core.4.0.1\lib\netstandard2.0\Slugify.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
@@ -176,6 +179,9 @@
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Security" />
+    <Reference Include="System.Text.Encoding.CodePages, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.6.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -592,6 +598,7 @@
     <Content Include="Resources\Library\Admin\Theme\images\loader.svg" />
     <Content Include="Resources\Library\Admin\Theme\images\logos\dark-logo.svg" />
     <Content Include="Resources\Library\Admin\Theme\images\logos\dark-rtl-logo.svg" />
+    <Content Include="Resources\Library\Admin\Theme\images\backgrounds\email-sent.jpg" />
     <Content Include="Resources\Library\Admin\Theme\images\logos\favicon.ico" />
     <Content Include="Resources\Library\Admin\Theme\images\logos\light-logo-rtl.svg" />
     <Content Include="Resources\Library\Admin\Theme\images\logos\light-logo.svg" />
@@ -6485,6 +6492,11 @@
     <Content Include="Areas\Admin\Views\Error\NotFound.cshtml" />
     <Content Include="Areas\Admin\Views\Auth\ForgotPassword.cshtml" />
     <Content Include="Areas\Admin\Views\Auth\ResetPassword.cshtml" />
+    <Content Include="Areas\Admin\Views\Auth\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Areas\Admin\Views\Blog\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Blog\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Blog\Update.cshtml" />
+    <Content Include="Areas\Admin\Views\Blog\Delete.cshtml" />
     <None Include="Resources\Library\Admin\Jquery\jquery-3.7.1.intellisense.js" />
     <Content Include="Resources\Library\Admin\Jquery\jquery-3.7.1.js" />
     <Content Include="Web.config" />
@@ -6496,6 +6508,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AnimeController.cs" />
     <Compile Include="Areas\Admin\Controllers\AuthController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BlogController.cs" />
     <Compile Include="Areas\Admin\Controllers\CountryController.cs" />
     <Compile Include="Areas\Admin\Controllers\EpisodeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ErrorController.cs" />
@@ -6503,6 +6516,7 @@
     <Compile Include="Areas\Admin\Controllers\ServerController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Models\AnimeViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\BlogViewModel.cs" />
     <Compile Include="Areas\Admin\Models\CountryViewModel.cs" />
     <Compile Include="Areas\Admin\Controllers\StudioController.cs" />
     <Compile Include="Areas\Admin\Models\EpisodeViewModel.cs" />
@@ -6818,7 +6832,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Resources\Library\Admin\Mapping\" />
     <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>

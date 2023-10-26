@@ -1,0 +1,147 @@
+﻿@model IEnumerable<WebAnime.MVC.Areas.Admin.Models.BlogViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+@Html.ActionLink("Tạo mới", "Create", "Blog", new { @area = "Admin" }, new { @class = "btn btn-primary" })
+@if (!Model.Any())
+{
+    <h2>Chưa có gì</h2>
+}
+else
+{
+    <h2>Danh sách bài viết</h2>
+    <table class="table border text-nowrap mb-0 align-middle">
+        <thead>
+            <tr class="text-center">
+                <th>
+                    @Html.DisplayNameFor(x => x.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(x => x.Content)
+                </th>
+                <th>
+                    @*@Html.DisplayNameFor(x => x.ImageUrl)*@
+                    Ảnh nền
+                </th>
+                <th>Chức năng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var blog in Model)
+            {
+                <tr>
+                    <td>
+                        <h5> @blog.Title</h5>
+                    </td>
+                    <td>
+
+                        <button type="button"
+                                class="btn btn-primary btnViewContent"
+                                data-content-html="@blog.Content"
+                                data-bs-toggle="modal"
+                                data-bs-target="#model-content-html">
+                            Xem ở đây
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button"
+                                class="btn btn-primary btnViewImage"
+                                data-bs-toggle="modal"
+                                data-image-url="@blog.ImageUrl"
+                                data-bs-target="#modal-image">
+                            Xem ở đây
+                        </button>
+                    </td>
+                    <td>
+                        <div class="btn btn-group d-flex justify-content-center">
+                            @Html.ActionLink("Sửa", "Update", new { @id = blog.Id }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Xóa", "Delete", new { @id = blog.Id }, new { @class = "btn btn-danger" })
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<div class="modal fade"
+     id="model-content-html"
+     tabindex="-1"
+     aria-labelledby="bs-example-modal-lg"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4"
+                    id="exampleModalFullscreenLabel">
+                    Nội dung bài viết
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body modalHtml">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-light-danger text-danger "
+                        data-bs-dismiss="modal">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="modal fade"
+         id="modal-image"
+         tabindex="-1"
+         aria-labelledby="modal-image"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center">
+                    <h4 class="modal-title" id="myLargeModalLabel">
+                        Ảnh nền bài viết
+                    </h4>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <img class="modalImage w-100" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-light-danger text-danger text-start"
+                            data-bs-dismiss="modal">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+
+
+@section footerJs
+{
+    <script>
+        $(`.btnViewContent`).click(function () {
+
+            const html = $(this).data('contentHtml');
+            $(`.modalHtml`).html(html);
+        });
+        $(`.btnViewImage`).click(function () {
+
+            const url = $(this).data('imageUrl');
+            $(`.modalImage`).attr('src', url);
+        });
+    </script>
+}

@@ -5,26 +5,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataModels.EF
 {
-    public partial class Blogs
+    public class BlogCategories
     {
-        public Blogs()
-        {
-            BlogCategories = new HashSet<BlogCategories>();
-            BlogComments = new HashSet<BlogComments>();
-        }
         public int Id { get; set; }
-        [MaxLength(250)]
-        public string Title { get; set; }
+        [StringLength(50)]
+        [Column(TypeName = "nvarchar")]
+        public string Name { get; set; }
 
-        [MaxLength(250)]
-        public string Slug { get; set; }
-        [MaxLength(250)]
-        public string ImageUrl { get; set; }
+        [ForeignKey("BlogId")]
+        public virtual ICollection<Blogs> Blogs { get; set; }
 
-        public string Content { get; set; }
-
-        public virtual ICollection<BlogComments> BlogComments { get; set; }
         [DataType(DataType.DateTime)] public DateTime? CreatedDate { get; set; }
+
         public int? CreatedBy { get; set; }
 
         [DataType(DataType.DateTime)] public DateTime? ModifiedDate { get; set; }
@@ -34,7 +26,6 @@ namespace DataModels.EF
         public int? DeletedBy { get; set; }
 
         public bool IsDeleted { get; set; }
-        [ForeignKey("BlogCategoryId")]
-        public virtual ICollection<BlogCategories> BlogCategories { get; set; }
+
     }
 }

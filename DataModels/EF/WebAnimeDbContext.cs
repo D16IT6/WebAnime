@@ -18,6 +18,7 @@ namespace DataModels.EF
         public virtual DbSet<Animes> Animes { get; set; }
         public virtual DbSet<BlogComments> BlogComments { get; set; }
         public virtual DbSet<Blogs> Blogs { get; set; }
+        public virtual DbSet<BlogCategories> BlogCategories { get; set; }
         public virtual DbSet<Categories> Categories { get; set; }
         public virtual DbSet<Comments> Comments { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
@@ -55,6 +56,11 @@ namespace DataModels.EF
                 .WithMany(e => e.Animes)
                 .Map(m => m.ToTable("AnimeCategories").MapLeftKey("AnimeId").MapRightKey("CategoryId"));
 
+            modelBuilder.Entity<Blogs>()
+                .HasMany(e => e.BlogCategories)
+                .WithMany(e => e.Blogs)
+                .Map(m => m.ToTable("BlogInCategories").MapLeftKey("BlogId").MapRightKey("BlogCategoryId"));
+
             modelBuilder.Entity<Animes>()
                 .HasMany(e => e.Studios)
                 .WithMany(e => e.Animes)
@@ -89,7 +95,6 @@ namespace DataModels.EF
 
 
         }
-
 
     }
 }

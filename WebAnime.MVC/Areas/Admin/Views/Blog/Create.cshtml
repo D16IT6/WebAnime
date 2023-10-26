@@ -1,0 +1,186 @@
+﻿@using DataModels.EF
+@model WebAnime.MVC.Areas.Admin.Models.BlogViewModel
+
+@{
+    ViewBag.Title = "Create";
+    var blogCategories = ViewBag.BlogCategories as IEnumerable<BlogCategories> ?? new List<BlogCategories>();
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="mb-3">Tạo bài viết mới</h5>
+        @using (Html.BeginForm("Create", "Blog", FormMethod.Post, new { id = "frmCreateBlog" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        @Html.TextBoxFor(x => x.Title, new { @class = "form-control", placeholder = "Nhập tiêu đề" })
+                        @Html.LabelFor(x => x.Title)
+                        @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger ps-1" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        @Html.TextBoxFor(x => x.Slug, new { @class = "form-control", placeholder = "Nhập đường dẫn" })
+                        @Html.LabelFor(x => x.Slug)
+                        @Html.ValidationMessageFor(x => x.Slug, "", new { @class = "text-danger ps-1" })
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="form-floating mb-3">
+                        @Html.TextBoxFor(x => x.ImageUrl, new { @class = "form-control", placeholder = "Nhập đường dẫn" })
+                        @Html.LabelFor(x => x.ImageUrl)
+                        @Html.ValidationMessageFor(x => x.ImageUrl, "", new { @class = "text-danger ps-1" })
+
+                    </div>
+
+                </div>
+                <div class="col-md-3 d-flex align-items-start mt-2">
+                    <button type="button" id="btnSelectImage"
+                            class="btn btn-info rounded-pill px-4">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-hand-click me-2 fs-4"></i>
+                            Chọn ảnh
+                        </div>
+                    </button>
+                </div>
+
+                <div class="col-md-12 position-relative">
+                    @Html.TextAreaFor(x => x.Content, new { @class = "position-absolute" })
+                    @Html.TextArea("ContentFake", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Content, "", new { @class = "text-danger ps-1" })
+                </div>
+            </div>
+            <div class="col-12 position-relative">
+                @{
+                    var blogCategoriesEnumerable = blogCategories as BlogCategories[] ?? blogCategories.ToArray();
+                }
+                <div class="row justify-content-center">
+                    @Html.LabelFor(x => x.BlogCategoryIds, new { @class = "col-form-label col-md-2" })
+
+                    <div class="col-md-6">
+                        @Html.ListBoxFor(x => x.BlogCategoryIds, new MultiSelectList(blogCategoriesEnumerable, "Id", "Name"), new { @class = "position-absolute" })
+                        @Html.ListBox("BlogCategoryIdsFake", new MultiSelectList(blogCategoriesEnumerable, "Id", "Name"))
+                        @Html.ValidationMessageFor(x => x.BlogCategoryIds, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="d-md-flex align-items-center mt-3">
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="autoGenerateSlug" />
+                        <label class="form-check-label"
+                               for="autoGenerateSlug">
+                            Tự sinh đường dẫn
+                        </label>
+                    </div>
+                    <div class="ms-auto mt-3 mt-md-0">
+                        <button type="submit" id="btnCreate"
+                                class="btn btn-info rounded-pill px-4">
+                            <div class="d-flex align-items-center">
+                                <i class="ti ti-send me-2 fs-4"></i>
+                                Tạo mới
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section footerCss
+{
+    <link href="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.css" rel="stylesheet" />
+    <style>
+        #Content, #BlogCategoryIds {
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+    </style>
+}
+@section footerJs{
+    @Html.Partial("_ValidationScriptsPartial")
+    @Html.Partial("_JqueryMultiSelectPartial")
+    <script>
+        const editor = window.CKEDITOR.replace('ContentFake');
+        CKFinder.setupCKEditor(editor, "/Resources/Library/Common/ckfinder/");
+
+        editor.on('change',
+            function () {
+                editor.updateElement();
+                $(editor.element.$).trigger('change');
+            });
+
+        slugify = (text) => {
+            return text
+                .toString()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-');
+        };
+        $(`#btnCreate`).click(function () {
+
+            if ($(`#autoGenerateSlug`).is(':checked')) {
+                const title = $(`#Title`).val();
+                const slugTitle = slugify(title);
+                $(`#Slug`).val(slugTitle);
+            }
+
+            const contentHtml = $(`#ContentFake`).val();
+            console.log(contentHtml);
+            $(`#Content`).val(contentHtml);
+
+            $(`#frmCreateBlog`).submit();
+            getSelectedList('BlogCategoryIds', 'BlogCategoryIdsFake');
+
+        });
+        $(`select#BlogCategoryIdsFake[multiple]`).multiselect({
+            columns: 2,
+            search: true,
+            searchOptions:
+            {
+                searchText: true
+            },
+            texts: {
+                placeholder: 'Chọn thể loại bài viết'
+
+            },
+            minHeight: 120
+        });
+
+        const listMultiSelect = document.querySelectorAll(`.ms-options-wrap button`);
+        for (const item of listMultiSelect) {
+            item.classList.add(`form-control`);
+            item.classList.add(`border-1`);
+            item.classList.add(`p-2`);
+        }
+
+        function getSelectedList(id, fakeId) {
+            const selectedIds = [];
+            //const selectedList = ;
+            $(`#${fakeId}`).val().forEach(x => selectedIds.push(x));
+
+            $(`#${id}`).val(selectedIds);
+        }
+
+        $(`#btnSelectImage`).click(function () {
+            const ckFinder = new CKFinder();
+            ckFinder.selectActionFunction = function (fileUrl) {
+                $(`#ImageUrl`).val(fileUrl);
+            };
+            ckFinder.popup();
+        });
+    </script>
+}

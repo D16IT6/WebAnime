@@ -7,7 +7,15 @@ namespace DataModels.EF
 {
     public partial class Animes
     {
-
+        public Animes()
+        {
+            Categories = new HashSet<Categories>();
+            Studios = new HashSet<Studios>();
+            Episodes = new HashSet<Episodes>();
+            Comments = new HashSet<Comments>();
+            Ratings = new HashSet<Ratings>();
+            Favorites = new HashSet<Favorites>();
+        }
         public int Id { get; set; }
 
         [StringLength(255)] public string Title { get; set; }

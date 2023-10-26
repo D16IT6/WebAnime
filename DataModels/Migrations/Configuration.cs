@@ -21,6 +21,7 @@ namespace DataModels.Migrations
             context.LoadStudios();
             context.LoadCategories();
             context.LoadServers();
+            context.LoadBlogCategories();
         }
 
 

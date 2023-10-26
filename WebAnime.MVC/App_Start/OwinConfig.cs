@@ -10,12 +10,15 @@ namespace WebAnime.MVC
     public class OwinConfig
     {
         public static IDataProtectionProvider DataProtectionProvider { get; set; }
-
         public static void AuthConfig(IAppBuilder app)
         {
+            DataProtectionProvider = app.GetDataProtectionProvider();
             // Configure the db context, user manager and signin manager to use a single instance per request
             //Ninject cover it
 
+            //app.CreatePerOwinContext(WebAnimeDbContext.Create);
+            //app.CreatePerOwinContext(UserManager.Create);
+            //app.CreatePerOwinContext<RoleManager>(RoleManager.Create);
 
             // Enable the application to use a cookie to store information for the signed in user
             // and to use a cookie to temporarily store information about a user logging in with a third party login provider
@@ -37,7 +40,6 @@ namespace WebAnime.MVC
             // This is similar to the RememberMe option when you log in.
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
 
-            DataProtectionProvider = app.GetDataProtectionProvider();
 
             // Uncomment the following lines to enable logging in with third party login providers
             //app.UseMicrosoftAccountAuthentication(

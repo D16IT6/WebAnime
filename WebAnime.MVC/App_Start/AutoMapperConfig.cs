@@ -60,6 +60,24 @@ namespace WebAnime.MVC
 
 
                     cfg.CreateMap<UserViewModel, Users>();
+
+                    cfg.CreateMap<Blogs, BlogViewModel>()
+                        .ForMember(
+                            x => x.BlogCategoryIds,
+                            memberOptions: options =>
+                            {
+                                options.MapFrom(
+                                    blog =>
+                                        blog.BlogCategories
+                                            .Where(x => !x.IsDeleted)
+                                            .Select(x => x.Id)
+                                            .ToArray()
+                                    );
+                            }
+                            )
+                        ;
+                    cfg.CreateMap<BlogViewModel, Blogs>();
+
                 }
             );
             return config.CreateMapper();

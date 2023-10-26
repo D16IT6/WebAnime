@@ -7,7 +7,5 @@ namespace DataModels.EF.Identity
         public UserStore(WebAnimeDbContext context) : base(context)
         {
         }
-
-
     }
 }

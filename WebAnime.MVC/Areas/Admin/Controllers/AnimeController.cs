@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataModels.Dto;
 using DataModels.EF;
+using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,7 +60,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 var entity = _mapper.Map<Animes>(model);
+                entity.ModifiedBy = int.Parse(User.Identity.GetUserId());
+
                 if (await _animeDto.Add(entity))
                 {
                     return RedirectToAction("Index", "Anime");
@@ -87,7 +91,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 var entity = _mapper.Map<Animes>(model);
+
+                entity.ModifiedBy = int.Parse(User.Identity.GetUserId());
+
                 if (await _animeDto.Update(entity))
                 {
                     return RedirectToAction("Index", "Anime");
@@ -105,6 +113,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             var anime = await _animeDto.GetById(id);
             if (anime == null) return HttpNotFound(string.Empty);
+
             var animeViewModel = _mapper.Map<AnimeViewModel>(anime);
             return View(animeViewModel);
         }
@@ -112,7 +121,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(AnimeViewModel model)
         {
-            if (await _animeDto.Delete(model.Id))
+            int deletedBy = int.Parse(User.Identity.GetUserId());
+
+            if (await _animeDto.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index", "Anime");
             }

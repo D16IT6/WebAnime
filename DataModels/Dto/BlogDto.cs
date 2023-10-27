@@ -119,7 +119,7 @@ namespace DataModels.Dto
                 await Context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }

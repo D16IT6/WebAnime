@@ -1,7 +1,4 @@
-﻿@using System.Web.UI.HtmlControls
-@using WebAnime.MVC.Helpers
-@using WebAnime.MVC.Helpers.Session
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <!--  Title -->
@@ -58,16 +55,7 @@
                         <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                             @*<span class="hide-menu"></span>*@
-                            @{
-                                var userSession = Session[SessionConstants.UserLogin] as UserSession;
-                                <span class="hide-menu">
-                                    Xin chào
-                                    @if (userSession != null)
-                                    {
-                                        @userSession.FullName
-                                    }
-                                </span>
-                            }
+                            
                         </li>
                         <!-- =================== -->
                         <!-- Dashboard -->

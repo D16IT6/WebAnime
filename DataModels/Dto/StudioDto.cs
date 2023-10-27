@@ -56,14 +56,17 @@ namespace DataModels.Dto
             }
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id, int deletedBy)
         {
             try
             {
-                var updateEntity = await GetById(id);
-                if (updateEntity == null) return false;
-                updateEntity.IsDeleted = true;
-                updateEntity.DeletedDate = DateTime.Now;
+                var deleteEntity = await GetById(id);
+                if (deleteEntity == null) return false;
+
+                deleteEntity.IsDeleted = true;
+                deleteEntity.DeletedDate = DateTime.Now;
+                deleteEntity.DeletedBy = deletedBy;
+
                 await Context.SaveChangesAsync();
                 return true;
             }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataModels.Dto;
 using DataModels.EF;
+using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -59,6 +60,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var episode = _mapper.Map<Episodes>(model);
+                episode.CreatedBy = int.Parse(User.Identity.GetUserId());
                 if (await _episodeDto.Add(episode))
                 {
                     return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = model.AnimeId, serverId = model.ServerId });
@@ -88,6 +90,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var episode = _mapper.Map<Episodes>(model);
+                episode.ModifiedBy = int.Parse(User.Identity.GetUserId());
+
                 if (await _episodeDto.Update(episode))
                 {
                     return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = episode.AnimeId, serverId = episode.ServerId });
@@ -112,11 +116,14 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(EpisodeViewModel model)
         {
+
             var deleted = await _episodeDto.GetById(model.Id);
             var animeId = deleted.AnimeId;
             var serverId = deleted.ServerId;
 
-            if (await _episodeDto.Delete(model.Id))
+            int deletedBy = int.Parse(User.Identity.GetUserId());
+
+            if (await _episodeDto.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = animeId, serverId });
             }

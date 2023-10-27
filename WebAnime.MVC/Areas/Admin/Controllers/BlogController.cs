@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
-using WebAnime.MVC.Helpers;
-using WebAnime.MVC.Helpers.Session;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -43,8 +41,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(BlogViewModel model)
         {
-            var userSession = Session[SessionConstants.UserLogin] as UserSession;
-            model.CreatedBy = userSession?.Id ?? int.Parse(User.Identity.GetUserId());
+            model.CreatedBy = int.Parse(User.Identity.GetUserId());
             var blog = _mapper.Map<Blogs>(model);
             var result = await _blogDto.Create(blog);
             if (result)
@@ -71,8 +68,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                var userSession = Session[SessionConstants.UserLogin] as UserSession;
-                model.CreatedBy = userSession?.Id ?? int.Parse(User.Identity.GetUserId());
+                model.ModifiedBy = int.Parse(User.Identity.GetUserId());
                 var blog = _mapper.Map<Blogs>(model);
                 var result = await _blogDto.Update(blog);
                 if (result)
@@ -96,14 +92,13 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(BlogViewModel model)
         {
-            var userSession = Session[SessionConstants.UserLogin] as UserSession;
-            var deletedBy = userSession?.Id ?? int.Parse(User.Identity.GetUserId());
+            var deletedBy = int.Parse(User.Identity.GetUserId());
             bool result = await _blogDto.Delete(model.Id, deletedBy);
             if (result)
             {
                 return RedirectToAction("Index");
             }
-            ModelState.AddModelError("", @"Lỗi xóa, vui lòng thử lại");
+            ModelState.AddModelError(string.Empty, @"Lỗi xóa, vui lòng thử lại");
             return View(model);
         }
 

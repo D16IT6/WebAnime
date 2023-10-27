@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataModels.Dto;
 using DataModels.EF;
+using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -16,7 +17,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public ServerController(IMapper mapper, ServerDto serverDto)
         {
             _mapper = mapper;
-            this._serverDto = serverDto;
+            _serverDto = serverDto;
         }
         [HttpGet]
         public async Task<ActionResult> Index()
@@ -39,6 +40,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
 
                 var server = _mapper.Map<Servers>(model);
+                server.CreatedBy = int.Parse(User.Identity.GetUserId());
+
                 if (await _serverDto.Add(server))
                 {
                     return RedirectToAction("Index");
@@ -66,6 +69,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
 
                 var server = _mapper.Map<Servers>(model);
+                server.ModifiedBy = int.Parse(User.Identity.GetUserId());
+
                 if (await _serverDto.Update(server))
                 {
                     return RedirectToAction("Index");
@@ -88,8 +93,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(ServerViewModel model)
         {
-
-            if (await _serverDto.Delete(model.Id))
+            int deletedBy = int.Parse(User.Identity.GetUserId());
+            if (await _serverDto.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index");
             }

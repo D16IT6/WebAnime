@@ -108,7 +108,7 @@
 }
 @section footerJs{
     @Html.Partial("_ValidationScriptsPartial")
-    @Html.Partial("_JqueryMultiSelectPartial")
+    <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
     <script>
         const editor = window.CKEDITOR.replace('ContentFake');
         CKFinder.setupCKEditor(editor, "/Resources/Library/Common/ckfinder/");

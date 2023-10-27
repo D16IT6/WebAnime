@@ -8,8 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
-using WebAnime.MVC.Helpers;
-using WebAnime.MVC.Helpers.Session;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -72,11 +70,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var user = _mapper.Map<Users>(model);
 
                 var insertRoleList = roleList.Where(x => model.RoleListIds.Contains(x.Id)).Select(x => x.Name).ToArray();
-                if (Session[SessionConstants.UserLogin] is UserSession userSession)
-                {
-                    user.CreatedBy = userSession.Id;
-                }
+
+                user.CreatedBy = int.Parse(User.Identity.GetUserId());
+
                 user.CreatedDate = DateTime.Now;
+
                 IdentityResult result = await _userManager.CreateAsync(user, model.Password);
                 int x;
                 if (result.Succeeded)
@@ -186,11 +184,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                         }
                     }
                 }
-                if (Session[SessionConstants.UserLogin] is UserSession userSession)
-                {
-                    user.ModifiedBy = userSession.Id;
-                }
+
+                user.ModifiedBy = int.Parse(User.Identity.GetUserId());
                 user.ModifiedDate = DateTime.Now;
+
                 IdentityResult updateUserResult = await _userManager.UpdateAsync(user);
 
                 foreach (var userError in updateUserResult.Errors)
@@ -233,12 +230,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 return new HttpNotFoundResult("Cannot find user");
             }
 
-            var userSession = Session[SessionConstants.UserLogin] as UserSession;
             user.IsDeleted = true;
-            if (userSession != null)
-            {
-                user.DeletedBy = userSession.Id;
-            }
+            user.DeletedBy = int.Parse(User.Identity.GetUserId());
 
             IdentityResult result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)

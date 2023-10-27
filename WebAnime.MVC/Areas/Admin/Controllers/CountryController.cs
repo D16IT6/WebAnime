@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataModels.Dto;
 using DataModels.EF;
+using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -38,6 +39,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var country = _mapper.Map<Countries>(model);
+                country.CreatedBy = int.Parse(User.Identity.GetUserId());
+
                 if (await _countryDto.Add(country))
                 {
                     return RedirectToAction("Index", "Country");
@@ -63,6 +66,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var country = _mapper.Map<Countries>(model);
+                country.ModifiedBy = int.Parse(User.Identity.GetUserId());
+
                 if (await _countryDto.Update(country))
                 {
                     return RedirectToAction("Index", "Country");
@@ -85,7 +90,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(CountryViewModel model)
         {
-            if (await _countryDto.Delete(model.Id))
+            int deletedBy = int.Parse(User.Identity.GetUserId());
+
+            if (await _countryDto.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index", "Country");
             }

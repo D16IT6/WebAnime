@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebAnime.MVC.Areas.Admin.Models;
 using WebAnime.MVC.Helpers;
-using WebAnime.MVC.Helpers.Session;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -92,15 +91,6 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     case SignInStatus.Success:
                         Session.Remove(SessionConstants.LoginFailCount);
                         await _userManager.SetLockoutEnabledAsync(user.Id, false);
-                        if (Session[SessionConstants.UserLogin] == null)
-                        {
-                            Session.Add(SessionConstants.UserLogin, new UserSession()
-                            {
-                                Id = user.Id,
-                                FullName = user.FullName,
-                                UserName = user.UserName,
-                            });
-                        }
 
                         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                         {
@@ -130,7 +120,6 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> LogOut()
         {
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            Session.Remove(SessionConstants.UserLogin);
             return await Task.FromResult<ActionResult>(RedirectToAction("Login"));
         }
 

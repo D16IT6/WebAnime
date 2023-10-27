@@ -50,7 +50,7 @@ namespace DataModels.Dto
             return true;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id, int deletedBy)
         {
             try
             {
@@ -59,6 +59,7 @@ namespace DataModels.Dto
                 if (deleteEntity == null) return false;
                 deleteEntity.IsDeleted = true;
                 deleteEntity.DeletedDate = DateTime.Now;
+                deleteEntity.DeletedBy = deletedBy;
                 await Context.SaveChangesAsync();
                 return true;
             }

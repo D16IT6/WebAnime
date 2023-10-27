@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataModels.Dto;
 using DataModels.EF;
+using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -40,6 +41,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
 
                 var studio = _mapper.Map<Studios>(model);
+                studio.CreatedBy = int.Parse(User.Identity.GetUserId());
                 if (await _studioDto.Add(studio))
                 {
                     return RedirectToAction("Index", "Studio");
@@ -66,6 +68,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
 
                 var studio = _mapper.Map<Studios>(model);
+                studio.ModifiedBy = int.Parse(User.Identity.GetUserId());
+
                 if (await _studioDto.Update(studio))
                 {
                     return RedirectToAction("Index", "Studio");
@@ -89,8 +93,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(StudioViewModel model)
         {
+            int deletedBy = int.Parse(User.Identity.GetUserId());
 
-            if (await _studioDto.Delete(model.Id))
+            if (await _studioDto.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index", "Studio");
             }

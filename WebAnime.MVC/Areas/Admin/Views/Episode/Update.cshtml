@@ -47,3 +47,8 @@
     </div>
 }
 @Html.ActionLink("Quay về","Index",new {id = anime.Id,serverId = server.Id},new {@class="btn btn-primary"})
+
+@section footerJs
+{
+    @Html.Partial("_ValidationScriptsPartial")
+}

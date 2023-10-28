@@ -30,7 +30,7 @@
 <div class="row">
     <div class="col-auto">
         <h2>
-            Trang quản lý anime 
+            Trang quản lý anime
         </h2>
     </div>
     <div class="col-auto">
@@ -47,21 +47,26 @@ else
         <thead>
             <tr>
                 <th>
-                    Tiêu đề
+                    @Html.DisplayNameFor(x => x.Title)
                 </th>
                 <th>
-                    Tiêu đề gốc
+                    @Html.DisplayNameFor(x => x.OriginalTitle)
                 </th>
-                <th>Thời lượng</th>
                 <th>
-                    Số tập dự kiến
-                </th>
+                    @Html.DisplayNameFor(x => x.Duration)
 
-                <th>
-                    Ngày phát hành
                 </th>
                 <th>
-                    Thể loại
+                    @Html.DisplayNameFor(x => x.TotalEpisodes)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(x => x.Synopsis)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(x => x.Release)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(x => x.CategoriesId)
                 </th>
                 <th>
                     Chức năng
@@ -76,7 +81,15 @@ else
                     <td>@anime.Title</td>
                     <td>@anime.OriginalTitle</td>
                     <td>@anime.Duration phút</td>
-                    <th>@anime.TotalEpisodes</th>
+                    <td>@anime.TotalEpisodes</td>
+                    <td>
+                        <button class="btn me-1 mb-1 btn-light-primary text-primary btn-lg px-4 fs-4 btnShowSynopsis"
+                                data-bs-toggle="modal"
+                                data-bs-target="#btn-anime-synopsis"
+                                data-synopsis-html="@anime.Synopsis">
+                            Xem
+                        </button>
+                    </td>
                     <td>
                         @if (anime.Release != null)
                         {
@@ -92,7 +105,7 @@ else
                     <td>
                         <div class="btn-group w-100">
                             @Html.ActionLink("Sửa", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
-                            @Html.ActionLink("Tập phim", "Index", "Episode", new { animeId = anime.Id, serverId = firstServerId, area = "Admin" }, new { @class = "btn btn-info text-white" })
+                            @Html.ActionLink("Tập", "Index", "Episode", new { animeId = anime.Id, serverId = firstServerId, area = "Admin" }, new { @class = "btn btn-info text-white" })
                             @Html.ActionLink("Xoá", "Delete", new { id = anime.Id }, new { @class = "btn btn-danger text-decoration-none" })
                         </div>
                     </td>
@@ -100,4 +113,48 @@ else
             }
         </tbody>
     </table>
+}
+<div>
+
+
+    <!-- sample modal content -->
+    <div class="modal fade"
+         id="btn-anime-synopsis"
+         tabindex="-1"
+         aria-labelledby="bs-example-modal-lg"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center">
+                    <h4 class="modal-title" id="myLargeModalLabel">
+                        Nội dung anime
+                    </h4>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body animeSynopsis">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-light-primary text-primary  text-start"
+                            data-bs-dismiss="modal">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footerJs
+{
+    <script>
+        $(`.btnShowSynopsis`).click(function () {
+            var synopsisHtml = $(this).data(`synopsisHtml`);
+            $(`.animeSynopsis`).html(synopsisHtml);
+        });
+    </script>
 }

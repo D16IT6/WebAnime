@@ -41,10 +41,31 @@ namespace DataModels.Dto
                 entity.Animes = await Context.Animes.FirstOrDefaultAsync(x => x.Id == entity.AnimeId && !x.IsDeleted);
                 entity.Servers = await Context.Servers.FirstOrDefaultAsync(x => x.Id == entity.ServerId && !x.IsDeleted);
 
-                entity.ModifiedDate = entity.CreatedDate = DateTime.Now;
+                entity.CreatedDate = DateTime.Now;
                 entity.IsDeleted = false;
 
                 Context.Episodes.Add(entity);
+                await Context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> AddRange(List<Episodes> episodes)
+        {
+            try
+            {
+                if (episodes == null) return false;
+
+                foreach (var episode in episodes)
+                {
+                    episode.CreatedDate = DateTime.Now;
+                }
+                Context.Episodes.AddRange(episodes);
+               
                 await Context.SaveChangesAsync();
                 return true;
             }

@@ -1,5 +1,6 @@
 ﻿@using System.Web.UI.WebControls
 @using DataModels.EF
+@using Microsoft.AspNet.Identity
 @model IEnumerable<WebAnime.MVC.Areas.Admin.Models.EpisodeViewModel>
 
 @{
@@ -8,21 +9,24 @@
     var servers = ViewBag.Servers as IEnumerable<Servers>;
 
     var currentServerId = (int)ViewBag.ServerId;
+    var currentAnimeId = anime?.Id;
 }
 
 @if (anime != null)
 {
 
-    using (Html.BeginForm("Index","Episode",FormMethod.Get))
+    using (Html.BeginForm("Index", "Episode", FormMethod.Get))
     {
         <div class="row my-3 d-flex justify-content-center">
-            <label class="col-1 col-form-label fw-bold">Loại server</label>
+            <label class="col-1 col-form-label fw-bold">Server</label>
             @Html.Hidden("animeId", anime.Id)
             <div class="col-4">
-                @Html.DropDownList("serverId", new SelectList(servers, "Id", "Name", currentServerId),new { @class = "form-select" })
+                @Html.DropDownList("serverId", new SelectList(servers, "Id", "Name", currentServerId), new { @class = "form-select" })
             </div>
             <div class="col-1">
-                <button class="btn-primary btn w-100">Lọc</button>
+                <button class="btn-primary btn w-100">
+                    Lọc
+                </button>
 
             </div>
         </div>
@@ -31,6 +35,12 @@
 
     <h2>Quản lý tập phim @anime.Title</h2>
     @Html.ActionLink("Thêm tập mới", "Create", new { animeId = anime.Id, serverId = currentServerId }, new { @class = "btn btn-primary my-2" })
+    <button class="btn btn-primary my-2"
+            id="btnCreateMultiEpisodes"
+            data-bs-toggle="modal"
+            data-bs-target="#btn-add-multiple-episodes">
+        Thêm nhiều tập
+    </button>
     <table class="table table-hover table-bordered">
         <thead>
             <tr>
@@ -43,9 +53,9 @@
                 <th>
                     @Html.DisplayNameFor(m => m.SortOrder)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(m => m.ServerId)
-                </th>
+                @*<th>
+                        @Html.DisplayNameFor(m => m.ServerId)
+                    </th>*@
                 <th>
                     Chức năng
                 </th>
@@ -65,19 +75,19 @@
                     <td>
                         @item.SortOrder
                     </td>
-                    <td>
-                        @{
-                            var selectedServer = (servers ?? throw new InvalidOperationException()).FirstOrDefault(x => x.Id == item.ServerId);
-                            if (selectedServer != null)
-                            {
-                                <text>@selectedServer.Name</text>
+                    @*<td>
+                            @{
+                                var selectedServer = (servers ?? throw new InvalidOperationException()).FirstOrDefault(x => x.Id == item.ServerId);
+                                if (selectedServer != null)
+                                {
+                                    <text>@selectedServer.Name</text>
+                                }
+                                else
+                                {
+                                    <text>Đang cập nhật</text>
+                                }
                             }
-                            else
-                            {
-                                <text>Đang cập nhật</text>
-                            }
-                        }
-                    </td>
+                        </td>*@
                     <td>
                         <div class="btn-group">
                             @Html.ActionLink("Sửa", "Update", "Episode", new { area = "Admin", id = item.Id }, new { @class = "btn btn-primary" })
@@ -93,4 +103,123 @@
 else
 {
     <h2>Không thấy anime, vui lòng tải lại</h2>
+}
+
+<div>
+
+    <!-- sample modal content -->
+    <div class="modal fade"
+         id="btn-add-multiple-episodes"
+         tabindex="-1"
+         aria-labelledby="bs-example-modal-lg"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center">
+                    <h4 class="modal-title" id="myLargeModalLabel">
+                        Danh sách tập mới
+                    </h4>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h3>Mỗi tập 1 dòng</h3>
+                    <h3>Tập thêm vào phải theo quy tắc: Tên tập|Url|Thứ tự</h3>
+                    <h4>Ví dụ: 01|http://abc.xyz|1</h4>
+                    <textarea class="form-control" style="height: 300px;" id="newEpisodes"></textarea>
+                    <span class=" text-danger mt-1" id="newEpisodesError"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-light-danger text-primary text-start"
+                            id="btnAddEpisodes"
+                            data-server-id="@currentServerId"
+                            data-anime-id="@currentAnimeId"
+                            data-created-by="@User.Identity.GetUserId()"
+                            data-request-url="@Url.Action("CreateMultiple","Episode")">
+                        Thêm mới
+                    </button>
+                    <button type="button"
+                            class="btn btn-light-danger text-danger  text-start"
+                            data-bs-dismiss="modal">
+                        Thoát
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>
+@section footerJs
+{
+    <script>
+        $(`#btnCreateMultiEpisodes`).click(function () {
+            //alert(requestUrl);
+            //handleCreate(requestUrl);
+
+        });
+        $(`#btnAddEpisodes`).click(function () {
+            const animeId = $(this).data('animeId');
+            const serverId = $(this).data('serverId');
+            const requestUrl = $(this).data('requestUrl');
+            const createdBy = $(this).data('createdBy');
+
+            const data = $(`#newEpisodes`).val();
+            if (data.length === 0) {
+                $(`#newEpisodesError`).text("Vui lòng nhập dữ liệu");
+                return;
+            }
+            const listData = data.split(`\n`);
+
+            const listEpisodes = [];
+
+            listData.forEach(x => {
+
+                var splitTemp = x.split('|');
+                const title = splitTemp[0];
+                const url = splitTemp[1];
+                const sortOrder = splitTemp[2];
+                const episode = {
+                    title,
+                    url,
+                    sortOrder,
+                    animeId,
+                    serverId,
+                    createdBy
+                };
+
+                listEpisodes.push(episode);
+            });
+            //console.log(JSON.stringify(listEpisodes));
+            handleCreate(requestUrl, listEpisodes);
+        });
+        function handleCreate(requestUrl, data) {
+            $.ajax({
+                type: "POST",
+                url: requestUrl,
+                data: {
+                    model: data
+                },
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+
+                    if (response.success) {
+
+                        alert('Thêm thành công');
+                        location.reload();
+                    } else {
+                        alert(`Có lỗi xảy ra`);
+                    }
+                },
+                error: function (error) {
+                    alert('error; ' + eval(error));
+                }
+            });
+        }
+    </script>
 }

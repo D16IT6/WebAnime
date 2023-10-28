@@ -53,6 +53,19 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 SortOrder = await _episodeDto.GetMaxOrderId(animeId, serverId) + 1
             });
         }
+        [HttpPost]
+        public async Task<ActionResult> CreateMultiple(EpisodeViewModel[] model)
+        {
+            var episodeList = _mapper.Map<EpisodeViewModel[], List<Episodes>>(model);
+
+            var result = await _episodeDto.AddRange(episodeList);
+
+            return Json(new
+            {
+                success = result
+            });
+
+        }
 
         [HttpPost]
         public async Task<ActionResult> Create(EpisodeViewModel model)

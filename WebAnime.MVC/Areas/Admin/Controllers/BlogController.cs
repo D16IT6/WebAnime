@@ -26,7 +26,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            
+
             var blogList = await _blogDto.GetAll();
             var blogListViewModel = _mapper.Map<IEnumerable<Blogs>, IEnumerable<BlogViewModel>>(blogList);
 

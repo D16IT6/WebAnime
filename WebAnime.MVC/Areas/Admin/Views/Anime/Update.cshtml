@@ -2,7 +2,7 @@
 @model WebAnime.MVC.Areas.Admin.Models.AnimeViewModel
 
 @{
-    ViewBag.Title = "Thêm anime mới";
+    ViewBag.Title = "Cập nhật anime";
     var ageRatingsList = ViewBag.AgeRating as IEnumerable<AgeRatings>;
 
     var categoriesList = ((ViewBag.Category as IEnumerable<Categories>) ?? Array.Empty<Categories>()).ToArray();
@@ -14,11 +14,15 @@
     var studioList = ((ViewBag.Studio as IEnumerable<Studios>) ?? Array.Empty<Studios>()).ToArray();
 
     var typeList = ViewBag.Type as IEnumerable<Types>;
+
+    var releaseDate = Model.Release ?? DateTime.Now;
+
+    var releaseDateBuilder = $"{releaseDate.Year}-{releaseDate.Month.ToString().PadLeft(2,'0')}-{releaseDate.Day}";
 }
 
 <h2>Cập nhật anime</h2>
 
-@using (Html.BeginForm("Create", "Anime", FormMethod.Post, new { @id = "frmCreateAnime" }))
+@using (Html.BeginForm("Update", "Anime", FormMethod.Post, new { @id = "frmCreateAnime" }))
 {
     @Html.ValidationSummary(true)
     <div class="row mb-3">
@@ -39,7 +43,7 @@
     <div class="row mb-3">
         @Html.LabelFor(x => x.Synopsis, new { @class = "col-form-label col-xl-2 fw-bold" })
         <div class="col-xl-10 position-relative">
-            @Html.TextArea("SynopsisCkEditor", new { @class = "form-control" })
+            @Html.TextArea("SynopsisFake", new { @class = "form-control" })
             @Html.TextBoxFor(x => x.Synopsis, new { @class = "position-absolute" })
             @Html.ValidationMessageFor(x => x.Synopsis, "", new { @class = "text-danger " })
         </div>
@@ -65,10 +69,10 @@
     <div class="row mb-3 ">
         @Html.LabelFor(x => x.Release, new { @class = "col-form-label col-xl-2 fw-bold" })
         <div class="col-xl-10">
-            @Html.Editor("ReleaseDate", new { htmlAttributes = new { @class = "form-control", type = "date" } })
+            @Html.Editor("ReleaseFake", new { htmlAttributes = new { @class = "form-control", type = "date" } })
             @Html.EditorFor(x => x.Release, new
             {
-                htmlAttributes = new { @class = "position-fixed" }
+                htmlAttributes = new { @class = "position-absolute",data_release_date=releaseDateBuilder }
             })
             @Html.ValidationMessageFor(x => x.Release, "", new { @class = "text-danger" })
 
@@ -142,7 +146,7 @@
     </div>
     <div class="row">
         <div class="col-6">
-            <button class="btn btn-primary" type="submit" id="btnCreate">Tạo mới</button>
+            <button class="btn btn-primary" type="submit" id="btnCreate">Cập nhật</button>
             @Html.ActionLink("Về trang chủ", "Index", null, new { @class = "btn btn-primary" })
 
         </div>
@@ -170,6 +174,7 @@
         #Release, #Synopsis, #StudiosId, #CategoriesId {
             width: 0;
             height: 0;
+            -ms-opacity: 0;
             opacity: 0;
         }
     </style>
@@ -183,18 +188,14 @@
 
     <script>
         function LoadRelease() {
-            const releaseValue = $(`#Release`).val().split('/');
-            const year = releaseValue[2].substr(0, 4);
-            const month = releaseValue[1];
-            const day = releaseValue[0];
-            $(`#ReleaseDate`).val(`${year}-${month}-${day}`);
-            $(`#Release`).val(`${year}-${month}-${day}`);
-
+            const releaseDate = $(`#Release`).data('releaseDate');
+            console.log(releaseDate);
+            $(`#ReleaseFake`).val(releaseDate);
         }
 
         function LoadSynopsis() {
             const synopsis = $(`#Synopsis`).val();
-            $(`#SynopsisCkEditor`).val(synopsis);
+            $(`#SynopsisFake`).val(synopsis);
         }
 
         function LoadFake(id, fakeId) {
@@ -227,7 +228,7 @@
 
         }
 
-        const editor = window.CKEDITOR.replace('SynopsisCkEditor');
+        const editor = window.CKEDITOR.replace('SynopsisFake');
         CKFinder.setupCKEditor(editor, "/Resources/Library/Common/ckfinder/");
         LoadFirst();
 
@@ -242,7 +243,7 @@
 
         $(`#btnCreate`).click(function (e) {
             e.preventDefault();
-            const inputHtml = $(`#SynopsisCkEditor`).val();
+            const inputHtml = $(`#SynopsisFake`).val();
             $(`#Synopsis`).val(inputHtml);
 
             getSelectedList('CategoriesId', 'CategoriesIdFake');
@@ -266,7 +267,7 @@
             };
             ckFinder.popup();
         });
-        $(`#ReleaseDate`).flatpickr({
+        $(`#ReleaseFake`).flatpickr({
             altInput: true,
             altFormat: "d/m/Y",
             onChange: function (selectedDate, dateStr) {

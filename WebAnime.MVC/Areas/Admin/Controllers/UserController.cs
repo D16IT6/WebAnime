@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using WebAnime.MVC.Areas.Admin.Models;
+using ViewModels.Admin;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -17,11 +17,14 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         private readonly UserManager _userManager;
         private readonly IMapper _mapper;
         private readonly RoleManager _roleManager;
+
         public UserController(UserManager userManager, IMapper mapper, RoleManager roleManager)
         {
             _userManager = userManager;
             _mapper = mapper;
             _roleManager = roleManager;
+
+            OwinConfig.RegisterTokenService(_userManager);
         }
         public async Task<ActionResult> Index()
         {
@@ -71,15 +74,19 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                 var insertRoleList = roleList.Where(x => model.RoleListIds.Contains(x.Id)).Select(x => x.Name).ToArray();
 
-                user.CreatedBy = int.Parse(User.Identity.GetUserId());
+                user.CreatedBy = User.Identity.GetUserId<int>();
 
                 user.CreatedDate = DateTime.Now;
+
+                user.EmailConfirmed = true;
+                user.PhoneNumberConfirmed = true;
 
                 IdentityResult result = await _userManager.CreateAsync(user, model.Password);
                 int x;
                 if (result.Succeeded)
                 {
                     IdentityResult roleResult = await _userManager.AddToRolesAsync(user.Id, insertRoleList);
+
                     if (!roleResult.Succeeded)
                     {
                         x = 0;
@@ -136,6 +143,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 user.Email = model.Email;
                 user.PhoneNumber = model.PhoneNumber;
                 user.FullName = model.FullName;
+                user.AvatarUrl = model.AvatarUrl;
 
                 var oldRoleIds = _roleManager.GetRoleIdsFromUser(_userManager, user.Id).ToArray();
                 var newRoleIds = model.RoleListIds ?? Array.Empty<int>();
@@ -185,7 +193,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     }
                 }
 
-                user.ModifiedBy = int.Parse(User.Identity.GetUserId());
+                user.ModifiedBy = User.Identity.GetUserId<int>();
                 user.ModifiedDate = DateTime.Now;
 
                 IdentityResult updateUserResult = await _userManager.UpdateAsync(user);
@@ -231,7 +239,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             }
 
             user.IsDeleted = true;
-            user.DeletedBy = int.Parse(User.Identity.GetUserId());
+            user.DeletedBy = User.Identity.GetUserId<int>();
 
             IdentityResult result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)

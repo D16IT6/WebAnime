@@ -5,7 +5,7 @@ using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using WebAnime.MVC.Areas.Admin.Models;
+using ViewModels.Admin;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -14,10 +14,12 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ServerDto _serverDto;
+
         public ServerController(IMapper mapper, ServerDto serverDto)
         {
             _mapper = mapper;
             _serverDto = serverDto;
+
         }
         [HttpGet]
         public async Task<ActionResult> Index()
@@ -40,7 +42,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
 
                 var server = _mapper.Map<Servers>(model);
-                server.CreatedBy = int.Parse(User.Identity.GetUserId());
+                server.CreatedBy = User.Identity.GetUserId<int>();
 
                 if (await _serverDto.Add(server))
                 {
@@ -69,7 +71,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
 
                 var server = _mapper.Map<Servers>(model);
-                server.ModifiedBy = int.Parse(User.Identity.GetUserId());
+                server.ModifiedBy = User.Identity.GetUserId<int>();
 
                 if (await _serverDto.Update(server))
                 {
@@ -93,7 +95,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(ServerViewModel model)
         {
-            int deletedBy = int.Parse(User.Identity.GetUserId());
+            int deletedBy = User.Identity.GetUserId<int>();
             if (await _serverDto.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index");

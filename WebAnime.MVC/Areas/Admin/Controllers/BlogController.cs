@@ -5,7 +5,7 @@ using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using WebAnime.MVC.Areas.Admin.Models;
+using ViewModels.Admin;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -21,6 +21,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             _blogCategoryDto = blogCategoryDto;
             _blogDto = blogDto;
             _mapper = mapper;
+
         }
 
         [HttpGet]
@@ -42,7 +43,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(BlogViewModel model)
         {
-            model.CreatedBy = int.Parse(User.Identity.GetUserId());
+            model.CreatedBy = User.Identity.GetUserId<int>();
             var blog = _mapper.Map<Blogs>(model);
             var result = await _blogDto.Create(blog);
             if (result)
@@ -69,7 +70,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                model.ModifiedBy = int.Parse(User.Identity.GetUserId());
+                model.ModifiedBy = User.Identity.GetUserId<int>();
                 var blog = _mapper.Map<Blogs>(model);
                 var result = await _blogDto.Update(blog);
                 if (result)
@@ -93,7 +94,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(BlogViewModel model)
         {
-            var deletedBy = int.Parse(User.Identity.GetUserId());
+            var deletedBy = User.Identity.GetUserId<int>();
             bool result = await _blogDto.Delete(model.Id, deletedBy);
             if (result)
             {

@@ -13,6 +13,7 @@ namespace WebAnime.MVC
             RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
+
         protected override IKernel CreateKernel() => NinjectConfig.Kernel;
     }
 }

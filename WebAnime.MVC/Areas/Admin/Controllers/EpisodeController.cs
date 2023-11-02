@@ -5,7 +5,7 @@ using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using WebAnime.MVC.Areas.Admin.Models;
+using ViewModels.Admin;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -16,12 +16,15 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         private readonly ServerDto _serverDto;
         private readonly EpisodeDto _episodeDto;
         private readonly AnimeDto _animeDto;
+
+
         public EpisodeController(IMapper mapper, ServerDto serverDto, EpisodeDto episodeDto, AnimeDto animeDto)
         {
             _mapper = mapper;
             _serverDto = serverDto;
             _episodeDto = episodeDto;
             _animeDto = animeDto;
+
         }
 
         public async Task<ActionResult> Index(int animeId, int serverId)
@@ -73,7 +76,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var episode = _mapper.Map<Episodes>(model);
-                episode.CreatedBy = int.Parse(User.Identity.GetUserId());
+                episode.CreatedBy = User.Identity.GetUserId<int>();
+                
                 if (await _episodeDto.Add(episode))
                 {
                     return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = model.AnimeId, serverId = model.ServerId });
@@ -103,7 +107,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var episode = _mapper.Map<Episodes>(model);
-                episode.ModifiedBy = int.Parse(User.Identity.GetUserId());
+                episode.ModifiedBy = User.Identity.GetUserId<int>();
 
                 if (await _episodeDto.Update(episode))
                 {
@@ -134,11 +138,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             var animeId = deleted.AnimeId;
             var serverId = deleted.ServerId;
 
-            int deletedBy = int.Parse(User.Identity.GetUserId());
+            int deletedBy = User.Identity.GetUserId<int>();
 
             if (await _episodeDto.Delete(model.Id, deletedBy))
             {
-                return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = animeId, serverId });
+                return RedirectToAction("Index", "Episode", new { area = "Admin", animeId, serverId });
             }
             ModelState.AddModelError(string.Empty, @"Lỗi không xoá được, vui lòng thử lại");
             return View();
@@ -148,7 +152,5 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             ViewBag.Anime = await _animeDto.GetById(animeId);
         }
-
-
     }
 }

@@ -1,0 +1,95 @@
+﻿@model WebAnime.MVC.Models.LoginViewModel
+@{
+    ViewBag.Title = "Đăng nhập";
+}
+
+<section class="login spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="login__form">
+                    <h3>Đăng nhập</h3>
+                    @using (Html.BeginForm())
+                    {
+                        @Html.ValidationSummary(true, "", new { @class = "validation--summary" })
+                        <div class="input__item">
+                            @Html.TextBoxFor(x => x.UserName, new { @placeholder = "Tên đăng nhập" })
+                            <span class="icon_profile"></span>
+                        </div>
+                        <div class="validate--box">
+                            @Html.ValidationMessageFor(x => x.UserName, "")
+
+                        </div>
+                        <div class="input__item">
+                            @Html.PasswordFor(x => x.Password, new { @placeholder = "Mật khẩu" })
+                            <span class="icon_lock"></span>
+                        </div>
+                        <div class="validate--box">
+                            @Html.ValidationMessageFor(x => x.Password, "")
+
+                        </div>
+                        <button type="submit" class="site-btn">Đăng nhập</button>
+                    }
+                    <a href="#" class="forget_pass">Quên mật khẩu?</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="login__register">
+                    <h3>Chưa có tài khoản?</h3>
+                    <a href="#" class="primary-btn">Tạo mới ngay</a>
+                </div>
+            </div>
+        </div>
+        <div class="login__social">
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-6">
+                    <div class="login__social__links">
+                        <span>hoặc</span>
+                        <ul>
+                            <li>
+                                <a href="#" class="facebook">
+                                    <i class="fa fa-facebook"></i> Đăng nhập với Facebook
+                                </a>
+                            </li>
+                            <li><a href="#" class="google"><i class="fa fa-google"></i> Đăng nhập với Google</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section footerCss
+{
+    <style>
+        .validate--box {
+            -ms-transform: translate(10px, -10px);
+            -webkit-transform: translate(10px, -10px);
+            transform: translate(10px, -10px);
+        }
+
+            .validate--box span {
+                color: red;
+            }
+
+        .validation--simarry {
+            -ms-transform: translate(10px, -10px);
+            -webkit-transform: translate(10px, -10px);
+            transform: translate(10px, -10px);
+        }
+
+            .validation--simarry ul {
+                list-style-type: none;
+            }
+
+        .validation--summary li {
+            color: red;
+            list-style-type: none;
+        }
+    </style>
+}
+@section footerJs
+{
+
+}

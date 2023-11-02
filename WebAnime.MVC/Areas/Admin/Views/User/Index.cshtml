@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebAnime.MVC.Areas.Admin.Models.UserViewModel>
+﻿@model IEnumerable<ViewModels.Admin.UserViewModel>
 @{
     ViewBag.Title = "Index";
 }
@@ -8,65 +8,71 @@
         <h2>Danh sách tài khoản</h2>
     </div>
     <div class="col">
-        @Html.ActionLink("Tạo mới","Create",new{@area="Admin"},new{@class="btn btn-primary"})
+        @Html.ActionLink("Tạo mới", "Create", new { @area = "Admin" }, new { @class = "btn btn-primary" })
 
     </div>
 </div>
 
 <table class="table border text-nowrap mb-0 align-middle">
     <thead>
-    <tr class="text-center">
-        <th>
-            @Html.DisplayNameFor(x => x.UserName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(x => x.FullName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(x => x.BirthDay)
-        </th>
-        <th>
-            @Html.DisplayNameFor(x => x.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(x => x.PhoneNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(x => x.RoleList)
-        </th>
-        <th>Chức năng</th>
-    </tr>
+        <tr class="text-center">
+            <th>
+                @Html.DisplayNameFor(x => x.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.BirthDay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.AvatarUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.RoleList)
+            </th>
+
+            <th>Chức năng</th>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var user in Model)
-    {
-        <tr>
-            <td>
-                @user.UserName
-            </td>
-            <td>
-                @user.FullName
-            </td>
-            <td>
-                @user.BirthDay.ToString("dd/MM/yyyy")
-            </td>
-            <td>
-                @user.Email
-            </td>
-            <td>
-                @user.PhoneNumber
-            </td>
-           
-            <td>
-                @String.Join(",", user.RoleList)
-            </td>
-            <td>
-                <div class="btn btn-group d-flex justify-content-center">
-                    @Html.ActionLink("Sửa", "Update", new { @id = user.Id }, new { @class = "btn btn-primary" })
-                    @Html.ActionLink("Xóa", "Delete", new { @id = user.Id }, new { @class = "btn btn-danger" })
-                </div>
-            </td>
-        </tr>
-    }
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    @user.UserName
+                </td>
+                <td>
+                    @user.FullName
+                </td>
+                <td>
+                    @user.BirthDay.ToString("dd/MM/yyyy")
+                </td>
+                <td>
+                    @user.Email
+                </td>
+                <td>
+                    @user.PhoneNumber
+                </td>
+                <td>
+                    <img src="@user.AvatarUrl" class="rounded-circle ratio ratio-1x1" style="width: 100px;height:100px"/>
+                </td>
+                <td>
+                    @String.Join(",", user.RoleList)
+                </td>
+                <td>
+                    <div class="btn btn-group d-flex justify-content-center">
+                        @Html.ActionLink("Sửa", "Update", new { @id = user.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Xóa", "Delete", new { @id = user.Id }, new { @class = "btn btn-danger" })
+                    </div>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

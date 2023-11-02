@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using WebAnime.MVC.Areas.Admin.Models;
+using ViewModels.Admin;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -62,7 +62,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
 
                 var entity = _mapper.Map<Animes>(model);
-                entity.ModifiedBy = int.Parse(User.Identity.GetUserId());
+                entity.ModifiedBy = User.Identity.GetUserId<int>();
 
                 if (await _animeDto.Add(entity))
                 {
@@ -94,7 +94,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                 var entity = _mapper.Map<Animes>(model);
 
-                entity.ModifiedBy = int.Parse(User.Identity.GetUserId());
+                entity.ModifiedBy = User.Identity.GetUserId<int>();
 
                 if (await _animeDto.Update(entity))
                 {
@@ -121,7 +121,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(AnimeViewModel model)
         {
-            int deletedBy = int.Parse(User.Identity.GetUserId());
+            int deletedBy = User.Identity.GetUserId<int>();
 
             if (await _animeDto.Delete(model.Id, deletedBy))
             {

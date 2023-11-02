@@ -5,7 +5,7 @@ using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using WebAnime.MVC.Areas.Admin.Models;
+using ViewModels.Admin;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -19,6 +19,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             _mapper = mapper;
             this._studioDto = studioDto;
+
         }
         [HttpGet]
         public async Task<ActionResult> Index()
@@ -41,7 +42,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
 
                 var studio = _mapper.Map<Studios>(model);
-                studio.CreatedBy = int.Parse(User.Identity.GetUserId());
+                studio.CreatedBy = User.Identity.GetUserId<int>();
                 if (await _studioDto.Add(studio))
                 {
                     return RedirectToAction("Index", "Studio");
@@ -68,7 +69,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
 
                 var studio = _mapper.Map<Studios>(model);
-                studio.ModifiedBy = int.Parse(User.Identity.GetUserId());
+                studio.ModifiedBy = User.Identity.GetUserId<int>();
 
                 if (await _studioDto.Update(studio))
                 {
@@ -93,7 +94,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(StudioViewModel model)
         {
-            int deletedBy = int.Parse(User.Identity.GetUserId());
+            int deletedBy = User.Identity.GetUserId<int>();
 
             if (await _studioDto.Delete(model.Id, deletedBy))
             {

@@ -1,5 +1,5 @@
 ﻿@using Roles = DataModels.EF.Identity.Roles
-@model WebAnime.MVC.Areas.Admin.Models.UserViewModel
+@model ViewModels.Admin.UserViewModel
 @{
     ViewBag.Title = "Create";
     var roleList = ViewBag.Roles as IEnumerable<Roles> ?? new List<Roles>();
@@ -7,10 +7,10 @@
 
 <h2>Tạo tài khoản quản trị mới</h2>
 
-@using (Html.BeginForm("Create","User",FormMethod.Post,new{@id ="frmCreateUser"}))
+@using (Html.BeginForm("Create", "User", FormMethod.Post, new { @id = "frmCreateUser" }))
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary(false)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="row mb-2">
         @Html.LabelFor(x => x.FullName, new { @class = "col-form-label col-2" })
         <div class="col-4">
@@ -47,7 +47,7 @@
         @Html.LabelFor(x => x.BirthDay, new { @class = "col-form-label col-2" })
         <div class="col-4">
             @Html.Editor("BirthDayFake", new { htmlAttributes = new { @class = "form-control", type = "date" } })
-            @Html.EditorFor(x => x.BirthDay, new { htmlAttributes = new { type = "date",@class="position-absolute"} })
+            @Html.EditorFor(x => x.BirthDay, new { htmlAttributes = new { type = "date", @class = "position-absolute" } })
             @Html.ValidationMessageFor(x => x.BirthDay, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -69,6 +69,18 @@
         </div>
     </div>
 
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.AvatarUrl, new { @class = "col-form-label col-lg-2" })
+        <div class="col-lg-4">
+            <div class="input-group">
+                @Html.TextBoxFor(x => x.AvatarUrl, new { @class = "form-control", type = "tel" })
+                <button class="btn btn-outline-primary" id="btnSelectAvatar" type="button">Chọn</button>
+            </div>
+            @Html.ValidationMessageFor(x => x.AvatarUrl, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
     <div class="row mb-2 ">
         @Html.LabelFor(x => x.RoleListIds, new { @class = "col-form-label col-2" })
         <div class="col-4 position-relative">
@@ -77,7 +89,7 @@
                 var rolesEnumerable = roleList.ToArray();
             }
             @Html.ListBox("RoleListIdsFake", new MultiSelectList(rolesEnumerable, "Id", "Name"))
-            @Html.ListBoxFor(x => x.RoleListIds, new MultiSelectList(rolesEnumerable, "Id", "Name"),new{@class="position-absolute"})
+            @Html.ListBoxFor(x => x.RoleListIds, new MultiSelectList(rolesEnumerable, "Id", "Name"), new { @class = "position-absolute" })
             @Html.ValidationMessageFor(x => x.RoleListIds, "", new { @class = "text-danger" })
 
         </div>
@@ -104,6 +116,7 @@
         .ms-options-wrap > button:after {
             right: 15px;
         }
+
         #BirthDay, #RoleListIds {
             opacity: 0;
             top: 0;
@@ -122,10 +135,10 @@
     <script>
         function loadFake(id, fakeId) {
             const fakeIdValue = $(`#${fakeId}`).val();
-            
+
             $(`#${id}`).val(fakeIdValue);
         }
-        $(`#btnCreate`).click(function(e) {
+        $(`#btnCreate`).click(function (e) {
             e.preventDefault();
 
             loadFake('BirthDay', 'BirthDayFake');
@@ -160,5 +173,14 @@
             item.classList.add(`border-1`);
             item.classList.add(`p-2`);
         }
+
+        $(`#btnSelectAvatar`).click(function () {
+            const ckFinder = new CKFinder();
+            ckFinder.selectActionFunction = function (url) {
+                $(`input#AvatarUrl`).val(url);
+            }
+            ckFinder.popup();
+
+        });
     </script>
 }

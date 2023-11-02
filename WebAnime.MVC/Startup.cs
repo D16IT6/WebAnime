@@ -1,4 +1,8 @@
-﻿using Microsoft.Owin;
+﻿using System;
+using DataModels.EF.Identity;
+using DataModels.Helpers;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
 using Owin;
 using static WebAnime.MVC.OwinConfig;
 [assembly: OwinStartup(typeof(WebAnime.MVC.Startup))]
@@ -7,8 +11,7 @@ namespace WebAnime.MVC
 {
     public class Startup
     {
-        //private RoleManager _roleManager;
-        //private UserManager _userManager;
+
         public void Configuration(IAppBuilder app)
         {
             AuthConfig(app);
@@ -17,41 +20,49 @@ namespace WebAnime.MVC
             //CreateDefaultRoles();
             //CreateDefaultUsers();
         }
-        //private void RegisterServices()
-        //{
-        //    _roleManager = NinjectConfig.GetService<RoleManager>();
-        //    _userManager = NinjectConfig.GetService<UserManager>();
-        //}
-        //public void CreateDefaultRoles()
-        //{
-        //    _roleManager
-        //        .CreateRoleIfNotExist("adMIN")
-        //        .CreateRoleIfNotExist("MANAgeR")
-        //        .CreateRoleIfNotExist("User");
-        //}
+        
 
-        //public void CreateDefaultUsers()
-        //{
-        //    var adminUser = new Users()
-        //    {
-        //        UserName = "talonezio",
-        //        BirthDay = new DateTime(2003, 7, 17),
-        //        Email = "vuthemanh1707@gmail.com",
-        //        PhoneNumber = "0988344814"
-        //    };
-        //    var managerUser = new Users()
-        //    {
-        //        UserName = "vuthemanh1707",
-        //        BirthDay = new DateTime(2003, 7, 17),
-        //        Email = "vuthemanh1707@gmail.com",
-        //        PhoneNumber = "0988344814"
-        //    };
+        RoleManager _roleManager;
+        UserManager _userManager;
+        void RegisterServices()
+        {
+            _roleManager = NinjectConfig.GetService<RoleManager>();
+            _userManager = NinjectConfig.GetService<UserManager>();
+        }
+        void CreateDefaultRoles()
+        {
+            _roleManager
+                .CreateRoleIfNotExist("adMIN")
+                .CreateRoleIfNotExist("MANAgeR")
+                .CreateRoleIfNotExist("User");
+        }
 
-        //    var defaultPassword = "manhngu123";
+        void CreateDefaultUsers()
+        {
+            var adminUser = new Users()
+            {
+                UserName = "talonezio",
+                BirthDay = new DateTime(2003, 7, 17),
+                Email = "vuthemanh1707@gmail.com",
+                PhoneNumber = "0988344814",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true
+            };
+            var managerUser = new Users()
+            {
+                UserName = "vuthemanh1707",
+                BirthDay = new DateTime(2003, 7, 17),
+                Email = "vuthemanh333@gmail.com",
+                PhoneNumber = "0988344814",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true
+            };
 
-        //    _userManager
-        //        .CreateUserIfNotExist(adminUser, defaultPassword, "Admin")
-        //        .CreateUserIfNotExist(managerUser, defaultPassword, "Manager");
-        //}
+            var defaultPassword = "TalonEzio177!@#";
+
+            _userManager
+                .CreateUserIfNotExist(adminUser, defaultPassword, "Admin")
+                .CreateUserIfNotExist(managerUser, defaultPassword, "Manager");
+        }
     }
 }

@@ -3,7 +3,7 @@ using DataModels.EF;
 using DataModels.EF.Identity;
 using Microsoft.AspNet.Identity;
 using System.Linq;
-using WebAnime.MVC.Areas.Admin.Models;
+using ViewModels.Admin;
 using static DataModels.Helpers.RoleManagerExtensions;
 namespace WebAnime.MVC
 {

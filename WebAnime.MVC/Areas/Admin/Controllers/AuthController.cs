@@ -8,7 +8,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using WebAnime.MVC.Areas.Admin.Models;
+using ViewModels.Admin;
 using WebAnime.MVC.Helpers;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
@@ -26,14 +26,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
 
-            var dataProtectorProvider = OwinConfig.DataProtectionProvider;
+            OwinConfig.RegisterTokenService(userManager);
 
-            var provider = dataProtectorProvider.Create("WebAnime.MVC.ResetPasswordToken");
-            _userManager.UserTokenProvider = new DataProtectorTokenProvider<Users, int>(provider)
-            {
-                TokenLifespan = TimeSpan.FromHours(1)
-            };
         }
+
 
         [HttpGet]
         public async Task<ActionResult> Login()
@@ -91,7 +87,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     case SignInStatus.Success:
                         Session.Remove(SessionConstants.LoginFailCount);
                         await _userManager.SetLockoutEnabledAsync(user.Id, false);
-
+                        await _userManager.ResetAccessFailedCountAsync(user.Id);
                         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                         {
                             return Redirect(returnUrl);

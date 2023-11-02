@@ -84,8 +84,9 @@ namespace WebAnime.MVC
             kernel.Bind<UserManager<Users, int>>().ToMethod(ninjectContext =>
             {
                 var userStore = ninjectContext.Kernel.Get<UserStore>();
+                var userManager = new UserManager(userStore);
 
-                return new UserManager(userStore);
+                return userManager;
             });
 
 

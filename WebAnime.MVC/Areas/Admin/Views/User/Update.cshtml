@@ -1,13 +1,13 @@
 ﻿@using Roles = DataModels.EF.Identity.Roles
-@model WebAnime.MVC.Areas.Admin.Models.UserViewModel
+@model ViewModels.Admin.UserViewModel
 @{
     ViewBag.Title = "Update";
     var roleList = ViewBag.Roles as List<Roles> ?? new List<Roles>();
-    var dateBuilder = $"{Model.BirthDay.Year}-{Model.BirthDay.Month.ToString().PadLeft(2,'0')}-{Model.BirthDay.Day.ToString().PadLeft(2, '0')}";
+    var dateBuilder = $"{Model.BirthDay.Year}-{Model.BirthDay.Month.ToString().PadLeft(2, '0')}-{Model.BirthDay.Day.ToString().PadLeft(2, '0')}";
 }
 <h2>Cập nhật thông tin tài khoản</h2>
 
-@using (Html.BeginForm("Update","User",FormMethod.Post,new{id= "frmUpdateUser" }))
+@using (Html.BeginForm("Update", "User", FormMethod.Post, new { id = "frmUpdateUser" }))
 {
     @Html.HiddenFor(x => x.Id)
     @Html.HiddenFor(x => x.Password)
@@ -15,66 +15,82 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
     <div class="row mb-2">
-        @Html.LabelFor(x => x.FullName, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        @Html.LabelFor(x => x.FullName, new { @class = "col-form-label col-lg-2" })
+        <div class="col-lg-4">
             @Html.TextBoxFor(x => x.FullName, new { @class = "form-control" })
             @Html.ValidationMessageFor(x => x.FullName, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="row mb-2">
-        @Html.LabelFor(x => x.UserName, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        @Html.LabelFor(x => x.UserName, new { @class = "col-form-label col-lg-2" })
+        <div class="col-lg-4">
             @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
             @Html.ValidationMessageFor(x => x.UserName, "", new { @class = "text-danger" })
 
         </div>
     </div>
     <div class="row mb-2">
-        @Html.LabelFor(x => x.BirthDay, new { @class = "col-form-label col-2" })
-        <div class="col-4">
-            @Html.Editor("BirthDayFake", new { htmlAttributes = new { @class = "form-control", type = "date"} })
-            @Html.EditorFor(x => x.BirthDay,new{htmlAttributes =
-                new {
+        @Html.LabelFor(x => x.BirthDay, new { @class = "col-form-label col-lg-2" })
+        <div class="col-lg-4">
+            @Html.Editor("BirthDayFake", new { htmlAttributes = new { @class = "form-control", type = "date" } })
+            @Html.EditorFor(x => x.BirthDay, new
+            {
+                htmlAttributes =
+                new
+                     {
                     @class = "form-control position-absolute",
-                    type="date",
-                    data_value= dateBuilder
-                } })
+                    type = "date",
+                    data_value = dateBuilder
+                }
+            })
             @Html.ValidationMessageFor(x => x.BirthDay, "", new { @class = "text-danger" })
 
         </div>
     </div>
     <div class="row mb-2">
-        @Html.LabelFor(x => x.Email, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        @Html.LabelFor(x => x.Email, new { @class = "col-form-label col-lg-2" })
+        <div class="col-lg-4">
             @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email" })
             @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
 
         </div>
     </div>
     <div class="row mb-2">
-        @Html.LabelFor(x => x.PhoneNumber, new { @class = "col-form-label col-2" })
-        <div class="col-4">
+        @Html.LabelFor(x => x.PhoneNumber, new { @class = "col-form-label col-lg-2" })
+        <div class="col-lg-4">
             @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", type = "tel", pattern = "[0-9]" })
             @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
 
         </div>
     </div>
 
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.AvatarUrl, new { @class = "col-form-label col-lg-2" })
+        <div class="col-lg-4">
+            <div class="input-group">
+                @Html.TextBoxFor(x => x.AvatarUrl, new { @class = "form-control", type = "tel" })
+                <button class="btn btn-outline-primary" id="btnSelectAvatar" type="button">Chọn</button>
+            </div>
+            @Html.ValidationMessageFor(x => x.AvatarUrl, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
     <div class="row mb-2 ">
-        @Html.LabelFor(x => x.RoleListIds, new { @class = "col-form-label col-2" })
-        <div class="col-4 position-relative">
+        @Html.LabelFor(x => x.RoleListIds, new { @class = "col-form-label col-lg-2" })
+        <div class="col-lg-4 position-relative">
 
             @{
                 var rolesEnumerable = roleList.ToArray();
             }
             @Html.ListBox("RoleListIdsFake", new MultiSelectList(rolesEnumerable, "Id", "Name"))
-            @Html.ListBoxFor(x => x.RoleListIds, new MultiSelectList(rolesEnumerable, "Id", "Name"),new{@class="position-absolute"})
+            @Html.ListBoxFor(x => x.RoleListIds, new MultiSelectList(rolesEnumerable, "Id", "Name"), new { @class = "position-absolute" })
             @Html.ValidationMessageFor(x => x.RoleListIds, "", new { @class = "text-danger" })
 
         </div>
     </div>
     <div class="row mb-2">
-        <div class="col-3">
+        <div class="col-auto">
             <button class="btn btn-primary" id="btnUpdate">Cập nhật</button>
         </div>
     </div>
@@ -88,13 +104,14 @@
             border-color: rgb(222, 226, 230);
         }
 
-        .ms-options-wrap button span {
-            font-size: 16px;
-        }
+            .ms-options-wrap button span {
+                font-size: 16px;
+            }
 
         .ms-options-wrap > button:after {
             right: 15px;
         }
+
         #BirthDay, #RoleListIds {
             opacity: 0;
             top: 0;
@@ -128,7 +145,7 @@
             $(`#${fakeId}`).val(selectedIds);
         }
 
-        function bindingData() { 
+        function bindingData() {
 
             setMultiSelectValue('RoleListIds', 'RoleListIdsFake');
 
@@ -136,9 +153,9 @@
 
         bindingData();
 
-        
 
-        $(`#btnUpdate`).click(function(e) {
+
+        $(`#btnUpdate`).click(function (e) {
             e.preventDefault();
 
             loadFromBToA('BirthDay', 'BirthDayFake');
@@ -174,6 +191,14 @@
             item.classList.add(`border-1`);
             item.classList.add(`p-2`);
         }
+        $(`#btnSelectAvatar`).click(function () {
+            const ckFinder = new CKFinder();
+            ckFinder.selectActionFunction = function (url) {
+                $(`input#AvatarUrl`).val(url);
+            }
+            ckFinder.popup();
+
+        });
 
     </script>
 }

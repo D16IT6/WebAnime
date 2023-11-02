@@ -2,11 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataModels.EF.Identity
 {
     public class Users : IdentityUser<int, UserLogins, UserRoles, UserClaims>
     {
+        [MaxLength(200)]
+        public string AvatarUrl { get; set; }
+
         public DateTime? BirthDay { get; set; }
         [MaxLength(250)]
         public string FullName { get; set; }
@@ -30,21 +34,35 @@ namespace DataModels.EF.Identity
 
     public class Roles : IdentityRole<int, UserRoles>
     {
-
     }
 
     public class UserLogins : IdentityUserLogin<int>
     {
+        [ForeignKey(nameof(User))]
+        public override int UserId { get; set; }
+        public override string LoginProvider { get; set; }
+        public override string ProviderKey { get; set; }
 
+        public virtual Users User { get; set; }
     }
 
     public class UserRoles : IdentityUserRole<int>
     {
 
+        [ForeignKey(nameof(Users))]
+        public override int RoleId { get; set; }
+        public virtual Users Users { get; set; }
+
+
+        [ForeignKey(nameof(Roles))]
+        public override int UserId { get; set; }
+        public virtual Roles Roles { get; set; }
     }
 
     public class UserClaims : IdentityUserClaim<int>
     {
-
+        [ForeignKey(nameof(User))]
+        public override int UserId { get; set; }
+        public virtual Users User { get; set; }
     }
 }

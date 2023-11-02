@@ -1,4 +1,4 @@
-﻿@model WebAnime.MVC.Areas.Admin.Models.StudioViewModel
+﻿@model ViewModels.Admin.StudioViewModel
 
 @{
     ViewBag.Title = "Update";
@@ -9,7 +9,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)

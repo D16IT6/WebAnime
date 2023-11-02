@@ -1,15 +1,28 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using DataModels.EF.Identity;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.DataProtection;
 using Owin;
 using System;
+using Microsoft.Owin.Security.Google;
 
 namespace WebAnime.MVC
 {
     public class OwinConfig
     {
-        public static IDataProtectionProvider DataProtectionProvider { get; set; }
+        private static IDataProtectionProvider DataProtectionProvider { get; set; }
+        public static void RegisterTokenService(UserManager userManager)
+        {
+            var dataProtectorProvider = OwinConfig.DataProtectionProvider;
+
+            var provider = dataProtectorProvider.Create("WebAnime.MVC.ResetToken.TalonEzio.Hehe");
+            userManager.UserTokenProvider = new DataProtectorTokenProvider<Users, int>(provider)
+            {
+                TokenLifespan = TimeSpan.FromHours(1)
+            };
+        }
         public static void AuthConfig(IAppBuilder app)
         {
             DataProtectionProvider = app.GetDataProtectionProvider();
@@ -41,18 +54,14 @@ namespace WebAnime.MVC
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
 
 
-            // Uncomment the following lines to enable logging in with third party login providers
             //app.UseMicrosoftAccountAuthentication(
             //    clientId: "",
             //    clientSecret: "");
 
-            //app.UseTwitterAuthentication(
-            //   consumerKey: "",
-            //   consumerSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "358603550031804",
+               appSecret: "90c2fc87b53ede3b985e5a002cdbbe85");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{

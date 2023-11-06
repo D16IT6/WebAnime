@@ -31,7 +31,7 @@ namespace WebAnime.API2.Controllers
         {
             var userList = _userManager.Users;
             var userViewModelList =
-                _mapper.Map<IQueryable<Users>, IEnumerable<ViewModels.Admin.UserViewModel>>(userList);
+                _mapper.Map<IQueryable<Users>, IEnumerable<UserViewModel>>(userList);
             return Ok(new
             {
                 success = true,

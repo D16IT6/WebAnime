@@ -139,13 +139,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APINetCore\Identity\RoleStoreDapper.cs" />
-    <Compile Include="APINetCore\Repository\Implement\AnimeRepositoryDapper.cs" />
-    <Compile Include="APINetCore\Repository\Implement\UserRepositoryDapper.cs" />
-    <Compile Include="APINetCore\Repository\Interface\IAnimeRepository.cs" />
-    <Compile Include="APINetCore\Repository\Interface\IRepositoryBase.cs" />
-    <Compile Include="APINetCore\Models\Paging.cs" />
-    <Compile Include="APINetCore\Repository\Interface\IUserRepository.cs" />
     <Compile Include="Dto\AgeRatingDto.cs" />
     <Compile Include="Dto\AnimeDto.cs" />
     <Compile Include="Dto\BlogCategoryDto.cs" />

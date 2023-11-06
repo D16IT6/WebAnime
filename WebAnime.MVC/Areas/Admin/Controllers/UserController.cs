@@ -65,7 +65,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var existEmail = await _userManager.FindByEmailAsync(model.Email);
                 if (existEmail != null)
                 {
-                    ModelState.AddModelError("ExistEmail", @"Tài khoản đã tồn tại");
+                    ModelState.AddModelError("ExistEmail", @"Địa chỉ đã tồn tại");
                     return View(model);
                 }
 

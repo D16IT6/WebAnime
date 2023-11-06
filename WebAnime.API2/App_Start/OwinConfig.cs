@@ -6,14 +6,13 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.DataProtection;
 using Owin;
 using System;
-using Microsoft.Owin.Security.Google;
 
-namespace WebAnime.MVC
+namespace WebAnime.API2
 {
 
     public class OwinConfig
     {
-        
+
         private static IDataProtectionProvider DataProtectionProvider { get; set; }
         public static void RegisterTokenService(UserManager userManager)
         {

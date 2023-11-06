@@ -35,5 +35,13 @@ namespace WebAnime.APINetCore.Controllers
                 x.RoleListIds
             }));
         }
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var data = await _userRepository.GetById(id);
+            var dataViewModel = _mapper.Map<UserViewModel>(data);
+            return Ok(dataViewModel);
+        }
     }
 }

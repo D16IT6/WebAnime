@@ -1,11 +1,16 @@
 ﻿using DataModels.Helpers;
 using Microsoft.AspNet.Identity;
 using System;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DataModels.EF.Identity
 {
     public class UserManager : UserManager<Users, int>
     {
+
 
         public UserManager(IUserStore<Users, int> store) : base(store)
         {
@@ -14,7 +19,7 @@ namespace DataModels.EF.Identity
 
         private static void ResigterAuth(UserManager userManager)
         {
-            //register user validator
+
             userManager.UserValidator = new UserValidator<Users, int>(userManager)
             {
                 AllowOnlyAlphanumericUserNames = false,

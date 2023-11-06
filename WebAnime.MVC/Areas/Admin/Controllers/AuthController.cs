@@ -136,6 +136,12 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 {
                     return View("ForgotPasswordConfirmation");
                 }
+
+                if (user.IsDeleted)
+                {
+                    ModelState.AddModelError("DeletedAccount",@"Tài khoản đã bị xóa khỏi hệ thống, vui lòng liên hệ admin để cập nhật");
+                    return View(model);
+                }
                 string resetCode = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
 
                 if (Request.Url != null)
@@ -151,12 +157,14 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                         $"<p>Để khôi phục mật khẩu của bạn, vui lòng bấm vào <a href=\"{callbackUrl}\">Đây</a>");
                     bodyBuilder.AppendLine("<p>Thư sẽ hết hạn sau 1 giờ.</p>");
                     bodyBuilder.AppendLine("<h3>Cảm ơn bạn!</h3>");
+
                     bool isSendEmail = await EmailService.SendMailAsync(new IdentityMessage()
                     {
                         Body = bodyBuilder.ToString(),
                         Destination = user.Email,
                         Subject = "Xác nhận khôi phục mật khẩu"
                     });
+
                     if (isSendEmail)
                     {
                         return RedirectToAction("ForgotPasswordConfirmation", "Auth", new { area = "Admin", fromForgot = true });

@@ -10,7 +10,7 @@
 @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @id = "frmCreateUser" }))
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <div class="row mb-2">
         @Html.LabelFor(x => x.FullName, new { @class = "col-form-label col-2" })
         <div class="col-4">

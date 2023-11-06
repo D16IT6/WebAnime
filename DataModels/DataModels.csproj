@@ -139,6 +139,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APINetCore\Identity\RoleStoreDapper.cs" />
     <Compile Include="APINetCore\Repository\Implement\AnimeRepositoryDapper.cs" />
     <Compile Include="APINetCore\Repository\Implement\UserRepositoryDapper.cs" />
     <Compile Include="APINetCore\Repository\Interface\IAnimeRepository.cs" />
@@ -209,6 +210,7 @@
       <Name>ViewModels</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

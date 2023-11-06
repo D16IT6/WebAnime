@@ -1,6 +1,7 @@
-
 using DataModels.APINetCore.Repository.Implement;
 using DataModels.APINetCore.Repository.Interface;
+
+using Microsoft.AspNetCore.DataProtection;
 
 namespace WebAnime.APINetCore
 {
@@ -16,6 +17,10 @@ namespace WebAnime.APINetCore
 
             builder.Services.AddAutoMapper
                 (typeof(AutoMapperProfile).Assembly);
+            builder.Services.AddDataProtection()
+                .SetApplicationName("WebAnime.MVC.ResetToken.TalonEzio.Hehe")
+                .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath,"Token")));
+
             AddRepository<IUserRepository, UserRepositoryDapper>(builder);
             AddRepository<IAnimeRepository, AnimeRepositoryDapper>(builder);
 

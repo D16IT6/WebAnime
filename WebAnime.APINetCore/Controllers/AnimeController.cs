@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DataModels.APINetCore.Repository.Interface;
 using DataModels.EF;
-using DataModels.EF.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ViewModels.Admin;
 

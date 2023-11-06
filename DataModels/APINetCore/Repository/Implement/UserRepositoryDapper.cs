@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -26,9 +27,10 @@ namespace DataModels.APINetCore.Repository.Implement
             return await sqlConnection.QueryAsync<Users>("Select * from users");
         }
 
-        public Task<Users> GetById(int id)
+        public async Task<Users> GetById(int id)
         {
-            throw new NotImplementedException();
+            var sqlConnection = new SqlConnection(ConnectionString);
+            return await sqlConnection.QuerySingleAsync<Users>("Select * from users where id = @id", new { id });
         }
 
         public Task<bool> Create(Users entity)

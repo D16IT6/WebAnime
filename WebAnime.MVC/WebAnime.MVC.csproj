@@ -6555,6 +6555,12 @@
     <Content Include="Areas\Admin\Views\Blog\Delete.cshtml" />
     <None Include="Resources\Library\Admin\Jquery\jquery-3.7.1.intellisense.js" />
     <Content Include="Resources\Library\Admin\Jquery\jquery-3.7.1.js" />
+    <Content Include="Uploads\images\92364.jpg" />
+    <Content Include="Uploads\images\ahgkajhg-1617261830.jpg" />
+    <Content Include="Uploads\images\download.jpg" />
+    <Content Include="Uploads\_thumbs\Images\92364.jpg" />
+    <Content Include="Uploads\_thumbs\Images\ahgkajhg-1617261830.jpg" />
+    <Content Include="Uploads\_thumbs\Images\download.jpg" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -6880,7 +6886,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Uploads\" />
+    <Folder Include="Uploads\files\" />
+    <Folder Include="Uploads\flash\" />
     <Folder Include="Views\Auth\" />
   </ItemGroup>
   <ItemGroup>

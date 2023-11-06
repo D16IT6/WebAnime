@@ -7,9 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAnime.MVC", "WebAnime.MV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModels", "DataModels\DataModels.csproj", "{892BA34A-F389-4899-AE77-0C598EC016ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAnime.APINetCore", "WebAnime.APINetCore\WebAnime.APINetCore.csproj", "{68608479-4744-4C6A-B04B-909A01C35F5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAnime.APINetCore", "WebAnime.APINetCore\WebAnime.APINetCore.csproj", "{68608479-4744-4C6A-B04B-909A01C35F5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModels", "ViewModels\ViewModels.csproj", "{D9099FE9-CFB8-448B-8179-70F4D27E1A00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAnime.API2", "WebAnime.API2\WebAnime.API2.csproj", "{311E2597-6586-4CC3-B48D-5C4BC5603CD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{D9099FE9-CFB8-448B-8179-70F4D27E1A00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9099FE9-CFB8-448B-8179-70F4D27E1A00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9099FE9-CFB8-448B-8179-70F4D27E1A00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{311E2597-6586-4CC3-B48D-5C4BC5603CD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{311E2597-6586-4CC3-B48D-5C4BC5603CD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{311E2597-6586-4CC3-B48D-5C4BC5603CD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{311E2597-6586-4CC3-B48D-5C4BC5603CD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

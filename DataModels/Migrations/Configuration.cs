@@ -24,7 +24,5 @@ namespace DataModels.Migrations
             context.LoadBlogCategories();
         }
 
-
-
     }
 }

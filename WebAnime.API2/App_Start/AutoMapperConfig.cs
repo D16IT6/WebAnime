@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using DataModels.EF;
 using DataModels.EF.Identity;
+using DataModels.Helpers;
 using Microsoft.AspNet.Identity;
 using System.Linq;
-using DataModels.Helpers;
 using ViewModels.Admin;
 namespace WebAnime.API2
 {

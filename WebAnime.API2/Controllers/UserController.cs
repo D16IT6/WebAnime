@@ -1,12 +1,9 @@
-﻿
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-using AutoMapper;
+﻿using AutoMapper;
 using DataModels.EF.Identity;
-using Microsoft.AspNet.Identity;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Threading.Tasks;
+using System.Web.Http;
 using ViewModels.Admin;
 
 namespace WebAnime.API2.Controllers
@@ -15,27 +12,48 @@ namespace WebAnime.API2.Controllers
     {
         private readonly UserManager _userManager;
         private readonly IMapper _mapper;
-
-        public UserController()
-        {
-            _userManager = NinjectConfig.GetService<UserManager>();
-            _mapper = NinjectConfig.GetService<IMapper>();
-        }
-        public UserController(UserManager userManager)
+        public UserController(UserManager userManager, IMapper mapper)
         {
             _userManager = userManager;
             OwinConfig.RegisterTokenService(_userManager);
+            _mapper = mapper;
         }
-        [HttpGet]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
-            var userList = _userManager.Users;
+            var userList = await _userManager.Users.AsNoTracking().ToListAsync();
+
             var userViewModelList =
-                _mapper.Map<IQueryable<Users>, IEnumerable<UserViewModel>>(userList);
+                _mapper.Map<List<Users>, IEnumerable<UserViewModel>>(userList);
+
             return Ok(new
             {
                 success = true,
                 userList = userViewModelList
+            });
+        }
+
+
+        public async Task<IHttpActionResult> GetAbc(int id)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+            var userId = user?.Id ?? 1;
+            var userViewModel =
+                _mapper.Map<UserViewModel>(user);
+            var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(userId);
+            var changePhoneNumberToken = await _userManager.GenerateChangePhoneNumberTokenAsync(userId, "0123456789");
+            var passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(userId);
+
+            return Ok(new
+            {
+                success = true,
+                user = new
+                {
+                    data = userViewModel,
+                    emailConfirmationToken,
+                    changePhoneNumberToken,
+                    passwordResetToken
+                }
             });
         }
     }

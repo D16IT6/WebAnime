@@ -1,14 +1,14 @@
-﻿using DataModels.EF;
+﻿using AutoMapper;
+using DataModels.EF;
 using DataModels.EF.Identity;
 using Microsoft.AspNet.Identity;
 using Ninject;
+using Ninject.Web.Common;
+using Ninject.Web.WebApi;
 using System;
 using System.Reflection;
 using System.Web;
-using Microsoft.Owin.Security;
-using Ninject.Web.Common;
-using System.Net.Http;
-using AutoMapper;
+using System.Web.Http;
 
 namespace WebAnime.API2
 {
@@ -28,7 +28,12 @@ namespace WebAnime.API2
                 {
                     _kernel = new StandardKernel();
                     _kernel.Load(Assembly.GetExecutingAssembly());
+
+
                     RegisterServices(_kernel);
+
+                    GlobalConfiguration.Configuration.DependencyResolver = new NinjectDependencyResolver(_kernel);
+
                     _cannotGet = true;
                 }
                 return _kernel;
@@ -39,16 +44,17 @@ namespace WebAnime.API2
         {
             //kernel.Bind<IAuthenticationManager>().ToMethod(
             //    ninjectContext =>
-            //    HttpContext.Current.GetOwinContext()
+            //    HttpContext.Current.GetService<IAuthenticationManager>()
             //    );
+
             kernel.Bind<WebAnimeDbContext>().ToSelf();
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
             kernel.Bind<IMapper>().ToConstant(AutoMapperConfig.RegisterAutoMapper());
 
+
             RegisterIdentityStores(kernel);
             RegisterIdentityManagers(kernel);
 
-            //kernel.Bind<>()
         }
 
         public static T GetService<T>()
@@ -85,6 +91,7 @@ namespace WebAnime.API2
             {
                 var userStore = ninjectContext.Kernel.Get<UserStore>();
                 var userManager = new UserManager(userStore);
+
 
                 return userManager;
             });

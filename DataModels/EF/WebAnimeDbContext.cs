@@ -46,6 +46,7 @@ namespace DataModels.EF
             modelBuilder.Entity<UserClaims>().ToTable("UserClaims");
 
 
+
             modelBuilder.Entity<AgeRatings>()
                 .HasMany(e => e.Animes)
                 .WithOptional(e => e.AgeRatings)

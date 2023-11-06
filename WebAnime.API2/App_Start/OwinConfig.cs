@@ -7,12 +7,12 @@ using Microsoft.Owin.Security.DataProtection;
 using Owin;
 using System;
 
+
 namespace WebAnime.API2
 {
 
     public class OwinConfig
     {
-
         private static IDataProtectionProvider DataProtectionProvider { get; set; }
         public static void RegisterTokenService(UserManager userManager)
         {

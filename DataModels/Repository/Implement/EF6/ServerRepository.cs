@@ -1,21 +1,22 @@
-﻿using DataModels.EF;
-using DataModels.Helpers;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using DataModels.EF;
+using DataModels.Repository.Interface;
 
-namespace DataModels.Dto
+namespace DataModels.Repository.Implement.EF6
 {
-    public class ServerDto : BaseDto
+    public class ServerRepository : IServerRepository
     {
-        public async Task<Servers> GetById(int id)
+        public WebAnimeDbContext Context { get; set; }
+        public ServerRepository(WebAnimeDbContext context)
         {
-            return await Context.Servers
-                .FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
+            Context = context;
         }
-
         public async Task<IEnumerable<Servers>> GetAll()
         {
             return await Context.Servers
@@ -23,12 +24,13 @@ namespace DataModels.Dto
                 .ToListAsync();
         }
 
-        public async Task<Servers> GetFirst()
+        public async  Task<Servers> GetById(int id)
         {
-            return await Context.Servers.FirstOrDefaultAsync();
+            return await Context.Servers
+                .FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
         }
 
-        public async Task<bool> Add(Servers entity)
+        public async Task<bool> Create(Servers entity)
         {
             try
             {
@@ -43,7 +45,6 @@ namespace DataModels.Dto
             }
         }
 
-
         public async Task<bool> Update(Servers entity)
         {
             var updateEntity = await GetById(entity.Id);
@@ -55,7 +56,7 @@ namespace DataModels.Dto
             return true;
         }
 
-        public async Task<bool> Delete(int id, int deletedBy)
+        public async Task<bool> Delete(int id, int deletedBy = default)
         {
             try
             {
@@ -71,6 +72,12 @@ namespace DataModels.Dto
             {
                 return false;
             }
+        }
+
+        public async Task<Servers> GetFirst()
+        {
+            return await Context.Servers.FirstOrDefaultAsync();
+
         }
     }
 }

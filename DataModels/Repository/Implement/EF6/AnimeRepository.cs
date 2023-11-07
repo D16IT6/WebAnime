@@ -1,29 +1,34 @@
-﻿using DataModels.EF;
-using DataModels.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using DataModels.EF;
+using DataModels.Repository.Interface;
 
-namespace DataModels.Dto
+namespace DataModels.Repository.Implement.EF6
 {
-    public class AnimeDto : BaseDto
+    public class AnimeRepository : IAnimeRepository
     {
+        public AnimeRepository(WebAnimeDbContext context)
+        {
+            Context = context;
+        }
+        public WebAnimeDbContext Context { get; set; }
+
+        public async Task<IEnumerable<Animes>> GetAll()
+        {
+            return await Task.FromResult(Context.Animes
+                .Where(x => !x.IsDeleted));
+        }
+
         public async Task<Animes> GetById(int id)
         {
             return await Context.Animes
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         }
 
-        public async Task<IEnumerable<Animes>> GetAll()
-        {
-            return await Context.Animes
-                .Where(x => !x.IsDeleted)
-                .ToListAsync();
-        }
-
-        public async Task<bool> Add(Animes entity)
+        public async Task<bool> Create(Animes entity)
         {
             try
             {
@@ -56,20 +61,19 @@ namespace DataModels.Dto
             }
         }
 
-
-        public async Task<bool> Update(Animes newEntity)
+        public async Task<bool> Update(Animes entity)
         {
             try
             {
-                var updateEntity = await Context.Animes.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == newEntity.Id);
+                var updateEntity = await Context.Animes.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == entity.Id);
                 if (updateEntity == null) return false;
                 if (updateEntity.CategoriesId == null) updateEntity.CategoriesId = new int[] { };
                 if (updateEntity.StudiosId == null) updateEntity.StudiosId = new int[] { };
 
-                await UpdateCategories(newEntity, updateEntity);
-                await UpdateStudios(newEntity, updateEntity);
+                await UpdateCategories(entity, updateEntity);
+                await UpdateStudios(entity, updateEntity);
 
-                UpdateSingleProperties(newEntity, updateEntity);
+                UpdateSingleProperties(entity, updateEntity);
 
                 await Context.SaveChangesAsync();
 
@@ -81,7 +85,7 @@ namespace DataModels.Dto
             }
         }
 
-        public async Task<bool> Delete(int id, int deletedBy)
+        public async Task<bool> Delete(int id, int deletedBy = default)
         {
             try
             {
@@ -169,7 +173,7 @@ namespace DataModels.Dto
                 }
             }
         }
-
-
     }
+
+
 }

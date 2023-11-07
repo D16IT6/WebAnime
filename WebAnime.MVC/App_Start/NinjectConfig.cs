@@ -8,6 +8,8 @@ using Ninject.Web.Common;
 using System;
 using System.Reflection;
 using System.Web;
+using DataModels.Repository.Interface;
+using DataModels.Repository.Implement.EF6;
 
 namespace WebAnime.MVC
 {
@@ -47,9 +49,23 @@ namespace WebAnime.MVC
             RegisterIdentityStores(kernel);
             RegisterIdentityManagers(kernel);
 
-            //kernel.Bind<>()
+            RegisterRepository(kernel);
         }
 
+        static void RegisterRepository(IKernel kernel)
+        {
+            kernel.Bind<IAgeRatingRepository>().To<AgeRatingRepository>();
+            kernel.Bind<IAnimeRepository>().To<AnimeRepository>();
+            kernel.Bind<IBlogCategoryRepository>().To<BlogCategoryRepository>();
+            kernel.Bind<IBlogRepository>().To<BlogRepository>();
+            kernel.Bind<ICategoryRepository>().To<CategoryRepository>();
+            kernel.Bind<ICountryRepository>().To<CountryRepository>();
+            kernel.Bind<IEpisodeRepository>().To<EpisodeRepository>();
+            kernel.Bind<IServerRepository>().To<ServerRepository>();
+            kernel.Bind<IStatusRepository>().To<StatusRepository>();
+            kernel.Bind<IStudioRepository>().To<StudioRepository>();
+            kernel.Bind<ITypeRepository>().To<TypeRepository>();
+        }
         public static T GetService<T>()
         {
             _cannotGet = false;

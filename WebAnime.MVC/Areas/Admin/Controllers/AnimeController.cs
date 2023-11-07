@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
-using DataModels.Dto;
+using DataModels.Repository;
 using DataModels.EF;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using DataModels.Repository.Implement.EF6;
+using DataModels.Repository.Interface;
 using ViewModels.Admin;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
@@ -14,36 +16,46 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
     public class AnimeController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly AnimeDto _animeDto;
-        private readonly AgeRatingDto _ageRatingDto;
-        private readonly CategoryDto _categoryDto;
-        private readonly TypeDto _typeDto;
-        private readonly StudioDto _studioDto;
-        private readonly CountryDto _countryDto;
-        private readonly StatusDto _statusDto;
-        private readonly ServerDto _serverDto;
+        private readonly IAnimeRepository _animeRepository;
+        private readonly IAgeRatingRepository _ageRatingRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly ITypeRepository _typeRepository;
+        private readonly IStudioRepository _studioRepository;
+        private readonly ICountryRepository _countryRepository;
+        private readonly IStatusRepository _statusRepository;
+        private readonly IServerRepository _serverRepository;
 
 
-        public AnimeController(IMapper mapper, AnimeDto animeDto, AgeRatingDto ageRatingDto, CategoryDto categoryDto, TypeDto typeDto, StudioDto studioDto, CountryDto countryDto, StatusDto statusDto, ServerDto serverDto)
+        public AnimeController(
+            IMapper mapper,
+            IAnimeRepository animeRepository,
+            IAgeRatingRepository ageRatingRepository,
+            ICategoryRepository categoryRepository,
+            ITypeRepository typeRepository,
+            IStudioRepository studioRepository,
+            ICountryRepository countryRepository,
+            IStatusRepository statusRepository,
+            IServerRepository serverRepository
+            )
         {
             _mapper = mapper;
-            _animeDto = animeDto;
-            _ageRatingDto = ageRatingDto;
-            _categoryDto = categoryDto;
-            _typeDto = typeDto;
-            _studioDto = studioDto;
-            _countryDto = countryDto;
-            _statusDto = statusDto;
-            _serverDto = serverDto;
+            _animeRepository = animeRepository;
+            _ageRatingRepository = ageRatingRepository;
+            _categoryRepository = categoryRepository;
+            _typeRepository = typeRepository;
+            _studioRepository = studioRepository;
+            _countryRepository = countryRepository;
+            _statusRepository = statusRepository;
+            _serverRepository = serverRepository;
         }
 
         public async Task<ActionResult> Index()
         {
-            var animeViewModelList = _mapper.Map<IEnumerable<Animes>, IEnumerable<AnimeViewModel>>(await _animeDto.GetAll());
-            var firstServer = await _serverDto.GetFirst();
+            var animeViewModelList = _mapper.Map<IEnumerable<Animes>, IEnumerable<AnimeViewModel>>(await _animeRepository.GetAll());
+            var firstServer = await _serverRepository.GetFirst();
             ViewBag.FirstServerId = firstServer.Id;
 
-            var tempCategoriesEnumerable = await _categoryDto.GetAll();
+            var tempCategoriesEnumerable = await _categoryRepository.GetAll();
             ViewBag.categoryList = tempCategoriesEnumerable.ToArray();
 
             return View(animeViewModelList);
@@ -64,7 +76,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var entity = _mapper.Map<Animes>(model);
                 entity.ModifiedBy = User.Identity.GetUserId<int>();
 
-                if (await _animeDto.Add(entity))
+                if (await _animeRepository.Create(entity))
                 {
                     return RedirectToAction("Index", "Anime");
                 }
@@ -80,7 +92,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Update(int id)
         {
             await LoadEditData();
-            var anime = await _animeDto.GetById(id);
+            var anime = await _animeRepository.GetById(id);
             if (anime == null) return HttpNotFound(string.Empty);
             var animeViewModel = _mapper.Map<AnimeViewModel>(anime);
             return View(animeViewModel);
@@ -96,7 +108,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                 entity.ModifiedBy = User.Identity.GetUserId<int>();
 
-                if (await _animeDto.Update(entity))
+                if (await _animeRepository.Update(entity))
                 {
                     return RedirectToAction("Index", "Anime");
                 }
@@ -111,7 +123,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            var anime = await _animeDto.GetById(id);
+            var anime = await _animeRepository.GetById(id);
             if (anime == null) return HttpNotFound(string.Empty);
 
             var animeViewModel = _mapper.Map<AnimeViewModel>(anime);
@@ -123,7 +135,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             int deletedBy = User.Identity.GetUserId<int>();
 
-            if (await _animeDto.Delete(model.Id, deletedBy))
+            if (await _animeRepository.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index", "Anime");
             }
@@ -133,12 +145,12 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
         async Task LoadEditData()
         {
-            var ageRatingTask = _ageRatingDto.GetAll();
-            var categoryTask = _categoryDto.GetAll();
-            var countryTask = _countryDto.GetAll();
-            var statusTask = _statusDto.GetAll();
-            var studioTask = _studioDto.GetAll();
-            var typeTask = _typeDto.GetAll();
+            var ageRatingTask = _ageRatingRepository.GetAll();
+            var categoryTask = _categoryRepository.GetAll();
+            var countryTask = _countryRepository.GetAll();
+            var statusTask = _statusRepository.GetAll();
+            var studioTask = _studioRepository.GetAll();
+            var typeTask = _typeRepository.GetAll();
 
             await Task.WhenAll(ageRatingTask, categoryTask, countryTask, statusTask, studioTask, typeTask);
 

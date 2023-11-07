@@ -1,23 +1,29 @@
-﻿using DataModels.EF;
-using DataModels.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using DataModels.EF;
+using DataModels.Repository.Interface;
 
-namespace DataModels.Dto
+namespace DataModels.Repository.Implement.EF6
 {
-    public class BlogDto : BaseDto
+    public class BlogRepository : IBlogRepository
     {
-        public async Task<Blogs> GetById(int id)
+        public BlogRepository(WebAnimeDbContext context)
         {
-            return await Context.Blogs.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
+            Context = context;
         }
-
+        public WebAnimeDbContext Context { get; set; }
         public async Task<IEnumerable<Blogs>> GetAll()
         {
             return await Task.FromResult(Context.Blogs.Where(x => !x.IsDeleted).AsEnumerable());
+
+        }
+
+        public async Task<Blogs> GetById(int id)
+        {
+            return await Context.Blogs.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
         }
 
         public async Task<bool> Create(Blogs entity)
@@ -77,6 +83,26 @@ namespace DataModels.Dto
             }
         }
 
+        public async Task<bool> Delete(int id, int deletedBy = default)
+        {
+            try
+            {
+                var deleteEntity = Context.Blogs.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
+                if (deleteEntity == null) return false;
+
+                deleteEntity.IsDeleted = true;
+                deleteEntity.DeletedBy = deletedBy;
+                deleteEntity.DeletedDate = DateTime.Now;
+
+
+                await Context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         private async Task UpdateCategories(Blogs entity, Blogs updateEntity)
         {
             var oldCategoryIds = updateEntity.BlogCategories.Where(x => !x.IsDeleted).Select(x => x.Id).ToArray();
@@ -103,28 +129,6 @@ namespace DataModels.Dto
                 }
             }
         }
-
-        public async Task<bool> Delete(int id, int by)
-        {
-            try
-            {
-                var deleteEntity = Context.Blogs.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
-                if (deleteEntity == null) return false;
-
-                deleteEntity.IsDeleted = true;
-                deleteEntity.DeletedBy = by;
-                deleteEntity.DeletedDate = DateTime.Now;
-
-
-                await Context.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         void UpdateSingleProperties(Blogs source, Blogs dest)
         {
             dest.Slug = source.Slug;

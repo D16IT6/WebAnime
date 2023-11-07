@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
-using DataModels.Dto;
+using DataModels.Repository;
 using DataModels.EF;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using DataModels.Repository.Implement.EF6;
+using DataModels.Repository.Interface;
 using ViewModels.Admin;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
@@ -13,18 +15,18 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
     public class CountryController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly CountryDto _countryDto;
+        private readonly ICountryRepository _countryRepository;
 
-        public CountryController(IMapper mapper, CountryDto countryDto)
+        public CountryController(IMapper mapper, ICountryRepository countryRepository)
         {
             _mapper = mapper;
-            _countryDto = countryDto;
+            _countryRepository = countryRepository;
 
         }
 
         public async Task<ActionResult> Index()
         {
-            var countryViewModelList = _mapper.Map<IEnumerable<Countries>, IEnumerable<CountryViewModel>>(await _countryDto.GetAll());
+            var countryViewModelList = _mapper.Map<IEnumerable<Countries>, IEnumerable<CountryViewModel>>(await _countryRepository.GetAll());
             return View(countryViewModelList);
         }
 
@@ -42,7 +44,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var country = _mapper.Map<Countries>(model);
                 country.CreatedBy = User.Identity.GetUserId<int>();
 
-                if (await _countryDto.Add(country))
+                if (await _countryRepository.Create(country))
                 {
                     return RedirectToAction("Index", "Country");
                 }
@@ -56,7 +58,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
-            var countryViewModel = _mapper.Map<CountryViewModel>(await _countryDto.GetById(id));
+            var countryViewModel = _mapper.Map<CountryViewModel>(await _countryRepository.GetById(id));
             if (countryViewModel == null) return HttpNotFound();
             return View(countryViewModel);
         }
@@ -69,7 +71,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var country = _mapper.Map<Countries>(model);
                 country.ModifiedBy = User.Identity.GetUserId<int>();
 
-                if (await _countryDto.Update(country))
+                if (await _countryRepository.Update(country))
                 {
                     return RedirectToAction("Index", "Country");
                 }
@@ -83,7 +85,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            var countryViewModel = _mapper.Map<CountryViewModel>(await _countryDto.GetById(id));
+            var countryViewModel = _mapper.Map<CountryViewModel>(await _countryRepository.GetById(id));
             if (countryViewModel == null) return HttpNotFound();
             return View(countryViewModel);
         }
@@ -93,7 +95,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             int deletedBy = User.Identity.GetUserId<int>();
 
-            if (await _countryDto.Delete(model.Id, deletedBy))
+            if (await _countryRepository.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index", "Country");
             }

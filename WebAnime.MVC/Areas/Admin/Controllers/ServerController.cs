@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
-using DataModels.Dto;
+using DataModels.Repository;
 using DataModels.EF;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using DataModels.Repository.Interface;
 using ViewModels.Admin;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
@@ -13,12 +14,12 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
     public class ServerController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly ServerDto _serverDto;
+        private readonly IServerRepository _serverRepository;
 
-        public ServerController(IMapper mapper, ServerDto serverDto)
+        public ServerController(IMapper mapper, IServerRepository serverRepository)
         {
             _mapper = mapper;
-            _serverDto = serverDto;
+            _serverRepository = serverRepository;
 
         }
         [HttpGet]
@@ -26,7 +27,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
 
             var serverViewModelList =
-                _mapper.Map<IEnumerable<Servers>, IEnumerable<ServerViewModel>>(await _serverDto.GetAll());
+                _mapper.Map<IEnumerable<Servers>, IEnumerable<ServerViewModel>>(await _serverRepository.GetAll());
             return View(serverViewModelList);
         }
 
@@ -44,7 +45,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var server = _mapper.Map<Servers>(model);
                 server.CreatedBy = User.Identity.GetUserId<int>();
 
-                if (await _serverDto.Add(server))
+                if (await _serverRepository.Create(server))
                 {
                     return RedirectToAction("Index");
                 }
@@ -58,7 +59,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Update(int id)
         {
 
-            var serverViewModel = _mapper.Map<ServerViewModel>(await _serverDto.GetById(id));
+            var serverViewModel = _mapper.Map<ServerViewModel>(await _serverRepository.GetById(id));
             if (serverViewModel == null) return HttpNotFound();
 
             return View(serverViewModel);
@@ -73,7 +74,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var server = _mapper.Map<Servers>(model);
                 server.ModifiedBy = User.Identity.GetUserId<int>();
 
-                if (await _serverDto.Update(server))
+                if (await _serverRepository.Update(server))
                 {
                     return RedirectToAction("Index");
                 }
@@ -88,7 +89,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Delete(int id)
         {
 
-            var serverViewModel = _mapper.Map<ServerViewModel>(await _serverDto.GetById(id));
+            var serverViewModel = _mapper.Map<ServerViewModel>(await _serverRepository.GetById(id));
             if (serverViewModel == null) return HttpNotFound();
             return View(serverViewModel);
         }
@@ -96,7 +97,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Delete(ServerViewModel model)
         {
             int deletedBy = User.Identity.GetUserId<int>();
-            if (await _serverDto.Delete(model.Id, deletedBy))
+            if (await _serverRepository.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index");
             }

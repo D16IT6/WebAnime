@@ -134,16 +134,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dto\AgeRatingDto.cs" />
-    <Compile Include="Dto\AnimeDto.cs" />
-    <Compile Include="Dto\BlogCategoryDto.cs" />
-    <Compile Include="Dto\BlogDto.cs" />
-    <Compile Include="Dto\CategoryDto.cs" />
-    <Compile Include="Dto\EpisodeDto.cs" />
-    <Compile Include="Dto\ServerDto.cs" />
-    <Compile Include="Dto\StatusDto.cs" />
-    <Compile Include="Dto\StudioDto.cs" />
-    <Compile Include="Dto\TypeDto.cs" />
     <Compile Include="EF\BlogCategories.cs" />
     <Compile Include="EF\BlogComments.cs" />
     <Compile Include="EF\Blogs.cs" />
@@ -161,7 +151,6 @@
     <Compile Include="EF\Schedules.cs" />
     <Compile Include="Helpers\AuthConstants.cs" />
     <Compile Include="Helpers\BaseDto.cs" />
-    <Compile Include="Dto\CountryDto.cs" />
     <Compile Include="EF\AgeRatings.cs" />
     <Compile Include="EF\Animes.cs" />
     <Compile Include="EF\Categories.cs" />
@@ -181,6 +170,29 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EF\Episodes.cs" />
     <Compile Include="EF\Servers.cs" />
+    <Compile Include="Repository\Implement\EF6\AgeRatingRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\AnimeRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\BlogCategoryRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\BlogRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\CategoryRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\CountryRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\EpisodeRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\ServerRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\StatusRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\StudioRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\TypeRepository.cs" />
+    <Compile Include="Repository\Interface\IAgeRatingRepository.cs" />
+    <Compile Include="Repository\Interface\IBlogRepository.cs" />
+    <Compile Include="Repository\Interface\IBlogCategoryRepository.cs" />
+    <Compile Include="Repository\Interface\IAnimeRepository.cs" />
+    <Compile Include="Repository\Interface\ICategoryRepository.cs" />
+    <Compile Include="Repository\Interface\ICountryRepository.cs" />
+    <Compile Include="Repository\Interface\IEpisodeRepository.cs" />
+    <Compile Include="Repository\Interface\IRepositoryBase.cs" />
+    <Compile Include="Repository\Interface\IServerRepository.cs" />
+    <Compile Include="Repository\Interface\IStatusRepository.cs" />
+    <Compile Include="Repository\Interface\IStudioRepository.cs" />
+    <Compile Include="Repository\Interface\ITypeRepository.cs" />
     <Compile Include="Services\EmailService.cs" />
   </ItemGroup>
   <ItemGroup>

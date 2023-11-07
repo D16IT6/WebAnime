@@ -1,40 +1,32 @@
-﻿using DataModels.EF;
-using DataModels.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using DataModels.EF;
+using DataModels.Repository.Interface;
 
-namespace DataModels.Dto
+namespace DataModels.Repository.Implement.EF6
 {
-    public class EpisodeDto : BaseDto
+    public class EpisodeRepository : IEpisodeRepository
     {
-        public async Task<Episodes> GetById(int id)
+        public WebAnimeDbContext Context { get; set; }
+        public EpisodeRepository(WebAnimeDbContext context)
         {
-            return await Context.Episodes
-                            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+            Context = context;
+        }
+        public Task<IEnumerable<Episodes>> GetAll()
+        {
+            throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Episodes>> GetAll(int animeId, int serverId)
+        public Task<Episodes> GetById(int id)
         {
-            return await Context.Episodes
-                            .Where(x => x.AnimeId == animeId && x.ServerId == serverId && !x.IsDeleted)
-                            .OrderBy(x => x.SortOrder)
-                            .ToListAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task<int> GetMaxOrderId(int animeId, int serverId)
-        {
-            var maxOrder = await Context.Episodes
-                .Where(x => x.AnimeId == animeId && x.ServerId == serverId && !x.IsDeleted)
-                .Select(x => (int?)x.SortOrder)
-                .MaxAsync();
-
-            return maxOrder ?? 0;
-        }
-
-        public async Task<bool> Add(Episodes entity)
+        public async Task<bool> Create(Episodes entity)
         {
             try
             {
@@ -45,27 +37,6 @@ namespace DataModels.Dto
                 entity.IsDeleted = false;
 
                 Context.Episodes.Add(entity);
-                await Context.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> AddRange(List<Episodes> episodes)
-        {
-            try
-            {
-                if (episodes == null) return false;
-
-                foreach (var episode in episodes)
-                {
-                    episode.CreatedDate = DateTime.Now;
-                }
-                Context.Episodes.AddRange(episodes);
-               
                 await Context.SaveChangesAsync();
                 return true;
             }
@@ -97,7 +68,7 @@ namespace DataModels.Dto
             }
         }
 
-        public async Task<bool> Delete(int id, int deletedBy)
+        public async Task<bool> Delete(int id, int deletedBy = default)
         {
             try
             {
@@ -117,5 +88,42 @@ namespace DataModels.Dto
             }
         }
 
+        public async Task<IEnumerable<Episodes>> GetAll(int animeId, int serverId)
+        {
+            return await Context.Episodes
+                .Where(x => x.AnimeId == animeId && x.ServerId == serverId && !x.IsDeleted)
+                .OrderBy(x => x.SortOrder)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetMaxOrderId(int animeId, int serverId)
+        {
+            var maxOrder = await Context.Episodes
+                .Where(x => x.AnimeId == animeId && x.ServerId == serverId && !x.IsDeleted)
+                .Select(x => (int?)x.SortOrder)
+                .MaxAsync();
+            return maxOrder ?? 0;
+        }
+
+        public async Task<bool> AddRange(List<Episodes> episodes)
+        {
+            try
+            {
+                if (episodes == null) return false;
+
+                foreach (var episode in episodes)
+                {
+                    episode.CreatedDate = DateTime.Now;
+                }
+                Context.Episodes.AddRange(episodes);
+
+                await Context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

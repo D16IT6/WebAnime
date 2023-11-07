@@ -1,28 +1,36 @@
-﻿using DataModels.EF;
-using DataModels.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using DataModels.EF;
+using DataModels.Repository.Interface;
 
-namespace DataModels.Dto
+namespace DataModels.Repository.Implement.EF6
 {
-    public class CountryDto : BaseDto
+    public class CountryRepository : ICountryRepository
     {
-        public async Task<Countries> GetById(int id)
+        public WebAnimeDbContext Context { get; set; }
+        public CountryRepository(WebAnimeDbContext context)
         {
-            return await Context.Countries.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
+            Context = context;
         }
-
         public async Task<IEnumerable<Countries>> GetAll()
         {
             return await Context.Countries
                 .Where(x => !x.IsDeleted)
                 .ToListAsync();
+
         }
 
-        public async Task<bool> Add(Countries entity)
+        public async Task<Countries> GetById(int id)
+        {
+            return await Context.Countries.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
+
+        }
+
+        public async Task<bool> Create(Countries entity)
         {
             try
             {
@@ -50,7 +58,7 @@ namespace DataModels.Dto
             return true;
         }
 
-        public async Task<bool> Delete(int id, int deletedBy)
+        public async Task<bool> Delete(int id, int deletedBy = default)
         {
             try
             {
@@ -68,6 +76,5 @@ namespace DataModels.Dto
                 return false;
             }
         }
-
     }
 }

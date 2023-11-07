@@ -1,19 +1,19 @@
-﻿using DataModels.EF;
-using DataModels.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using DataModels.EF;
+using DataModels.Repository.Interface;
 
-namespace DataModels.Dto
+namespace DataModels.Repository.Implement.EF6
 {
-    public class StudioDto : BaseDto
+    public class StudioRepository : IStudioRepository
     {
-        public async Task<Studios> GetById(int id)
+        public WebAnimeDbContext Context { get; set; }
+        public StudioRepository(WebAnimeDbContext context)
         {
-            return await Context.Studios
-                .FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
+            Context = context;
         }
 
         public async Task<IEnumerable<Studios>> GetAll()
@@ -23,7 +23,13 @@ namespace DataModels.Dto
                 .ToListAsync();
         }
 
-        public async Task<bool> Add(Studios entity)
+        public async Task<Studios> GetById(int id)
+        {
+            return await Context.Studios
+                .FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
+        }
+
+        public async Task<bool> Create(Studios entity)
         {
             try
             {
@@ -56,7 +62,7 @@ namespace DataModels.Dto
             }
         }
 
-        public async Task<bool> Delete(int id, int deletedBy)
+        public async Task<bool> Delete(int id, int deletedBy = default)
         {
             try
             {
@@ -75,6 +81,5 @@ namespace DataModels.Dto
                 return false;
             }
         }
-
     }
 }

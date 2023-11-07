@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ViewModels.Admin
+namespace ViewModels.Client
 {
     public class UserViewModel
     {
@@ -22,7 +26,7 @@ namespace ViewModels.Admin
         [StringLength(32, ErrorMessage = "Mật khẩu chỉ dài từ {2} tới {1}", MinimumLength = 2)]
         [Display(Name = "Nhập lại mật khẩu")]
         [DataType(DataType.Password, ErrorMessage = "{0} không phù hợp")]
-        [Compare("Password", ErrorMessage = "{0} phải khớp với {1}")]
+        [Compare("Password", ErrorMessage = "{0} không khớp với {1}")]
         public string ReTypePassword { get; set; }
 
         [StringLength(50, ErrorMessage = "{0} chỉ dài từ {2} tới {1}", MinimumLength = 2)]
@@ -50,7 +54,7 @@ namespace ViewModels.Admin
         [Display(Name = "Ảnh đại diện")]
         [Required(ErrorMessage = "{0} là bắt buộc")]
         [RegularExpression("^(https?://(localhost|[\\w\\-]+(\\.[\\w\\-]+)+)(:\\d+)?(/[\\w\\-]+)+|/[\\w\\-]+)+\\.[a-zA-Z]{2,4}$", ErrorMessage = "{0} không hợp lệ, chỉ cho phép url hoặc đường dẫn ảnh trực tiếp")]
-        [MaxLength(200,ErrorMessage = "{0} dài tối đa {1} ký tự")]
+        [MaxLength(200, ErrorMessage = "{0} dài tối đa {1} ký tự")]
         public string AvatarUrl { get; set; }
 
 
@@ -67,4 +71,5 @@ namespace ViewModels.Admin
         [Display(Name = "Quyền")]
         public string[] RoleList { get; set; }
     }
+
 }

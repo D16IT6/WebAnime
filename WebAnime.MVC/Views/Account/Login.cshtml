@@ -1,4 +1,4 @@
-﻿@model WebAnime.MVC.Models.LoginViewModel
+﻿@model ViewModels.Client.LoginViewModel
 @{
     ViewBag.Title = "Đăng nhập";
 }
@@ -30,7 +30,7 @@
                         </div>
                         <button type="submit" class="site-btn">Đăng nhập</button>
                     }
-                    <a href="#" class="forget_pass">Quên mật khẩu?</a>
+                    <a href="@Url.Action("ForgotPassword")" class="forget_pass">Quên mật khẩu?</a>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -45,14 +45,29 @@
                 <div class="col-lg-6">
                     <div class="login__social__links">
                         <span>hoặc</span>
-                        <ul>
-                            <li>
-                                <a href="#" class="facebook">
-                                    <i class="fa fa-facebook"></i> Đăng nhập với Facebook
-                                </a>
-                            </li>
-                            <li><a href="#" class="google"><i class="fa fa-google"></i> Đăng nhập với Google</a></li>
-                        </ul>
+                        @using (Html.BeginForm("ExternalLogin", "Account"))
+                        {
+                            @Html.AntiForgeryToken()
+                            <ul>
+                                <li>
+                                    <button name="provider" value="facebook">
+                                        <i class="fa fa-facebook"></i>
+                                        Đăng nhập với Facebook
+                                    </button>
+
+                                    <a href="#" class="facebook">
+                                        <i class="fa fa-facebook"></i>
+                                        Đăng nhập với Facebook
+                                    </a>
+                                </li>
+                                <li>
+                                    <button name="provider" value="google">
+                                        <i class="fa fa-facebook"></i>
+                                        Đăng nhập với Google
+                                    </button>
+                                </li>
+                            </ul>
+                        }
                     </div>
                 </div>
             </div>

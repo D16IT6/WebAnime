@@ -61,9 +61,9 @@ namespace WebAnime.MVC
             //    clientId: "",
             //    clientSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "358603550031804",
-            //   appSecret: "90c2fc87b53ede3b985e5a002cdbbe85");
+            app.UseFacebookAuthentication(
+               appId: "358603550031804",
+               appSecret: "90c2fc87b53ede3b985e5a002cdbbe85");
 
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()

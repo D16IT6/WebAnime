@@ -1,0 +1,172 @@
+﻿@model ViewModels.Client.RegisterViewModel
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Tạo tài khoản mới</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "frmRegister", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.RoleListIds)
+    @Html.HiddenFor(x=>x.AvatarUrl)
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.FullName, new { @class = "col-form-label col-md-3" })
+        <div class="col-md-5">
+            @Html.TextBoxFor(x => x.FullName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.FullName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.UserName, new { @class = "col-form-label col-md-3" })
+        <div class="col-md-5">
+            @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.UserName, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.Password, new { @class = "col-form-label col-md-3" })
+        <div class="col-md-5">
+            @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.ReTypePassword, new { @class = "col-form-label col-md-3" })
+        <div class="col-md-5">
+            @Html.PasswordFor(x => x.ReTypePassword, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.ReTypePassword, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="row mb-2 position-relative">
+        @Html.LabelFor(x => x.BirthDay, new { @class = "col-form-label col-md-3" })
+        <div class="col-md-5">
+            @Html.Editor("BirthDayFake", new { htmlAttributes = new { @class = "form-control", type = "date" } })
+            @Html.EditorFor(x => x.BirthDay, new { htmlAttributes = new { type = "date", @class = "position-absolute" } })
+            @Html.ValidationMessageFor(x => x.BirthDay, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.Email, new { @class = "col-form-label col-md-3" })
+        <div class="col-md-5">
+            @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email" })
+            @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.PhoneNumber, new { @class = "col-form-label col-md-3" })
+        <div class="col-md-5">
+            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", type = "tel" })
+            @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        @Html.LabelFor(x => x.AvatarUrl, new { @class = "col-form-label col-md-3" })
+        <div class="col-md-5">
+            <div class="input-group">
+                <button class="btn btn-outline-primary" id="btnSelectAvatar" type="button">Chọn</button>
+            </div>
+            @Html.ValidationMessageFor(x => x.AvatarUrl, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-3">
+            <button class="btn btn-primary" id="btnCreate">Tạo mới</button>
+        </div>
+    </div>
+}
+@section footerCss{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.css" rel="stylesheet" />
+
+    <style>
+        .ms-options-wrap button {
+            border-color: rgb(222, 226, 230);
+        }
+
+            .ms-options-wrap button span {
+                font-size: 16px;
+            }
+
+        .ms-options-wrap > button:after {
+            right: 15px;
+        }
+
+        #BirthDay {
+            -ms-opacity: 0;
+            opacity: 0;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+        }
+        li label {
+            color: black;
+        }
+/*        .nice-select {
+            width: 0;
+            height: 0;
+            -ms-opacity: 0;
+            opacity: 0;
+        }*/
+    </style>
+
+}
+@section footerJs{
+    @Html.Partial("_ValidationScripts")
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
+
+    <script>
+        function loadFake(id, fakeId) {
+            const fakeIdValue = $(`#${fakeId}`).val();
+
+            $(`#${id}`).val(fakeIdValue);
+        }
+        $(`#btnCreate`).click(function (e) {
+            e.preventDefault();
+
+            loadFake('BirthDay', 'BirthDayFake');
+
+
+            $(`#frmRegister`).submit();
+
+        });
+        $(`#BirthDayFake`).flatpickr({
+            altInput: true,
+            altFormat: "d/m/Y"
+        });
+
+        
+
+        const listMultiSelect = document.querySelectorAll(`.ms-options-wrap button`);
+        for (const item of listMultiSelect) {
+            item.classList.add(`form-control`);
+            item.classList.add(`border-1`);
+            item.classList.add(`p-2`);
+        }
+
+        $(`#btnSelectAvatar`).click(function () {
+            const ckFinder = new CKFinder();
+            ckFinder.selectActionFunction = function (url) {
+                $(`input#AvatarUrl`).val(url);
+            }
+            ckFinder.popup();
+
+        }); 
+        //$(``)
+    </script>
+}

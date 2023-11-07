@@ -17,6 +17,7 @@ namespace ViewModels.Admin
         [StringLength(32, ErrorMessage = "Mật khẩu chỉ dài từ {2} tới {1}", MinimumLength = 2)]
         [Display(Name = "Mật khẩu xác nhận")]
         [DataType(DataType.Password, ErrorMessage = "{0} không phù hợp")]
+        [Compare("Password", ErrorMessage = "{0} phải khớp với {1}")]
         public string ConfirmPassword { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace WebAnime.MVC.Helpers
+﻿namespace WebAnime.MVC.Components
 {
     public static class SessionConstants
     {

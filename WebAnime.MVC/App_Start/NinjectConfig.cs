@@ -2,7 +2,6 @@
 using DataModels.EF;
 using DataModels.EF.Identity;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Ninject;
 using Ninject.Web.Common;

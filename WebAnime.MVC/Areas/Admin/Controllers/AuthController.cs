@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ViewModels.Admin;
-using WebAnime.MVC.Helpers;
+using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
@@ -132,9 +132,18 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user.Id)))
+
+                if (user == null)
                 {
-                    return View("ForgotPasswordConfirmation");
+                    //return View("ForgotPasswordConfirmation");
+                    ModelState.AddModelError("NotFoundUser", @"Không thấy user");
+                    return View(model);
+                }
+
+                if (!(await _userManager.IsEmailConfirmedAsync(user.Id)))
+                {
+                    ModelState.AddModelError("NoConfirmEmail",@"Email chưa được xác nhận");
+                    return View(model);
                 }
 
                 if (user.IsDeleted)

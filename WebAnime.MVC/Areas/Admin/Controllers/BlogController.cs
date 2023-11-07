@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DataModels.Repository;
 using DataModels.EF;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;

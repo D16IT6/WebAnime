@@ -6,8 +6,11 @@ using Microsoft.Owin.Security;
 using Ninject;
 using Ninject.Web.Common;
 using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Reflection;
 using System.Web;
+using DataModels.Repository.Implement.Dapper;
 using DataModels.Repository.Interface;
 using DataModels.Repository.Implement.EF6;
 
@@ -15,7 +18,7 @@ namespace WebAnime.MVC
 {
     public class NinjectConfig
     {
-        private static bool _cannotGet = false;
+        private static bool _cannotGet;
         private static IKernel _kernel;
         public static IKernel Kernel
         {
@@ -39,7 +42,7 @@ namespace WebAnime.MVC
         public static void RegisterServices(IKernel kernel)
         {
             kernel.Bind<IAuthenticationManager>().ToMethod(
-                ninjectContext =>
+                _ =>
                 HttpContext.Current.GetOwinContext().Authentication
                 );
             kernel.Bind<WebAnimeDbContext>().ToSelf();
@@ -49,23 +52,48 @@ namespace WebAnime.MVC
             RegisterIdentityStores(kernel);
             RegisterIdentityManagers(kernel);
 
-            RegisterRepository(kernel);
+            RegisterRepositoryEf(kernel);
+            RegisterRepositoryDapper(kernel);
         }
 
-        static void RegisterRepository(IKernel kernel)
+        static void RegisterRepositoryEf(IKernel kernel)
         {
-            kernel.Bind<IAgeRatingRepository>().To<AgeRatingRepository>();
+            //kernel.Bind<IAgeRatingRepository>().To<AgeRatingRepository>();
             kernel.Bind<IAnimeRepository>().To<AnimeRepository>();
-            kernel.Bind<IBlogCategoryRepository>().To<BlogCategoryRepository>();
+            //kernel.Bind<IBlogCategoryRepository>().To<BlogCategoryRepository>();
             kernel.Bind<IBlogRepository>().To<BlogRepository>();
             kernel.Bind<ICategoryRepository>().To<CategoryRepository>();
-            kernel.Bind<ICountryRepository>().To<CountryRepository>();
-            kernel.Bind<IEpisodeRepository>().To<EpisodeRepository>();
+            //kernel.Bind<ICountryRepository>().To<CountryRepository>();
+            //kernel.Bind<IEpisodeRepository>().To<EpisodeRepository>();
             kernel.Bind<IServerRepository>().To<ServerRepository>();
-            kernel.Bind<IStatusRepository>().To<StatusRepository>();
+            //kernel.Bind<IStatusRepository>().To<StatusRepository>();
             kernel.Bind<IStudioRepository>().To<StudioRepository>();
             kernel.Bind<ITypeRepository>().To<TypeRepository>();
         }
+
+        static void RegisterRepositoryDapper(IKernel kernel)
+        {
+            RegisterConnection(kernel);
+
+            kernel.Bind<IAgeRatingRepository>().To<AgeRatingRepositoryDapper>();
+            kernel.Bind<IBlogCategoryRepository>().To<BlogCategoryRepositoryDapper>();
+            kernel.Bind<ICountryRepository>().To<CountryRepositoryDapper>();
+            kernel.Bind<IEpisodeRepository>().To<EpisodeRepositoryDapper>();
+            kernel.Bind<IStatusRepository>().To<StatusRepositoryDapper>();
+        }
+
+        private static void RegisterConnection(IKernel kernel)
+        {
+            kernel.Bind<IDbConnection>().ToMethod(_ =>
+            {
+                string connectionString =
+                    System.Web.Configuration.WebConfigurationManager
+                        .ConnectionStrings[nameof(WebAnimeDbContext) + "Dapper"].ConnectionString;
+
+                return new SqlConnection(connectionString);
+            });
+        }
+
         public static T GetService<T>()
         {
             _cannotGet = false;

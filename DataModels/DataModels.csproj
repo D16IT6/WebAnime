@@ -113,6 +113,10 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SqlClient, Version=4.6.1.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SqlClient.4.8.5\lib\net461\System.Data.SqlClient.dll</HintPath>
+    </Reference>
     <Reference Include="System.Formats.Asn1, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Formats.Asn1.7.0.0\lib\net462\System.Formats.Asn1.dll</HintPath>
     </Reference>
@@ -132,6 +136,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EF\BlogCategories.cs" />
@@ -170,6 +175,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EF\Episodes.cs" />
     <Compile Include="EF\Servers.cs" />
+    <Compile Include="Repository\Implement\Dapper\AgeRatingRepositoryDapper.cs" />
+    <Compile Include="Repository\Implement\Dapper\BlogCategoryRepositoryDapper.cs" />
+    <Compile Include="Repository\Implement\Dapper\CategoryRepositoryDapper.cs" />
+    <Compile Include="Repository\Implement\Dapper\CountryRepositoryDapper.cs" />
+    <Compile Include="Repository\Implement\Dapper\EpisodeRepositoryDapper.cs" />
+    <Compile Include="Repository\Implement\Dapper\StatusRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\EF6\AgeRatingRepository.cs" />
     <Compile Include="Repository\Implement\EF6\AnimeRepository.cs" />
     <Compile Include="Repository\Implement\EF6\BlogCategoryRepository.cs" />

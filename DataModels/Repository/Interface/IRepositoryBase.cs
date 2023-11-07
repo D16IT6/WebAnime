@@ -7,7 +7,6 @@ namespace DataModels.Repository.Interface
 {
     public interface IRepositoryBase<T, in TKey> where T : class
     {
-        WebAnimeDbContext Context { get; set; }
         public Task<IEnumerable<T>> GetAll();
         public Task<T> GetById(TKey id);
         public Task<bool> Create(T entity);

@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using DataModels.Repository;
 using DataModels.EF;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using DataModels.Repository.Implement.EF6;
 using DataModels.Repository.Interface;
 using ViewModels.Admin;
 

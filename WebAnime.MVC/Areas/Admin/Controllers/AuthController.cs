@@ -4,7 +4,6 @@ using DataModels.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using System;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;

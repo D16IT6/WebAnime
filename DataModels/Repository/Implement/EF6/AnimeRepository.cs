@@ -67,8 +67,8 @@ namespace DataModels.Repository.Implement.EF6
             {
                 var updateEntity = await Context.Animes.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == entity.Id);
                 if (updateEntity == null) return false;
-                if (updateEntity.CategoriesId == null) updateEntity.CategoriesId = new int[] { };
-                if (updateEntity.StudiosId == null) updateEntity.StudiosId = new int[] { };
+                updateEntity.CategoriesId ??= new int[] { };
+                updateEntity.StudiosId ??= new int[] { };
 
                 await UpdateCategories(entity, updateEntity);
                 await UpdateStudios(entity, updateEntity);

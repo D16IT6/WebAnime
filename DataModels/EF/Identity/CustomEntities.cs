@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace DataModels.EF.Identity
 {
@@ -29,12 +32,10 @@ namespace DataModels.EF.Identity
         public virtual ICollection<BlogComments> BlogComments { get; set; }
         public virtual ICollection<Favorites> Favorites { get; set; }
 
-        public override ICollection<UserRoles> Roles => base.Roles;
     }
 
     public class Roles : IdentityRole<int, UserRoles>
     {
-        public override ICollection<UserRoles> Users => base.Users;
     }
 
     public class UserLogins : IdentityUserLogin<int>

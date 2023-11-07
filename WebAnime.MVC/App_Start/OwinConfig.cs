@@ -13,7 +13,7 @@ namespace WebAnime.MVC
 
     public class OwinConfig
     {
-        
+
         private static IDataProtectionProvider DataProtectionProvider { get; set; }
         public static void RegisterTokenService(UserManager userManager)
         {
@@ -42,7 +42,8 @@ namespace WebAnime.MVC
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Admin/Auth/Login"),
-                ExpireTimeSpan = TimeSpan.FromDays(7)
+                ExpireTimeSpan = TimeSpan.FromDays(7),
+                Provider = new CookieAuthenticationProvider()
             });
 
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);

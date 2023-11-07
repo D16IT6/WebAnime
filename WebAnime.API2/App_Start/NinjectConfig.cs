@@ -2,6 +2,7 @@
 using DataModels.EF;
 using DataModels.EF.Identity;
 using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
 using Ninject;
 using Ninject.Web.Common;
 using Ninject.Web.WebApi;
@@ -42,10 +43,10 @@ namespace WebAnime.API2
         }
         public static void RegisterServices(IKernel kernel)
         {
-            //kernel.Bind<IAuthenticationManager>().ToMethod(
-            //    ninjectContext =>
-            //    HttpContext.Current.GetService<IAuthenticationManager>()
-            //    );
+            kernel.Bind<IAuthenticationManager>().ToMethod(
+                ninjectContext =>
+                HttpContext.Current.GetOwinContext().Authentication
+                );
 
             kernel.Bind<WebAnimeDbContext>().ToSelf();
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();

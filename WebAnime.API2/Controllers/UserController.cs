@@ -18,6 +18,7 @@ namespace WebAnime.API2.Controllers
             OwinConfig.RegisterTokenService(_userManager);
             _mapper = mapper;
         }
+        [HttpGet]
         public async Task<IHttpActionResult> Get()
         {
             var userList = await _userManager.Users.AsNoTracking().ToListAsync();
@@ -32,7 +33,7 @@ namespace WebAnime.API2.Controllers
             });
         }
 
-
+        [HttpGet]
         public async Task<IHttpActionResult> GetAbc(int id)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);

@@ -69,10 +69,12 @@
     <Compile Include="Admin\ServerViewModel.cs" />
     <Compile Include="Admin\StudioViewModel.cs" />
     <Compile Include="Admin\UserViewModel.cs" />
+    <Compile Include="Client\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

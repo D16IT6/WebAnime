@@ -2,14 +2,8 @@
 using DataModels.Helpers;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using WebAnime.MVC.Components;
 using WebAnime.MVC.Helpers;
 using WebAnime.MVC.Models;
 
@@ -124,11 +118,10 @@ namespace WebAnime.MVC.Controllers
             var loginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
-                var authenticationProperties = new AuthenticationProperties { RedirectUri = "/login-facebook" }; // Điều chỉnh RedirectUri theo ứng dụng của bạn
+                var authenticationProperties = new AuthenticationProperties { RedirectUri = "/login-facebook" }; 
                 var authenticationType = "Facebook"; // Điều chỉnh tên phương thức đăng nhập theo cấu hình của bạn
                 var facebookLoginUrl = Url.Action("ExternalLogin", "Account", new { provider = authenticationType, returnUrl = authenticationProperties.RedirectUri });
 
-                // Sử dụng facebookLoginUrl để tạo một liên kết đến trang đăng nhập Facebook.
             }
 
             return View();

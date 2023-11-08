@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using Z.Dapper.Plus;
 using static Dapper.SqlMapper;
 
 namespace DataModels.Repository.Implement.Dapper
@@ -32,6 +34,7 @@ namespace DataModels.Repository.Implement.Dapper
                 commandType: CommandType.StoredProcedure);
         }
 
+
         public async Task<bool> Create(Episodes entity)
         {
             int id = 0;
@@ -42,9 +45,10 @@ namespace DataModels.Repository.Implement.Dapper
             paramList.Add("@Url", entity.Url);
             paramList.Add("@Title", entity.Title);
             paramList.Add("@CreatedBy", entity.CreatedBy);
-            paramList.Add("@Id",id, direction: ParameterDirection.Output);
+            paramList.Add("@Id", id, direction: ParameterDirection.Output);
             var result = await _connection.ExecuteAsync("usp_Create_Episode", paramList,
-                commandType: CommandType.StoredProcedure);
+                commandType: CommandType.StoredProcedure
+                );
             if (result > 0)
             {
                 id = paramList.Get<int>("@Id");
@@ -92,9 +96,16 @@ namespace DataModels.Repository.Implement.Dapper
                 new { animeId, serverId }, commandType: CommandType.StoredProcedure) ?? 0;
         }
 
-        public Task<bool> AddRange(List<Episodes> episodes)
+        public async Task<bool> AddRange(List<Episodes> episodes)
         {
-            throw new NotImplementedException();
+            var result = true;
+            foreach (var episode in episodes)
+            {
+                var x = await Create(episode);
+                result = result && x;
+            }
+            return result;
         }
+
     }
 }

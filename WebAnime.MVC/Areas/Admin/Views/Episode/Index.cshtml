@@ -196,6 +196,7 @@ else
             //console.log(JSON.stringify(listEpisodes));
             handleCreate(requestUrl, listEpisodes);
         });
+
         function handleCreate(requestUrl, data) {
             $.ajax({
                 type: "POST",
@@ -208,8 +209,7 @@ else
                     console.log(response);
 
                     if (response.success) {
-
-                        alert('Thêm thành công');
+                        alert(`Thêm thành công`);
                         location.reload();
                     } else {
                         alert(`Có lỗi xảy ra`);

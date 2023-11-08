@@ -57,9 +57,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             });
         }
         [HttpPost]
-        public async Task<ActionResult> CreateMultiple(EpisodeViewModel[] model)
+        public async Task<ActionResult> CreateMultiple(List<EpisodeViewModel> model)
         {
-            var episodeList = _mapper.Map<EpisodeViewModel[], List<Episodes>>(model);
+            var episodeList = _mapper.Map<List<EpisodeViewModel>, List<Episodes>>(model);
 
             var result = await _episodeRepository.AddRange(episodeList);
 

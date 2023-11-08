@@ -61,7 +61,7 @@ namespace WebAnime.MVC
             //kernel.Bind<IAgeRatingRepository>().To<AgeRatingRepository>();
             kernel.Bind<IAnimeRepository>().To<AnimeRepository>();
             //kernel.Bind<IBlogCategoryRepository>().To<BlogCategoryRepository>();
-            kernel.Bind<IBlogRepository>().To<BlogRepository>();
+            //kernel.Bind<IBlogRepository>().To<BlogRepository>();
             kernel.Bind<ICategoryRepository>().To<CategoryRepository>();
             //kernel.Bind<ICountryRepository>().To<CountryRepository>();
             //kernel.Bind<IEpisodeRepository>().To<EpisodeRepository>();
@@ -77,6 +77,7 @@ namespace WebAnime.MVC
 
             kernel.Bind<IAgeRatingRepository>().To<AgeRatingRepositoryDapper>();
             kernel.Bind<IBlogCategoryRepository>().To<BlogCategoryRepositoryDapper>();
+            kernel.Bind<IBlogRepository>().To<BlogRepositoryDapper>();
             kernel.Bind<ICountryRepository>().To<CountryRepositoryDapper>();
             kernel.Bind<IEpisodeRepository>().To<EpisodeRepositoryDapper>();
             kernel.Bind<IStatusRepository>().To<StatusRepositoryDapper>();

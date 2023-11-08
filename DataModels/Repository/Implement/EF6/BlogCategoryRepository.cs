@@ -41,5 +41,10 @@ namespace DataModels.Repository.Implement.EF6
         {
             throw new NotImplementedException();
         }
+
+        public Task<IEnumerable<BlogCategories>> GetAllBlogCategoriesByBlogId(int blogId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

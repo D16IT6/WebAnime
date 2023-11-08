@@ -44,5 +44,11 @@ namespace DataModels.Repository.Implement.Dapper
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<BlogCategories>> GetAllBlogCategoriesByBlogId(int blogId)
+        {
+            return await _connection.QueryAsync<BlogCategories>("usp_Get_Blog_Category_By_BlogId",
+                new { @BlogId = blogId }, commandType: CommandType.StoredProcedure);
+        }
     }
 }

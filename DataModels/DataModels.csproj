@@ -180,6 +180,7 @@
     <Compile Include="EF\Servers.cs" />
     <Compile Include="Repository\Implement\Dapper\AgeRatingRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\Dapper\BlogCategoryRepositoryDapper.cs" />
+    <Compile Include="Repository\Implement\Dapper\BlogRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\Dapper\CategoryRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\Dapper\CountryRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\Dapper\EpisodeRepositoryDapper.cs" />

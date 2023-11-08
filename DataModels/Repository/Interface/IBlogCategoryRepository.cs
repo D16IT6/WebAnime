@@ -9,6 +9,6 @@ namespace DataModels.Repository.Interface
 {
     public interface IBlogCategoryRepository : IRepositoryBase<BlogCategories, int>
     {
-
+        public Task<IEnumerable<BlogCategories>> GetAllBlogCategoriesByBlogId(int blogId);
     }
 }

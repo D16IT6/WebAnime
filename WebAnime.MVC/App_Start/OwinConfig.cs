@@ -8,6 +8,7 @@ using Owin;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Owin.Security.Google;
 
 namespace WebAnime.MVC
 {
@@ -64,11 +65,11 @@ namespace WebAnime.MVC
                 appSecret: "90c2fc87b53ede3b985e5a002cdbbe85");
 
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "1054362713534-ihmibg6jq40g5v4f78dn734ore89fe5p.apps.googleusercontent.com",
+                ClientSecret = "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"
+            });
 
         }
         public static async Task<ClaimsIdentity> GenerateUserIdentityAsync(Users user, UserManager manager)

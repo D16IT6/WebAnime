@@ -150,7 +150,7 @@
     <Compile Include="EF\FavoriteStatuses.cs" />
     <Compile Include="EF\Identity\CustomEntities.cs" />
     <Compile Include="EF\Identity\RoleManager.cs" />
-    <Compile Include="EF\Identity\Manager.cs" />
+    <Compile Include="EF\Identity\UserManager.cs" />
     <Compile Include="EF\Identity\RoleStore.cs" />
     <Compile Include="EF\Identity\UserStore.cs" />
     <Compile Include="EF\NotMapped\Animes.cs" />

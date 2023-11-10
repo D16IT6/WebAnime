@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin.Security;
+﻿using System.Globalization;
+using Microsoft.Owin.Security;
 
 using System.Web;
 using System.Web.Mvc;
@@ -17,7 +18,9 @@ namespace WebAnime.MVC.Components
 
         public ChallengeResult(string provider, string redirectUri, string userId)
         {
-            LoginProvider = provider;
+            string formattedProviderTitleCase = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(provider);
+
+            LoginProvider = formattedProviderTitleCase;
             RedirectUri = redirectUri;
             UserId = userId;
         }
@@ -34,9 +37,8 @@ namespace WebAnime.MVC.Components
                 properties.Dictionary[XsrfKey] = UserId;
             }
 
-            var authentication = NinjectConfig.GetService<IAuthenticationManager>();
-
-            authentication.Challenge(properties, LoginProvider);
+            var owinContext = HttpContext.Current.GetOwinContext();
+            owinContext.Authentication.Challenge(properties, LoginProvider);
         }
     }
 }

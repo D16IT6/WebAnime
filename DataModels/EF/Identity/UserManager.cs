@@ -33,7 +33,6 @@ namespace DataModels.EF.Identity
             };
 
             var dataProtectionProvider = new DpapiDataProtectionProvider("WebAnime.DpapiDataProtectionProvider.Talon.123!@#");
-            ;
 
             userManager.UserTokenProvider =
                 new DataProtectorTokenProvider<Users, int>(
@@ -62,13 +61,6 @@ namespace DataModels.EF.Identity
             //        BodyFormat = "Your security code is: {0}"
             //    });
 
-        }
-
-        public class SignInManager : SignInManager<Users, int>
-        {
-            public SignInManager(UserManager<Users, int> userManager, IAuthenticationManager authenticationManager) : base(userManager, authenticationManager)
-            {
-            }
         }
 
     }

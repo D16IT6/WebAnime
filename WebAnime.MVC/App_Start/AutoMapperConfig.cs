@@ -4,7 +4,10 @@ using DataModels.EF.Identity;
 using Microsoft.AspNet.Identity;
 using System.Linq;
 using ViewModels.Admin;
+using ViewModels.Client;
 using static DataModels.Helpers.RoleManagerExtensions;
+using UserViewModel = ViewModels.Admin.UserViewModel;
+
 namespace WebAnime.MVC
 {
     public class AutoMapperConfig
@@ -58,6 +61,8 @@ namespace WebAnime.MVC
                             )
                         );
 
+                    cfg.CreateMap<ExternalLoginConfirmationViewModel, Users>();
+
 
                     cfg.CreateMap<UserViewModel, Users>();
 
@@ -77,6 +82,7 @@ namespace WebAnime.MVC
                             )
                         ;
                     cfg.CreateMap<BlogViewModel, Blogs>();
+
 
                 }
             );

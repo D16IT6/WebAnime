@@ -17,7 +17,7 @@
 		// ... where Session[ "IsAuthorized" ] is set to "true" as soon as the
 		// user logs on your system.
 
-		return HttpContext.Current.User.IsInRole("Admin");
+		return HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("Manager");
 	}
 
 	/**

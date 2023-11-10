@@ -1,15 +1,18 @@
-﻿using System.Linq;
+﻿using AutoMapper;
 using DataModels.EF.Identity;
 using DataModels.Helpers;
+using DataModels.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using ViewModels.Client;
 using WebAnime.MVC.Components;
-using DataModels.Services;
-using System.Text;
 
 namespace WebAnime.MVC.Controllers
 {
@@ -20,14 +23,15 @@ namespace WebAnime.MVC.Controllers
         private readonly IAuthenticationManager _authenticationManager;
         private readonly SignInManager<Users, int> _signInManager;
         private readonly RoleManager _roleManager;
+        private readonly IMapper _mapper;
 
-        public AccountController(IAuthenticationManager authenticationManager, SignInManager<Users, int> signInManager, UserManager userManager, RoleManager roleManager)
+        public AccountController(IAuthenticationManager authenticationManager, SignInManager<Users, int> signInManager, UserManager userManager, RoleManager roleManager, IMapper mapper)
         {
             _authenticationManager = authenticationManager;
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
-
+            _mapper = mapper;
         }
 
         public async Task<ActionResult> Index()
@@ -38,6 +42,23 @@ namespace WebAnime.MVC.Controllers
             }
             return await Task.FromResult(View());
         }
+
+        [UserAuthorize]
+        public async Task<ActionResult> Info()
+        {
+            return await Task.FromResult(View());
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Logout()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return await Task.FromResult<ActionResult>(RedirectToAction("Login"));
+            }
+            return await Task.FromResult(RedirectToAction("NotFound", "Error"));
+        }
         [HttpGet]
         public async Task<ActionResult> Login()
         {
@@ -47,7 +68,7 @@ namespace WebAnime.MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginViewModel model)
         {
-            string returnUrl = Request.QueryString["returnUrl"] ?? "";
+            string returnUrl = Request.QueryString["returnUrl"] ?? string.Empty;
 
             if (ModelState.IsValid)
             {
@@ -62,22 +83,22 @@ namespace WebAnime.MVC.Controllers
                 }
                 else
                 {
-                    int loginFailCount = (int)(Session[SessionConstants.LoginFailCount] ?? 0);
+                    int loginFailCount = (int)(Session[CommonConstants.LoginFailCount] ?? 0);
 
                     if (loginFailCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
                     {
                         ModelState.AddModelError("FakeLogin", @"Bạn đang cố đăng nhập vì điều gì?");
                         ModelState.AddModelError("Hint", @"Chưa có tài khoản? Hãy tạo tài khoản mới");
                         ModelState.AddModelError("AdminFb", @"Liên hệ facebook: https://facebook.com/vuthemanh1707");
-                        Session.Remove(SessionConstants.LoginFailCount);
+                        Session.Remove(CommonConstants.LoginFailCount);
 
                         return View();
                     }
-                    ModelState.AddModelError("",
+                    ModelState.AddModelError(string.Empty,
                         $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - loginFailCount} lượt)");
 
                     loginFailCount++;
-                    Session[SessionConstants.LoginFailCount] = loginFailCount;
+                    Session[CommonConstants.LoginFailCount] = loginFailCount;
 
                     return View(model);
 
@@ -89,7 +110,7 @@ namespace WebAnime.MVC.Controllers
                 {
 
                     case SignInStatus.Success:
-                        Session.Remove(SessionConstants.LoginFailCount);
+                        Session.Remove(CommonConstants.LoginFailCount);
                         await _userManager.SetLockoutEnabledAsync(user.Id, false);
                         await _userManager.ResetAccessFailedCountAsync(user.Id);
                         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
@@ -106,17 +127,17 @@ namespace WebAnime.MVC.Controllers
                         return View();
 
                     case SignInStatus.RequiresVerification:
-                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, model.RememberMe });
 
                     case SignInStatus.Failure:
                     default:
-                        ModelState.AddModelError("",
+                        ModelState.AddModelError(string.Empty,
                             $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - user.AccessFailedCount} lượt)");
                         return View(model);
                 }
 
             }
-            ModelState.AddModelError("", @"Đầu vào chưa hợp lệ");
+            ModelState.AddModelError(string.Empty, @"Đầu vào chưa hợp lệ");
             return View(model);
         }
 
@@ -155,7 +176,7 @@ namespace WebAnime.MVC.Controllers
                     return View("Lockout");
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid code.");
+                    ModelState.AddModelError(string.Empty, @"Invalid code.");
                     return View(model);
             }
         }
@@ -186,9 +207,31 @@ namespace WebAnime.MVC.Controllers
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
-                    // string code = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await _userManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    string code = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+
+
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
+                        protocol: Request.Url?.Scheme ?? "http");
+
+                    StringBuilder bodyBuilder = new StringBuilder();
+                    bodyBuilder.AppendLine(
+                        $"<p>Xin chào thành viên mới, bạn đã yêu cầu tạo tài khoản!</p>");
+                    bodyBuilder.AppendLine(
+                        $"<p>Để xác thực tài khoản mới, vui lòng bấm vào <a href=\"{callbackUrl}\"><strong>Đây</strong></a>");
+                    bodyBuilder.AppendLine("<p>Thư sẽ hết hạn sau 1 giờ.</p>");
+                    bodyBuilder.AppendLine("<h3>Cảm ơn bạn!</h3>");
+
+                    bool isSendEmail = await EmailService.SendMailAsync(new IdentityMessage()
+                    {
+                        Body = bodyBuilder.ToString(),
+                        Destination = user.Email,
+                        Subject = "Xác nhận tài khoản"
+                    });
+
+                    if (isSendEmail)
+                    {
+                        return RedirectToAction("VerifyEmailConfirmation", "Account");
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -199,6 +242,11 @@ namespace WebAnime.MVC.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> VerifyEmailConfirmation()
+        {
+            return await Task.FromResult(View());
+        }
 
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(int userId, string code)
@@ -331,7 +379,6 @@ namespace WebAnime.MVC.Controllers
 
 
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { returnUrl }));
@@ -364,7 +411,7 @@ namespace WebAnime.MVC.Controllers
             {
                 return RedirectToAction("NotFound", "Error");
             }
-            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, model.ReturnUrl, model.RememberMe });
         }
 
 
@@ -392,7 +439,16 @@ namespace WebAnime.MVC.Controllers
                     // If the user does not have an account, then prompt the user to create an account
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel()
+                    {
+                        UserName = loginInfo.Email,
+                        FullName = loginInfo.DefaultUserName,
+                        Email = loginInfo.Email,
+                        AvatarUrl = CommonConstants.DefaultAvatarUrl,
+                        Password = "1234567",//Fake
+                        ReTypePassword = "1234567"
+                    });
             }
         }
 
@@ -401,21 +457,28 @@ namespace WebAnime.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
+
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Manage");
+                return RedirectToAction("Index", "Home");
             }
+            var userRole = _roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"))?.Id ?? 3;
+            model.RoleListIds = new[] { userRole };
 
             if (ModelState.IsValid)
             {
-                // Get the information about the user from the external login provider
                 var info = await _authenticationManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new Users() { UserName = model.Email, Email = model.Email };
+
+                var uploadImage = Request.Files["AvatarFile"];
+                model.AvatarUrl = HandleFile(uploadImage);
+
+                var user = _mapper.Map<Users>(model);
                 var result = await _userManager.CreateAsync(user);
+
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user.Id, info.Login);
@@ -459,8 +522,19 @@ namespace WebAnime.MVC.Controllers
         {
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError("", error);
+                ModelState.AddModelError(string.Empty, error);
             }
+        }
+
+        private string HandleFile(HttpPostedFileBase uploadImage)
+        {
+            if (uploadImage is { ContentLength: > 0 })
+            {
+                var folderPath = Server.MapPath("~/Uploads/images/AvatarUsers");
+                uploadImage.SaveAs(Path.Combine(folderPath, uploadImage.FileName));
+                return ("\\" + Path.Combine("Uploads", "Images", "AvatarUsers", uploadImage.FileName)).Replace('\\', '/');
+            }
+            return CommonConstants.DefaultAvatarUrl;
         }
     }
 }

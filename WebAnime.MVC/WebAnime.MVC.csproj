@@ -6571,7 +6571,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Components\SessionConstants.cs" />
+    <Compile Include="Components\CommonConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="Startup.cs" />
@@ -6877,6 +6877,8 @@
     <Content Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\Account\Error.cshtml" />
     <Content Include="Views\Shared\_ValidationScripts.cshtml" />
+    <Content Include="Views\Account\VerifyEmailConfirmation.cshtml" />
+    <Content Include="Views\Account\Info.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

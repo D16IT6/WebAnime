@@ -47,10 +47,9 @@
                         <span>hoặc</span>
                         @using (Html.BeginForm("ExternalLogin", "Account"))
                         {
-                            @Html.AntiForgeryToken()
                             <ul>
                                 <li>
-                                    <button name="provider" value="facebook">
+                                    <button name="provider" class="facebook" value="facebook">
                                         <i class="fa fa-facebook"></i>
                                         Đăng nhập với Facebook
                                     </button>
@@ -61,7 +60,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <button name="provider" value="google">
+                                    <button name="provider" value="Google">
                                         <i class="fa fa-facebook"></i>
                                         Đăng nhập với Google
                                     </button>

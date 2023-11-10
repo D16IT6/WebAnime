@@ -1,38 +1,166 @@
 ﻿@model ViewModels.Client.ExternalLoginConfirmationViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Đăng ký";
 }
 <main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>Associate your @ViewBag.LoginProvider account.</h3>
+    <h3 class="mb-1">Đăng ký bằng tài khoản @ViewBag.LoginProvider.</h3>
 
-    @using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+    @using (Html.BeginForm("ExternalLoginConfirmation", "Account",
+        new { ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form", id = "frmRegister", enctype = "multipart/form-data" })
+        )
     {
-        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
-        <h4>Association Form</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <p class="text-info">
-            You've successfully authenticated with <strong>@ViewBag.LoginProvider</strong>.
-            Please enter a user name for this site below and click the Register button to finish
-            logging in.
-        </p>
-        <div class="row">
-            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        @Html.AntiForgeryToken()
+        <h5 class="text-info mb-2">
+            Bạn đã xác thực thành công bằng <strong>@ViewBag.LoginProvider</strong>.
+            Vui lòng bổ sung thông tin và để hoàn tất quá trình đăng ký.
+        </h5>
+        @Html.HiddenFor(x => x.RoleListIds)
+        @Html.HiddenFor(x => x.AvatarUrl)
+        @Html.HiddenFor(x => x.Password)
+        @Html.HiddenFor(x => x.ReTypePassword)
+        <div class="row mb-2">
+            @Html.LabelFor(x => x.FullName, new { @class = "col-form-label col-md-3" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(x => x.FullName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.FullName, "", new { @class = "text-danger" })
             </div>
         </div>
-        <div class="row">
-            <div class="offset-md-2 col-md-10">
-                <input type="submit" class="btn btn-outline-dark" value="Register" />
+        <div class="row mb-2">
+            @Html.LabelFor(x => x.UserName, new { @class = "col-form-label col-md-3" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.UserName, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="row mb-2 position-relative">
+            @Html.LabelFor(x => x.BirthDay, new { @class = "col-form-label col-md-3" })
+            <div class="col-md-5">
+                @Html.Editor("BirthDayFake", new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                @Html.EditorFor(x => x.BirthDay, new { htmlAttributes = new { type = "date", @class = "position-absolute" } })
+                @Html.ValidationMessageFor(x => x.BirthDay, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            @Html.LabelFor(x => x.Email, new { @class = "col-form-label col-md-3" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email" })
+                @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+        <div class="row mb-2">
+            @Html.LabelFor(x => x.PhoneNumber, new { @class = "col-form-label col-md-3" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control", type = "tel" })
+                @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            @Html.LabelFor(x => x.AvatarUrl, new { @class = "col-form-label col-md-3" })
+            <div class="col-md-5">
+                <input type="file" name="AvatarFile" id="AvatarFile" class="form-control-file" /><br />
+                @*<div class="input-group">
+                        <button class="btn btn-outline-primary" id="btnSelectAvatar" type="button">Chọn</button>
+                    </div>*@
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-3">
+                <button class="btn btn-primary" id="btnCreate">Tạo mới</button>
             </div>
         </div>
     }
 </main>
+@section footerCss{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.css" rel="stylesheet" />
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    <style>
+        .ms-options-wrap button {
+            border-color: rgb(222, 226, 230);
+        }
+
+            .ms-options-wrap button span {
+                font-size: 16px;
+            }
+
+        .ms-options-wrap > button:after {
+            right: 15px;
+        }
+
+        #BirthDay {
+            -ms-opacity: 0;
+            opacity: 0;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+        }
+
+        li label {
+            color: black;
+        }
+        /*        .nice-select {
+            width: 0;
+            height: 0;
+            -ms-opacity: 0;
+            opacity: 0;
+        }*/
+    </style>
+
+}
+@section footerJs{
+    @Html.Partial("_ValidationScripts")
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
+
+    <script>
+        function loadFake(id, fakeId) {
+            const fakeIdValue = $(`#${fakeId}`).val();
+
+            $(`#${id}`).val(fakeIdValue);
+        }
+        $(`#btnCreate`).click(function (e) {
+            e.preventDefault();
+
+            loadFake('BirthDay', 'BirthDayFake');
+
+
+            $(`#frmRegister`).submit();
+
+        });
+        $(`#BirthDayFake`).flatpickr({
+            altInput: true,
+            altFormat: "d/m/Y"
+        });
+
+
+
+        const listMultiSelect = document.querySelectorAll(`.ms-options-wrap button`);
+        for (const item of listMultiSelect) {
+            item.classList.add(`form-control`);
+            item.classList.add(`border-1`);
+            item.classList.add(`p-2`);
+        }
+
+        $(`#btnSelectAvatar`).click(function () {
+            const ckFinder = new CKFinder();
+            ckFinder.selectActionFunction = function (url) {
+                $(`input#AvatarUrl`).val(url);
+            }
+            ckFinder.popup();
+
+        });
+        //$(``)
+    </script>
 }

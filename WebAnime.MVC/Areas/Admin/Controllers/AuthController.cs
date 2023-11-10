@@ -56,14 +56,14 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 }
                 else
                 {
-                    int loginFailCount = (int)(Session[SessionConstants.LoginFailCount] ?? 0);
+                    int loginFailCount = (int)(Session[CommonConstants.LoginFailCount] ?? 0);
 
                     if (loginFailCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
                     {
                         ModelState.AddModelError("FakeLogin", @"Bạn đang cố đăng nhập vì điều gì?");
                         ModelState.AddModelError("Hint", @"Chưa có tài khoản? Hãy liên hệ admin để được cấp");
                         ModelState.AddModelError("AdminFb", @"Facebook: https://facebook.com/vuthemanh1707");
-                        Session.Remove(SessionConstants.LoginFailCount);
+                        Session.Remove(CommonConstants.LoginFailCount);
 
                         return View();
                     }
@@ -71,7 +71,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                         $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - loginFailCount} lượt)");
 
                     loginFailCount++;
-                    Session[SessionConstants.LoginFailCount] = loginFailCount;
+                    Session[CommonConstants.LoginFailCount] = loginFailCount;
 
                     return View(model);
 
@@ -83,7 +83,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 {
 
                     case SignInStatus.Success:
-                        Session.Remove(SessionConstants.LoginFailCount);
+                        Session.Remove(CommonConstants.LoginFailCount);
                         await _userManager.SetLockoutEnabledAsync(user.Id, false);
                         await _userManager.ResetAccessFailedCountAsync(user.Id);
                         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
@@ -140,13 +140,13 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                 if (!(await _userManager.IsEmailConfirmedAsync(user.Id)))
                 {
-                    ModelState.AddModelError("NoConfirmEmail",@"Email chưa được xác nhận");
+                    ModelState.AddModelError("NoConfirmEmail", @"Email chưa được xác nhận");
                     return View(model);
                 }
 
                 if (user.IsDeleted)
                 {
-                    ModelState.AddModelError("DeletedAccount",@"Tài khoản đã bị xóa khỏi hệ thống, vui lòng liên hệ admin để cập nhật");
+                    ModelState.AddModelError("DeletedAccount", @"Tài khoản đã bị xóa khỏi hệ thống, vui lòng liên hệ admin để cập nhật");
                     return View(model);
                 }
                 string resetCode = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
@@ -174,7 +174,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                     if (isSendEmail)
                     {
-                        return RedirectToAction("ForgotPasswordConfirmation", "Auth", new { area = "Admin", fromForgot = true });
+                        return RedirectToAction("ForgotPasswordConfirmation", "Auth",
+                            new { area = "Admin", fromForgot = true });
                     }
                 }
             }

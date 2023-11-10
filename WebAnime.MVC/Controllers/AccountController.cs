@@ -28,7 +28,6 @@ namespace WebAnime.MVC.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
 
-            OwinConfig.RegisterTokenService(userManager);
         }
 
         public async Task<ActionResult> Index()
@@ -331,12 +330,11 @@ namespace WebAnime.MVC.Controllers
         }
 
 
-        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { returnUrl }));
         }
 
         [AllowAnonymous]

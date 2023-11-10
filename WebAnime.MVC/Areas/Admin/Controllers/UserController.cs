@@ -24,7 +24,6 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             _mapper = mapper;
             _roleManager = roleManager;
 
-            OwinConfig.RegisterTokenService(_userManager);
         }
         public async Task<ActionResult> Index()
         {

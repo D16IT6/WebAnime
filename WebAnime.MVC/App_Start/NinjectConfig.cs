@@ -13,6 +13,8 @@ using System.Web;
 using DataModels.Repository.Implement.Dapper;
 using DataModels.Repository.Interface;
 using DataModels.Repository.Implement.EF6;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security.DataProtection;
 
 namespace WebAnime.MVC
 {
@@ -41,13 +43,10 @@ namespace WebAnime.MVC
         }
         public static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<IAuthenticationManager>().ToMethod(
-                _ =>
-                HttpContext.Current.GetOwinContext().Authentication
-                );
             kernel.Bind<WebAnimeDbContext>().ToSelf();
-            kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
             kernel.Bind<IMapper>().ToConstant(AutoMapperConfig.RegisterAutoMapper());
+
+            RegisterOwinContext(kernel);
 
             RegisterIdentityStores(kernel);
             RegisterIdentityManagers(kernel);
@@ -55,6 +54,8 @@ namespace WebAnime.MVC
             RegisterRepositoryEf(kernel);
             RegisterRepositoryDapper(kernel);
         }
+
+
 
         static void RegisterRepositoryEf(IKernel kernel)
         {
@@ -103,6 +104,18 @@ namespace WebAnime.MVC
             return service;
         }
 
+        private static void RegisterOwinContext(IKernel kernel)
+        {
+            kernel.Bind<IAuthenticationManager>().ToMethod(
+                _ =>
+                    HttpContext.Current.GetOwinContext().Authentication
+            );
+            kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
+
+
+
+        }
+
         public static void RegisterIdentityStores(IKernel kernel)
         {
             kernel.Bind<IRoleStore<Roles, int>>().ToMethod(ninjectContext =>
@@ -128,6 +141,8 @@ namespace WebAnime.MVC
             kernel.Bind<UserManager<Users, int>>().ToMethod(ninjectContext =>
             {
                 var userStore = ninjectContext.Kernel.Get<UserStore>();
+
+
                 var userManager = new UserManager(userStore);
 
                 return userManager;

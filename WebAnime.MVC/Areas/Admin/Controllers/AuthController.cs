@@ -25,7 +25,6 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
 
-            OwinConfig.RegisterTokenService(userManager);
 
         }
 

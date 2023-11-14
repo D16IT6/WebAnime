@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Web.UI;
 using DataModels.Repository.Interface;
 
 namespace WebAnime.MVC.Controllers
@@ -22,7 +21,7 @@ namespace WebAnime.MVC.Controllers
         public async Task<ActionResult> Detail(int id)
         {
             var anime = await _animeRepository.GetAnimeDetail(id);
-            return  await Task.FromResult(View(anime));
+            return await Task.FromResult(View(anime));
         }
 
         [ChildActionOnly]
@@ -39,5 +38,11 @@ namespace WebAnime.MVC.Controllers
             return await Task.FromResult(PartialView(animeRecenly));
 
         }
-    }
+
+        public ActionResult Watch(int animeId, int serverId)
+        {
+            return View();
+        }
+
+}
 }

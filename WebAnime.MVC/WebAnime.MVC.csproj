@@ -6569,6 +6569,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AnimeController.cs" />
     <Compile Include="Controllers\BlogController.cs" />
+    <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -6897,6 +6898,7 @@
     <Folder Include="Uploads\files\" />
     <Folder Include="Uploads\flash\" />
     <Folder Include="Views\Auth\" />
+    <Folder Include="Views\Comment\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

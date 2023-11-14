@@ -25,14 +25,14 @@ namespace DataModels.EF.Identity
             userManager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
-                RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
+                RequireNonLetterOrDigit = false,
+                RequireDigit = false,
+                RequireLowercase = false,
+                RequireUppercase = false,
 
             };
 
-            var dataProtectionProvider = new DpapiDataProtectionProvider("WebAnime.DpapiDataProtectionProvider.Talon.123!@#");
+            var dataProtectionProvider = new DpapiDataProtectionProvider("WebAnime.DpapiDataProtectionProvider.TalonEzio.123!@#");
 
             userManager.UserTokenProvider =
                 new DataProtectorTokenProvider<Users, int>(

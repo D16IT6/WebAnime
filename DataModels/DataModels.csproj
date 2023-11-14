@@ -191,6 +191,7 @@
     <Compile Include="Repository\Implement\EF6\BlogCategoryRepository.cs" />
     <Compile Include="Repository\Implement\EF6\BlogRepository.cs" />
     <Compile Include="Repository\Implement\EF6\CategoryRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\CommentRepository.cs" />
     <Compile Include="Repository\Implement\EF6\CountryRepository.cs" />
     <Compile Include="Repository\Implement\EF6\EpisodeRepository.cs" />
     <Compile Include="Repository\Implement\EF6\ServerRepository.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Repository\Interface\IBlogCategoryRepository.cs" />
     <Compile Include="Repository\Interface\IAnimeRepository.cs" />
     <Compile Include="Repository\Interface\ICategoryRepository.cs" />
+    <Compile Include="Repository\Interface\ICommentRepository.cs" />
     <Compile Include="Repository\Interface\ICountryRepository.cs" />
     <Compile Include="Repository\Interface\IEpisodeRepository.cs" />
     <Compile Include="Repository\Interface\IRepositoryBase.cs" />

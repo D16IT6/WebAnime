@@ -191,6 +191,7 @@ namespace DataModels.Repository.Implement.EF6
                     Type = x.Types.Name,
                     Status = x.Statuses.Name,
                     CurrentEpisode = x.Episodes
+                        .Where(x => !x.IsDeleted)
                         .GroupBy(z => z.ServerId)
                         .Max(t => t.Count()),
                     TotalEpisode = x.TotalEpisodes,
@@ -216,8 +217,9 @@ namespace DataModels.Repository.Implement.EF6
                     Type = x.Types.Name,
                     Status = x.Statuses.Name,
                     CurrentEpisode = x.Episodes
-                    .GroupBy(z => z.ServerId)
-                    .Max(t => t.Count()),
+                        .Where(z => !z.IsDeleted)
+                        .GroupBy(z => z.ServerId)
+                        .Max(t => t.Count()),
                     TotalEpisode = x.TotalEpisodes,
                     CommentCount = Context.Comments.Count(y => y.AnimeId == x.Id)
                 }).Take(take);
@@ -249,8 +251,8 @@ namespace DataModels.Repository.Implement.EF6
                 Duration = data.Duration,
                 Release = data.Release,
                 Type = data.Types.Name,
-                Studios = data.Studios.Select(x => x.Name).ToArray(),
-                Categories = data.Categories.Select(x => x.Name).ToArray(),
+                Studios = data.Studios.Where(x => !x.IsDeleted).Select(x => x.Name).ToArray(),
+                Categories = data.Categories.Where(x => !x.IsDeleted).Select(x => x.Name).ToArray(),
                 Status = data.Statuses.Name,
                 Score = ratingCount > 0 ? data.Ratings.Sum(x => x.RatePoint) / ratingCount : 0,
                 RateCount = ratingCount,

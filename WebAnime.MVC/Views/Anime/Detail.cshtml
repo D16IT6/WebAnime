@@ -1,4 +1,5 @@
-﻿@model ViewModels.Client.AnimeDetailViewModel
+﻿@using WebAnime.MVC.Components
+@model ViewModels.Client.AnimeDetailViewModel
 <div class="anime__details__content">
     <div class="row">
         <div class="col-lg-3">
@@ -21,7 +22,7 @@
                         <a href="#"><i class="fa fa-star"></i></a>
                         <a href="#"><i class="fa fa-star-half-o"></i></a>
                     </div>
-                    <span>1.029 Votes</span>
+                    <span>@Model.RateCount lượt</span>
                 </div>
                 <p>
                     @Html.Raw(Model.Synopsis)
@@ -31,26 +32,32 @@
                         <div class="col-lg-6 col-md-6">
                             <ul>
                                 <li><span>Kiểu anime:</span> @Model.Type</li>
-                                <li><span>Studios:</span>@String.Join(",", Model.Studios)</li>
-                                <li><span>Phát hành:</span> @Model.Release.Value.ToShortDateString()</li>
+                                <li>
+                                    <span>Phát hành:</span>
+                                    @if (Model.Release != null)
+                                    {
+                                        @Model.Release.Value.ToShortDateString()
+                                    }
+                                </li>
                                 <li><span>Trạng thái:</span> @Model.Status</li>
-                                <li><span>Thể loại:</span> @String.Join(",",Model.Categories)</li>
+                                <li><span>Thể loại:</span> @String.Join(",", Model.Categories)</li>
                             </ul>
                         </div>
                         <div class="col-lg-6 col-md-6">
                             <ul>
-                                @*<li><span>Scores:</span>@Model.Score / @Model</li>*@
                                 <li><span>Đánh giá:</span> @Model.Score / @Model.RateCount lượt</li>
                                 <li><span>Thời lượng:</span> @Model.Duration phút/tập</li>
                                 <li><span>Tổng lượt xem:</span> @Model.ViewCount</li>
+                                <li><span>Studios:</span>@String.Join(",", Model.Studios)</li>
+
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="anime__details__btn">
-                    <a href="#" class="follow-btn"><i class="fa fa-heart-o"></i> Follow</a>
+                    <a href="#" class="follow-btn"><i class="fa fa-heart-o"></i>Yêu thích</a>
                     <a href="#" class="watch-btn">
-                        <span>Watch Now</span> <i class="fa fa-angle-right"></i>
+                        <span>Xem ngay</span> <i class="fa fa-angle-right"></i>
                     </a>
                 </div>
             </div>
@@ -61,76 +68,84 @@
     <div class="col-lg-8 col-md-8">
         <div class="anime__details__review">
             <div class="section-title">
-                <h5>Reviews</h5>
+                <h5>Bình luận</h5>
             </div>
-            <div class="anime__review__item">
-                <div class="anime__review__item__pic">
-                    <img src="img/anime/review-1.jpg" alt="">
+            <div id="commentBlock">
+
+                <div class="anime__review__item">
+                    <div class="anime__review__item__pic">
+                        <img src="~/Resources/Library/Client/img/anime/review-1.jpg" alt="">
+                    </div>
+                    <div class="anime__review__item__text">
+                        <h6>Chris Curry - <span>1 Hour ago</span></h6>
+                        <p>
+                            whachikan Just noticed that someone categorized this as belonging to the genre
+                            "demons" LOL
+                        </p>
+                    </div>
                 </div>
-                <div class="anime__review__item__text">
-                    <h6>Chris Curry - <span>1 Hour ago</span></h6>
-                    <p>
-                        whachikan Just noticed that someone categorized this as belonging to the genre
-                        "demons" LOL
-                    </p>
-                </div>
+
             </div>
-            <div class="anime__review__item">
-                <div class="anime__review__item__pic">
-                    <img src="img/anime/review-2.jpg" alt="">
-                </div>
-                <div class="anime__review__item__text">
-                    <h6>Lewis Mann - <span>5 Hour ago</span></h6>
-                    <p>Finally it came out ages ago</p>
-                </div>
-            </div>
-            <div class="anime__review__item">
-                <div class="anime__review__item__pic">
-                    <img src="img/anime/review-3.jpg" alt="">
-                </div>
-                <div class="anime__review__item__text">
-                    <h6>Louis Tyler - <span>20 Hour ago</span></h6>
-                    <p>Where is the episode 15 ? Slow update! Tch</p>
-                </div>
-            </div>
-            <div class="anime__review__item">
-                <div class="anime__review__item__pic">
-                    <img src="img/anime/review-4.jpg" alt="">
-                </div>
-                <div class="anime__review__item__text">
-                    <h6>Chris Curry - <span>1 Hour ago</span></h6>
-                    <p>
-                        whachikan Just noticed that someone categorized this as belonging to the genre
-                        "demons" LOL
-                    </p>
-                </div>
-            </div>
-            <div class="anime__review__item">
-                <div class="anime__review__item__pic">
-                    <img src="img/anime/review-5.jpg" alt="">
-                </div>
-                <div class="anime__review__item__text">
-                    <h6>Lewis Mann - <span>5 Hour ago</span></h6>
-                    <p>Finally it came out ages ago</p>
-                </div>
-            </div>
-            <div class="anime__review__item">
-                <div class="anime__review__item__pic">
-                    <img src="img/anime/review-6.jpg" alt="">
-                </div>
-                <div class="anime__review__item__text">
-                    <h6>Louis Tyler - <span>20 Hour ago</span></h6>
-                    <p>Where is the episode 15 ? Slow update! Tch</p>
-                </div>
-            </div>
+        </div>
+        <div class="my-3">
+            <nav aria-label="Page navigation example">
+                @if (Model.CommentCount > CommonConstants.AnimeCommentPageSize)
+                {
+                    <ul class="pagination"
+                        data-comment-count="@Model.CommentCount"
+                        data-current-page="1"
+                        data-anime-id="@Model.Id"
+                        data-comment-url="@Url.Action("LoadComment","Comment")"
+                        data-page-size="@CommonConstants.AnimeCommentPageSize">
+                        <li class="page-item">
+                            <button class="page-link pagePrev" data-page-id="-1">
+                                Trước
+                            </button>
+                        </li>
+                        @{
+                            int pageCount = Model.CommentCount / CommonConstants.AnimeCommentPageSize;
+                            for (int i = 1; i <= pageCount; ++i)
+                            {
+                                <li class="page-item" data-page-id="@i">
+                                    <button class="page-link" data-page-id="@i">
+                                        @i
+                                    </button>
+                                </li>
+                                if (i >= 3)
+                                {
+                                    break;
+                                }
+                            }
+                            <li class="page-item"><a class="page-link">...</a></li>
+
+                            for (int i = pageCount - 2; i < pageCount && i > 4; i++)
+                            {
+                                <li class="page-item" data-page-id="@i">
+                                    <button class="page-link" data-page-id="@i">
+                                        @i
+                                    </button>
+                                </li>
+                            }
+                        }
+                        <li class="page-item">
+                            <button class="page-link" data-page-id="@pageCount">
+                                @pageCount
+                            </button>
+                        </li>
+                        <li class="page-item ">
+                            <button class="page-link pageNext" data-page-id="+1">Sau</button>
+                        </li>
+                    </ul>
+                }
+            </nav>
         </div>
         <div class="anime__details__form">
             <div class="section-title">
-                <h5>Your Comment</h5>
+                <h5>Bình luận</h5>
             </div>
             <form action="#">
                 <textarea placeholder="Your Comment"></textarea>
-                <button type="submit"><i class="fa fa-location-arrow"></i> Review</button>
+                <button type="submit"><i class="fa fa-location-arrow"></i> Gửi</button>
             </form>
         </div>
     </div>
@@ -139,22 +154,22 @@
             <div class="section-title">
                 <h5>you might like...</h5>
             </div>
-            <div class="product__sidebar__view__item set-bg" data-setbg="img/sidebar/tv-1.jpg">
+            <div class="product__sidebar__view__item set-bg" data-setbg="../../Resources/Library/Client/img/sidebar/tv-1.jpg">
                 <div class="ep">18 / ?</div>
                 <div class="view"><i class="fa fa-eye"></i> 9141</div>
                 <h5><a href="#">Boruto: Naruto next generations</a></h5>
             </div>
-            <div class="product__sidebar__view__item set-bg" data-setbg="img/sidebar/tv-2.jpg">
+            <div class="product__sidebar__view__item set-bg" data-setbg="../../Resources/Library/Client/img/sidebar/tv-2.jpg">
                 <div class="ep">18 / ?</div>
                 <div class="view"><i class="fa fa-eye"></i> 9141</div>
                 <h5><a href="#">The Seven Deadly Sins: Wrath of the Gods</a></h5>
             </div>
-            <div class="product__sidebar__view__item set-bg" data-setbg="img/sidebar/tv-3.jpg">
+            <div class="product__sidebar__view__item set-bg" data-setbg="../../Resources/Library/Client/img/sidebar/tv-3.jpg">
                 <div class="ep">18 / ?</div>
                 <div class="view"><i class="fa fa-eye"></i> 9141</div>
                 <h5><a href="#">Sword art online alicization war of underworld</a></h5>
             </div>
-            <div class="product__sidebar__view__item set-bg" data-setbg="img/sidebar/tv-4.jpg">
+            <div class="product__sidebar__view__item set-bg" data-setbg="../../Resources/Library/Client/img/sidebar/tv-4.jpg">
                 <div class="ep">18 / ?</div>
                 <div class="view"><i class="fa fa-eye"></i> 9141</div>
                 <h5><a href="#">Fate/stay night: Heaven's Feel I. presage flower</a></h5>
@@ -162,3 +177,98 @@
         </div>
     </div>
 </div>
+
+@section footerCss{
+    <style>
+        .pagination > li > a {
+            background-color: #1d1e39;
+            color: #ddd;
+        }
+
+            .pagination > li > a:focus,
+            .pagination > li > a:hover,
+            .pagination > li > span:focus,
+            .pagination > li > span:hover {
+                color: #1d1e39;
+                background-color: #eee;
+                border-color: #ddd;
+            }
+
+        .pagination > .active > a {
+            color: white;
+            background-color: #ddd;
+            border: solid 1px #ddd;
+        }
+
+            .pagination > .active > a:hover {
+                background-color: #ddd;
+                border: solid 1px #ddd;
+            }
+    </style>
+}
+@section footerJs{
+    <script>
+        function loadComment(data) {
+            for (let i = 0; i < data.length; ++i) {
+                const commentItem = data[i];
+                const commentHtml =
+                    `<div class="anime__review__item">
+                 <div class="anime__review__item__pic">
+                     <img src="${commentItem.AvatarUrl}" alt="">
+                 </div>
+                 <div class="anime__review__item__text">
+                     <h6>${commentItem.UserFullName} - <span>${commentItem.CreatedDate}</span></h6>
+                 <p>${commentItem.Content}</p>
+                 </div>
+             </div>`;
+                commentBlock.append(commentHtml);
+            }
+        }
+
+        const pagination = $(`.pagination`);
+        const animeId = pagination.data('animeId');
+        const commentUrl = pagination.data('commentUrl');
+        const pageSize = pagination.data('pageSize');
+        const commentBlock = $(`#commentBlock`);
+        const loader = $(`.loader`);
+
+        function fetchData(pageIndex) {
+            $.ajax({
+                type: "GET",
+                url: commentUrl,
+                data: {
+                    animeId: animeId,
+                    pageNumber: pageIndex,
+                    pageSize: pageSize
+                },
+                dataType: "json",
+                success: function (response) {
+                    commentBlock.empty();
+                    const data = response.data;
+                    loadComment(data);
+                }
+            });
+        }
+
+        fetchData(1);
+
+        $(`.page-link`).click(function () {
+            const pageIndex = $(this).data('pageId');
+            const currentPage = pagination.data('currentPage');
+
+            if ($(this).hasClass('pagePrev') || $(this).hasClass('pageNext')) {
+                return;
+            }
+            if (pageIndex === currentPage) return;
+
+            pagination.attr('data-current-page', pageIndex);
+
+            console.log(pageIndex, currentPage);
+    
+            // Call the common function for Ajax
+            fetchData(pageIndex);
+        });
+
+
+    </script>
+}

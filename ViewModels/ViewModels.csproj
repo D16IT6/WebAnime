@@ -86,6 +86,7 @@
     <Compile Include="Client\BlogLitteViewModel.cs" />
     <Compile Include="Client\BlogViewModel.cs" />
     <Compile Include="Client\BlogCommentViewModel.cs" />
+    <Compile Include="Client\CommentViewModel.cs" />
     <Compile Include="Client\LoginViewModel.cs" />
     <Compile Include="Client\ManageViewModels.cs" />
     <Compile Include="Client\UserViewModel.cs" />

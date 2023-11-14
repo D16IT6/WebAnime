@@ -13,24 +13,31 @@
         </div>
     </div>
     <div class="row">
-        @foreach (var item in Model)
+        @if (Model.Any())
         {
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="@item.Poster">
-                        <div class="ep">@item.CurrentEpisode / @item.TotalEpisode</div>
-                        <div class="comment"><i class="fa fa-comments"></i> @item.CommentCount</div>
-                        <div class="view"><i class="fa fa-eye"></i> @item.ViewCount</div>
-                    </div>
-                    <div class="product__item__text">
-                        <ul>
-                            <li>@item.Status</li>
-                            <li>@item.Type</li>
-                        </ul>
-                        <h5><a href="@Url.Action("Detail","Anime",new{id=item.Id})">@item.Title</a></h5>
+            foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg" data-setbg="@item.Poster">
+                            <div class="ep">@item.CurrentEpisode / @item.TotalEpisode</div>
+                            <div class="comment"><i class="fa fa-comments"></i> @item.CommentCount</div>
+                            <div class="view"><i class="fa fa-eye"></i> @item.ViewCount</div>
+                        </div>
+                        <div class="product__item__text">
+                            <ul>
+                                <li>@item.Status</li>
+                                <li>@item.Type</li>
+                            </ul>
+                            <h5><a href="@Url.Action("Detail","Anime",new{id=item.Id})">@item.Title</a></h5>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+        }
+        else
+        {
+            <h2>Chưa có anime gì</h2>
         }
     </div>
 </div>

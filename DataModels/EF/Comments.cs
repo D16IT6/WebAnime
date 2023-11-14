@@ -25,6 +25,8 @@ namespace DataModels.EF
         [DataType(DataType.DateTime)] public DateTime? DeletedDate { get; set; }
         public int? DeletedBy { get; set; }
 
+        public bool IsDeleted { get; set; }
+
 
     }
 }

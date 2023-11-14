@@ -180,6 +180,7 @@
     <Compile Include="EF\Servers.cs" />
     <Compile Include="Repository\Implement\Dapper\AgeRatingRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\Dapper\BlogCategoryRepositoryDapper.cs" />
+    <Compile Include="Repository\Implement\Dapper\BlogCommentRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\Dapper\BlogRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\Dapper\CategoryRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\Dapper\CountryRepositoryDapper.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Repository\Implement\EF6\StudioRepository.cs" />
     <Compile Include="Repository\Implement\EF6\TypeRepository.cs" />
     <Compile Include="Repository\Interface\IAgeRatingRepository.cs" />
+    <Compile Include="Repository\Interface\IBlogCommentRepository.cs" />
     <Compile Include="Repository\Interface\IBlogRepository.cs" />
     <Compile Include="Repository\Interface\IBlogCategoryRepository.cs" />
     <Compile Include="Repository\Interface\IAnimeRepository.cs" />
@@ -225,7 +227,6 @@
       <Name>ViewModels</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

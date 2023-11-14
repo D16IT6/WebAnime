@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using ViewModels.Client;
 
 namespace DataModels.Repository.Implement.EF6
 {
@@ -103,6 +104,17 @@ namespace DataModels.Repository.Implement.EF6
                 return false;
             }
         }
+
+        public Task<BlogViewModel> GetBlogViewModel(int blogId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Blogs> GetByIdForClient(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task UpdateCategories(Blogs entity, Blogs updateEntity)
         {
             var oldCategoryIds = updateEntity.BlogCategories.Where(x => !x.IsDeleted).Select(x => x.Id).ToArray();

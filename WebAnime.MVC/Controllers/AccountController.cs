@@ -46,6 +46,8 @@ namespace WebAnime.MVC.Controllers
         [UserAuthorize]
         public async Task<ActionResult> Info()
         {
+            var userEmail = await _userManager.GetEmailAsync(User.Identity.GetUserId<int>());
+            ViewBag.UserEmail = userEmail;
             return await Task.FromResult(View());
         }
 
@@ -62,6 +64,10 @@ namespace WebAnime.MVC.Controllers
         [HttpGet]
         public async Task<ActionResult> Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return await Task.FromResult(RedirectToAction("NotFound", "Error"));
+            }
             return await Task.FromResult(View());
 
         }
@@ -108,23 +114,23 @@ namespace WebAnime.MVC.Controllers
 
                 switch (signInStatus)
                 {
-
                     case SignInStatus.Success:
                         Session.Remove(CommonConstants.LoginFailCount);
                         await _userManager.SetLockoutEnabledAsync(user.Id, false);
                         await _userManager.ResetAccessFailedCountAsync(user.Id);
+
                         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                         {
                             return Redirect(returnUrl);
                         }
 
-
                         return RedirectToAction("Index", "Home");
+
                     case SignInStatus.LockedOut:
                         ModelState.AddModelError("LockoutMessage",
                             $@"Tài khoản của bạn đã bị khóa do đăng nhập sai quá {AuthConstants.MaxFailedAccessAttemptsBeforeLockout} lần hoặc bị admin khóa.");
                         ModelState.AddModelError("LogoutHint", $@"Vui lòng thử lại sau {AuthConstants.LockoutMinutes} phút hoặc liên hệ admin.");
-                        return View();
+                        return View(model);
 
                     case SignInStatus.RequiresVerification:
                         return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, model.RememberMe });
@@ -144,7 +150,6 @@ namespace WebAnime.MVC.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
-            // Require that the user has already logged in via username/password or external login
             if (!await _signInManager.HasBeenVerifiedAsync())
             {
                 return RedirectToAction("NotFound", "Error");
@@ -185,7 +190,13 @@ namespace WebAnime.MVC.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Login");
+            }
             var userRole = _roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"))?.Id ?? 3;
+
             return View(new RegisterViewModel()
             {
                 RoleListIds = new[] { userRole }
@@ -199,14 +210,16 @@ namespace WebAnime.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new Users() { UserName = model.Email, Email = model.Email };
+                var uploadImage = Request.Files["AvatarFile"];
+                model.AvatarUrl = HandleFile(uploadImage);
+                var user = _mapper.Map<Users>(model);
+
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
+                    await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    
                     string code = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
 
@@ -260,10 +273,10 @@ namespace WebAnime.MVC.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult ForgotPassword()
+        public ActionResult ForgotPassword(string email)
         {
 
-            return View();
+            return View(new ForgotPasswordViewModel() { Email = email ?? "" });
         }
 
         [HttpPost]

@@ -1,0 +1,134 @@
+﻿@using Microsoft.AspNet.Identity
+@using WebAnime.MVC.Components
+@model ViewModels.Client.BlogViewModel
+@{
+    ViewBag.Title = "Detail";
+    var userId = User.Identity.GetUserId<int>();
+}
+
+<div class="row d-flex justify-content-center">
+
+    <div class="col-lg-12">
+        <div class="blog__details__title">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <h5 class="px-3 mb-3">
+                        Thể loại: @String.Join(",", Model.BlogCategories.Select(x => x.Name)) -
+                        <span>@Model.CreatedDate.ToString("dd/MM/yyyy - HH:mm:ss")</span>
+                    </h5>
+                    <h2>@Model.Title</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="blog__details__pic">
+            <img src="@Model.ImageUrl" alt="">
+        </div>
+    </div>
+    <div class="col-lg-12">
+        @Html.Raw(Model.Content)
+    </div>
+</div>
+
+
+<div class="blog__details__comment">
+    <h4><span class="commentCount">@Model.BlogComments.Count()</span> bình luận</h4>
+
+    @foreach (var comment in Model.BlogComments)
+    {
+        <div class="blog__details__comment__item">
+
+            <div class="blog__details__comment__item__pic">
+                <img src="@CommonConstants.DefaultAvatarUrl" alt="">
+            </div>
+            <div class="blog__details__comment__item__text">
+                <span>
+                    @comment.CreatedDate.ToString("dd/MM/yyyy - HH:mm:ss")
+                </span>
+                <h5>@comment.UserFullname</h5>
+                <p>
+                    @comment.Content
+                </p>
+            </div>
+        </div>
+
+    }
+</div>
+<div class="blog__details__form">
+    <h4>Bình luận</h4>
+    <form action="#">
+        <div class="row">
+            <div class="col-lg-12">
+                <textarea placeholder="Message" id="txtComment"></textarea>
+                <button type="button"
+                        class="site-btn btnComment"
+                        data-user-id="@userId"
+                        data-login-url="@Url.Action("Login","Account")"
+                        data-comment-url="@Url.Action("Comment","Blog")"
+                        data-blog-id="@Model.Id">
+                    Bình luận
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+@section footerJs
+    {
+    @Html.Partial("_ValidationScripts")
+    <script>
+        $(``)
+        $(`.btnComment`).click(function (e) {
+
+            const item = $(this);
+
+            const userId = item.data('userId');
+            if (!userId) {
+                return;
+            }
+            const commentUrl = item.data('commentUrl');
+            const content = $(`#txtComment`).val();
+            const blogId = item.data('blogId');
+            const parentId = item.data('parentId');
+
+            if (content.length < 5 || content.length > 200) {
+                alert('Nội dung bình luận phải từ 5 tới 200 ký tự');
+                return;
+            }
+
+            console.log(commentUrl, content, blogId, parentId);
+            $.ajax({
+                type: "POST",
+                url: commentUrl,
+                data: {
+                    createdBy: userId,
+                    content: content,
+                    blogId: blogId
+                },
+                dataType: "json",
+                success: function (response) {
+                    console.log(response.content);
+                    if (response.content) {
+                        const newComment = `<div class="blog__details__comment__item">
+                            <div class="blog__details__comment__item__pic">
+                                <img src="${response.avatarUrl}" alt="" style="width:70px;height:70px;">
+                            </div>
+                            <div class="blog__details__comment__item__text">
+                                <span>${response.commentDate}</span>
+                                <h5>John Smith</h5>
+                                <p>
+                                    ${response.content}
+                                </p>
+                            </div>
+                        </div>`;
+                        $(`.blog__details__comment`).append(newComment);
+
+                        let commentCount = parseInt($(`.commentCount`).text());
+                        commentCount += 1;
+                        $(`.commentCount`).text(commentCount);
+                    }
+                }
+            });
+        });
+    </script>
+}

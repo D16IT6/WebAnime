@@ -79,6 +79,13 @@
     <Compile Include="Admin\StudioViewModel.cs" />
     <Compile Include="Admin\UserViewModel.cs" />
     <Compile Include="Client\AccountViewModels.cs" />
+    <Compile Include="Client\AnimeDetailViewModel.cs" />
+    <Compile Include="Client\AnimeItemViewModel.cs" />
+    <Compile Include="Client\BlogCategoryViewModel.cs" />
+    <Compile Include="Client\BlogCommentShowViewModel.cs" />
+    <Compile Include="Client\BlogLitteViewModel.cs" />
+    <Compile Include="Client\BlogViewModel.cs" />
+    <Compile Include="Client\BlogCommentViewModel.cs" />
     <Compile Include="Client\LoginViewModel.cs" />
     <Compile Include="Client\ManageViewModels.cs" />
     <Compile Include="Client\UserViewModel.cs" />
@@ -87,6 +94,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

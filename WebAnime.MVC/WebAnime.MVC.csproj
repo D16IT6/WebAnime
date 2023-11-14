@@ -6542,6 +6542,7 @@
     <Content Include="Resources\Library\Admin\Jquery\jquery-3.7.1.js" />
     <Content Include="Uploads\images\92364.jpg" />
     <Content Include="Uploads\images\ahgkajhg-1617261830.jpg" />
+    <Content Include="Uploads\images\AvatarUsers\DefaultAvatar.jpg" />
     <Content Include="Uploads\images\download.jpg" />
     <Content Include="Uploads\_thumbs\Images\92364.jpg" />
     <Content Include="Uploads\_thumbs\Images\ahgkajhg-1617261830.jpg" />
@@ -6566,6 +6567,8 @@
     <Compile Include="Components\ChallangeResult.cs" />
     <Compile Include="Components\UserAuthorize.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AnimeController.cs" />
+    <Compile Include="Controllers\BlogController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -6871,14 +6874,17 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\SendCode.cshtml" />
-    <Content Include="Views\Account\VerifyCode.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\Account\Error.cshtml" />
     <Content Include="Views\Shared\_ValidationScripts.cshtml" />
     <Content Include="Views\Account\VerifyEmailConfirmation.cshtml" />
     <Content Include="Views\Account\Info.cshtml" />
+    <Content Include="Views\Blog\Index.cshtml" />
+    <Content Include="Views\Blog\Detail.cshtml" />
+    <Content Include="Views\Anime\TrendingPartial.cshtml" />
+    <Content Include="Views\Anime\RecenlyPartial.cshtml" />
+    <Content Include="Views\Anime\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

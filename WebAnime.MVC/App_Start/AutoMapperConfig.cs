@@ -66,7 +66,7 @@ namespace WebAnime.MVC
 
                     cfg.CreateMap<UserViewModel, Users>();
 
-                    cfg.CreateMap<Blogs, BlogViewModel>()
+                    cfg.CreateMap<Blogs, ViewModels.Admin.BlogViewModel>()
                         .ForMember(
                             x => x.BlogCategoryIds,
                             memberOptions: options =>
@@ -81,8 +81,17 @@ namespace WebAnime.MVC
                             }
                             )
                         ;
-                    cfg.CreateMap<BlogViewModel, Blogs>();
+                    cfg.CreateMap<ViewModels.Admin.BlogViewModel, Blogs>();
 
+                    cfg.CreateMap<Blogs, BlogLitteViewModel>();
+
+
+                    cfg.CreateMap<BlogCommentViewModel, BlogComments>();
+
+                    cfg.CreateMap<BlogComments, BlogCommentViewModel>();
+
+                    cfg.CreateMap<BlogCategories, BlogCategoryViewModel>();
+                    cfg.CreateMap<BlogCategoryViewModel, BlogCategories>();
 
                 }
             );

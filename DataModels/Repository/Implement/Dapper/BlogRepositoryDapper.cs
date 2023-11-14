@@ -4,10 +4,12 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Dapper;
 using DataModels.EF;
 using DataModels.Repository.Interface;
 using Org.BouncyCastle.Utilities.Collections;
+using ViewModels.Client;
 using static Dapper.SqlMapper;
 
 namespace DataModels.Repository.Implement.Dapper
@@ -16,11 +18,15 @@ namespace DataModels.Repository.Implement.Dapper
     {
         private readonly IDbConnection _connection;
         private readonly IBlogCategoryRepository _blogCategoryRepository;
+        private readonly IBlogCommentRepository _blogCommentRepository;
+        private readonly IMapper _mapper;
 
-        public BlogRepositoryDapper(IDbConnection connection, IBlogCategoryRepository blogCategoryRepository)
+        public BlogRepositoryDapper(IDbConnection connection, IBlogCategoryRepository blogCategoryRepository, IBlogCommentRepository blogCommentRepository, IMapper mapper)
         {
             _connection = connection;
             _blogCategoryRepository = blogCategoryRepository;
+            _blogCommentRepository = blogCommentRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<Blogs>> GetAll()
@@ -120,6 +126,36 @@ namespace DataModels.Repository.Implement.Dapper
         {
             return await _connection.ExecuteAsync("usp_Delete_Blog", new { Id = id, DeletedBy = deletedBy },
                 commandType: CommandType.StoredProcedure) > 0;
+        }
+
+        public async Task<Blogs> GetByIdForClient(int id)
+        {
+            var blog = await GetById(id);
+            if (blog == null) return null;
+            blog.BlogComments = (ICollection<BlogComments>)await _blogCommentRepository.GetByBlogId(id);
+            return blog;
+        }
+
+        public async Task<BlogViewModel> GetBlogViewModel(int blogId)
+        {
+            var sql = "select * from dbo.Blogs where id = @blogId and IsDeleted = 0";
+            var result = await _connection.QueryFirstOrDefaultAsync<BlogViewModel>(sql, new { blogId });
+            if(result == null) return null;
+
+            result.BlogCategories = _mapper.Map
+                <IEnumerable<BlogCategories>,IEnumerable<BlogCategoryViewModel>>
+                (
+                    await _blogCategoryRepository.GetAllBlogCategoriesByBlogId(blogId)
+                );
+            result.BlogComments = await GetBlogCommentViewModel(blogId);
+            return result;
+        }
+
+        private async Task<IEnumerable<BlogCommentViewModel>> GetBlogCommentViewModel(int blogId)
+        {
+            var procName = "usp_Get_Blog_Comment_View_Model";
+            return await _connection.QueryAsync<BlogCommentViewModel>(procName, new { @BlogId = blogId },
+                commandType: CommandType.StoredProcedure);
         }
     }
 }

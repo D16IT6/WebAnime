@@ -32,7 +32,7 @@ namespace DataModels.EF
 
         [StringLength(50)] public string Trailer { get; set; }
 
-        public int? ViewCount { get; set; } = 0;
+        public int ViewCount { get; set; } = 0;
 
         public int? TotalEpisodes { get; set; } = 12;
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using ViewModels.Client;
 
 namespace DataModels.Repository.Implement.EF6
 {
@@ -173,6 +174,93 @@ namespace DataModels.Repository.Implement.EF6
                 }
             }
         }
+
+        public async Task<IEnumerable<AnimeItemViewModel>> GetAnimeTrending(int take = 9)
+        {
+            var data = Context.Animes
+                .Where(x => !x.IsDeleted)
+                .OrderByDescending(x => x.ViewCount)
+                .ThenByDescending(x => x.CreatedDate)
+                .ThenByDescending(x => x.ModifiedDate)
+                .Select(x => new AnimeItemViewModel()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Poster = x.Poster,
+                    ViewCount = x.ViewCount,
+                    Type = x.Types.Name,
+                    Status = x.Statuses.Name,
+                    CurrentEpisode = x.Episodes
+                        .GroupBy(z => z.ServerId)
+                        .Max(t => t.Count()),
+                    TotalEpisode = x.TotalEpisodes,
+                    CommentCount = Context.Comments.Count(y => y.AnimeId == x.Id)
+                })
+                .Take(take);
+            return await Task.FromResult(data);
+        }
+
+        public async Task<IEnumerable<AnimeItemViewModel>> GetAnimeRecenly(int take = 9)
+        {
+            var data = Context.Animes
+                .Where(x => !x.IsDeleted)
+                .OrderByDescending(x => x.CreatedDate)
+                .ThenByDescending(x => x.ModifiedDate)
+                .ThenByDescending(x => x.ViewCount)
+                .Select(x => new AnimeItemViewModel()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Poster = x.Poster,
+                    ViewCount = x.ViewCount,
+                    Type = x.Types.Name,
+                    Status = x.Statuses.Name,
+                    CurrentEpisode = x.Episodes
+                    .GroupBy(z => z.ServerId)
+                    .Max(t => t.Count()),
+                    TotalEpisode = x.TotalEpisodes,
+                    CommentCount = Context.Comments.Count(y => y.AnimeId == x.Id)
+                }).Take(take);
+            return await Task.FromResult(data);
+        }
+
+        public async Task<AnimeDetailViewModel> GetAnimeDetail(int id)
+        {
+            var data = await Context.Animes
+                .Include(animes => animes.Types)
+                .Include(animes => animes.Studios)
+                .Include(animes => animes.Categories)
+                .Include(animes => animes.Statuses)
+                .Include(animes => animes.Ratings)
+                .Include(animes => animes.Comments)
+                .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+
+            if (data == null) return null;
+
+            var ratingCount = data.Ratings.Count();
+
+            var result = new AnimeDetailViewModel()
+            {
+                Id = data.Id,
+                Title = data.Title,
+                OriginalTitle = data.OriginalTitle,
+                Synopsis = data.Synopsis,
+                Poster = data.Poster,
+                Duration = data.Duration,
+                Release = data.Release,
+                Type = data.Types.Name,
+                Studios = data.Studios.Select(x => x.Name).ToArray(),
+                Categories = data.Categories.Select(x => x.Name).ToArray(),
+                Status = data.Statuses.Name,
+                Score = ratingCount > 0 ? data.Ratings.Sum(x => x.RatePoint) / ratingCount : 0,
+                RateCount = ratingCount,
+                CommentCount = data.Comments.Count(),
+                ViewCount = data.ViewCount,
+            };
+
+            return result;
+        }
+
     }
 
 

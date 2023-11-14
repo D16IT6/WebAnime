@@ -1,11 +1,17 @@
 ﻿
 @{
     ViewBag.Title = "Info";
+    var userEmail = ViewBag.UserEmail ?? "";
+
 }
 
-<h2>Trang thông tin cá nhân</h2>
+<h2 class="mb-2">Trang thông tin cá nhân</h2>
 
-@using (Html.BeginForm("Logout", "Account"))
+<h5 class="mb-2">
+    Bạn quên mật khẩu? <a href="@Url.Action("ForgotPassword",new {email = userEmail})" class="text-info">Bấm vào đây</a>
+</h5>
+
+@using (Html.BeginForm("Logout", "Account", FormMethod.Post))
 {
     <button class="btn btn-primary">Đăng xuất</button>
 }

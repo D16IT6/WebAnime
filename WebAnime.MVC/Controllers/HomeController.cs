@@ -1,16 +1,16 @@
-﻿using System.Web.Mvc;
+﻿using System.Threading.Tasks;
+using System.Web.Mvc;
+using AutoMapper;
+using DataModels.Repository.Interface;
 using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Controllers
 {
-    [UserAuthorize]
     public class HomeController : Controller
     {
-        // GET: Home
-
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View();
+            return await Task.FromResult(View());
         }
     }
 }

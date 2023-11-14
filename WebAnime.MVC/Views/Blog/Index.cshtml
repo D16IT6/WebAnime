@@ -1,0 +1,25 @@
+﻿@model IEnumerable<ViewModels.Client.BlogLitteViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+<div class="row">
+
+    @if (Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <div class="col-lg-6">
+                <div class="blog__item set-bg" data-setbg="@item.ImageUrl">
+                    <div class="blog__item__text">
+                        <p><span class="icon_calendar"></span> @item.CreatedDate.ToString("dd/MM/yyyy - HH:mm:ss")</p>
+                        <h4><a href="@Url.Action("Detail","Blog",new{@id = item.Id})">@item.Title</a></h4>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <h2>Chưa có bài viết nào</h2>
+    }
+</div>

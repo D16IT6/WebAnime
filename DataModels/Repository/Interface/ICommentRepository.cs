@@ -10,6 +10,7 @@ namespace DataModels.Repository.Interface
 {
     public interface ICommentRepository : IRepositoryBase<Comments,int>
     {
-        Task<IEnumerable<CommentViewModel>> GetPaging(int animeId, int pageNumber, int pageSize);
+        Task<IEnumerable<CommentShowViewModel>> GetPaging(int animeId, int pageNumber, int pageSize);
+        Task<CommentShowViewModel> Comment(Comments comment);
     }
 }

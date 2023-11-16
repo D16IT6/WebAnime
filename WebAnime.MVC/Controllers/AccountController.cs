@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using DataModels.EF.Identity;
 using DataModels.Helpers;
 using DataModels.Services;
@@ -98,7 +99,7 @@ namespace WebAnime.MVC.Controllers
                         ModelState.AddModelError("AdminFb", @"Liên hệ facebook: https://facebook.com/vuthemanh1707");
                         Session.Remove(CommonConstants.LoginFailCount);
 
-                        return View();
+                        return View(model);
                     }
                     ModelState.AddModelError(string.Empty,
                         $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - loginFailCount} lượt)");
@@ -109,6 +110,7 @@ namespace WebAnime.MVC.Controllers
                     return View(model);
 
                 }
+
                 SignInStatus signInStatus =
                     await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
 
@@ -119,12 +121,13 @@ namespace WebAnime.MVC.Controllers
                         await _userManager.SetLockoutEnabledAsync(user.Id, false);
                         await _userManager.ResetAccessFailedCountAsync(user.Id);
 
-                        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                        if (!await _userManager.IsEmailConfirmedAsync(user.Id))
                         {
-                            return Redirect(returnUrl);
+                            _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            return RedirectToAction("UnconfirmedEmail", new { email = user.Email });
                         }
 
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToLocal(returnUrl);
 
                     case SignInStatus.LockedOut:
                         ModelState.AddModelError("LockoutMessage",
@@ -147,45 +150,48 @@ namespace WebAnime.MVC.Controllers
             return View(model);
         }
 
-        [AllowAnonymous]
-        public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
+        [HttpGet]
+        public async Task<ActionResult> UnconfirmedEmail(string email)
         {
-            if (!await _signInManager.HasBeenVerifiedAsync())
-            {
-                return RedirectToAction("NotFound", "Error");
-            }
-            return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
+
+            ViewBag.Email = email;
+            return await Task.FromResult(View(model:email));
         }
-
-
         [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
+        public async Task<ActionResult> UnconfirmedEmail(string email,string temp)
         {
-            if (!ModelState.IsValid)
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return new HttpNotFoundResult("Cannot find user by email " + email);
+
+            string code = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
+                protocol: Request.Url?.Scheme ?? "http");
+
+            StringBuilder bodyBuilder = new StringBuilder();
+            bodyBuilder.AppendLine(
+                $"<p>Xin chào thành viên mới, bạn đã yêu cầu tạo tài khoản!</p>");
+            bodyBuilder.AppendLine(
+                $"<p>Để xác thực tài khoản mới, vui lòng bấm vào <a href=\"{callbackUrl}\"><strong>Đây</strong></a>");
+            bodyBuilder.AppendLine("<p>Thư sẽ hết hạn sau 1 giờ.</p>");
+            bodyBuilder.AppendLine("<h3>Cảm ơn bạn!</h3>");
+
+            bool isSendEmail = await EmailService.SendMailAsync(new IdentityMessage()
             {
-                return View(model);
+                Body = bodyBuilder.ToString(),
+                Destination = user.Email,
+                Subject = "Xác nhận tài khoản"
+            });
+
+            if (isSendEmail)
+            {
+                return RedirectToAction("VerifyEmailConfirmation", "Account");
             }
 
-            // The following code protects for brute force attacks against the two factor codes. 
-            // If a user enters incorrect codes for a specified amount of time then the user account 
-            // will be locked out for a specified amount of time. 
-            // You can configure the account lockout settings in IdentityConfig
-            var result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(model.ReturnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError(string.Empty, @"Invalid code.");
-                    return View(model);
-            }
+            var returnUrl = Request["returnUrl"];
+            return RedirectToLocal(returnUrl);
         }
-
 
         [AllowAnonymous]
         public ActionResult Register()
@@ -195,11 +201,10 @@ namespace WebAnime.MVC.Controllers
                 _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Login");
             }
-            var userRole = _roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"))?.Id ?? 3;
 
             return View(new RegisterViewModel()
             {
-                RoleListIds = new[] { userRole }
+                AvatarUrl = CommonConstants.DefaultAvatarUrl
             });
         }
 
@@ -208,18 +213,19 @@ namespace WebAnime.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            var userRole = _roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"))?.Id ?? 3;
+            model.RoleListIds = new[] { userRole };
+            var uploadImage = Request.Files["AvatarFile"];
+            model.AvatarUrl = HandleFile(uploadImage);
             if (ModelState.IsValid)
             {
-                var uploadImage = Request.Files["AvatarFile"];
-                model.AvatarUrl = HandleFile(uploadImage);
+
                 var user = _mapper.Map<Users>(model);
 
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
 
-                    await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                    
                     string code = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
 
@@ -246,7 +252,9 @@ namespace WebAnime.MVC.Controllers
                         return RedirectToAction("VerifyEmailConfirmation", "Account");
                     }
 
-                    return RedirectToAction("Index", "Home");
+
+                    var returnUrl = Request["returnUrl"];
+                    return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
             }
@@ -377,6 +385,7 @@ namespace WebAnime.MVC.Controllers
                 IdentityResult result = await _userManager.ResetPasswordAsync(model.UserId, model.ResetCode, model.Password);
                 if (result.Succeeded)
                 {
+                    _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                     return RedirectToAction("Login", "Home");
                 }
 
@@ -508,7 +517,6 @@ namespace WebAnime.MVC.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
@@ -548,6 +556,44 @@ namespace WebAnime.MVC.Controllers
                 return ("\\" + Path.Combine("Uploads", "Images", "AvatarUsers", uploadImage.FileName)).Replace('\\', '/');
             }
             return CommonConstants.DefaultAvatarUrl;
+        }
+        [AllowAnonymous]
+        public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
+        {
+            if (!await _signInManager.HasBeenVerifiedAsync())
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+            return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
+        }
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // The following code protects for brute force attacks against the two factor codes. 
+            // If a user enters incorrect codes for a specified amount of time then the user account 
+            // will be locked out for a specified amount of time. 
+            // You can configure the account lockout settings in IdentityConfig
+            var result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToLocal(model.ReturnUrl);
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError(string.Empty, @"Invalid code.");
+                    return View(model);
+            }
         }
     }
 }

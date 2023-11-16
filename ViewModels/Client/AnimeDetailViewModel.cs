@@ -38,7 +38,7 @@ namespace ViewModels.Client
 
         public string Status { get; set; }
 
-        public float Score { get; set; }
+        public double Score { get; set; }
         public int RateCount { get; set; }
         public int CommentCount { get; set; }
         public int ViewCount { get; set; }

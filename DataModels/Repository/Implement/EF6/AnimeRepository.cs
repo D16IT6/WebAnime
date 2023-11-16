@@ -254,7 +254,7 @@ namespace DataModels.Repository.Implement.EF6
                 Studios = data.Studios.Where(x => !x.IsDeleted).Select(x => x.Name).ToArray(),
                 Categories = data.Categories.Where(x => !x.IsDeleted).Select(x => x.Name).ToArray(),
                 Status = data.Statuses.Name,
-                Score = ratingCount > 0 ? data.Ratings.Sum(x => x.RatePoint) / ratingCount : 0,
+                Score = ratingCount > 0 ? Math.Round(data.Ratings.Sum(x => x.RatePoint) / (ratingCount * 1.0), 2) : 0,
                 RateCount = ratingCount,
                 CommentCount = data.Comments.Count(),
                 ViewCount = data.ViewCount,

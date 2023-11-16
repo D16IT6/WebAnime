@@ -93,6 +93,11 @@ namespace WebAnime.MVC
                     cfg.CreateMap<BlogCategories, BlogCategoryViewModel>();
                     cfg.CreateMap<BlogCategoryViewModel, BlogCategories>();
 
+                    cfg.CreateMap<CommentViewModel, Comments>();
+                    cfg.CreateMap<Comments, CommentViewModel>();
+
+                    cfg.CreateMap<RegisterViewModel, Users>();
+
                 }
             );
             return config.CreateMapper();

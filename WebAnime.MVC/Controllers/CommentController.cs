@@ -33,7 +33,7 @@ namespace WebAnime.MVC.Controllers
                     {
                         AvatarUrl = x.AvatarUrl ?? CommonConstants.DefaultAvatarUrl,
                         x.Content,
-                        CreatedDate = x.CreatedDate!.Value.ToString("dd/MM/yyyy - hh:mm:ss"),
+                        CreatedDate = x.CreatedDate!.Value.ToString("dd/MM/yyyy - HH:mm:ss"),
                         UserFullName = x.UserFullName ?? "Khách vãng lai"
                     })
                 }

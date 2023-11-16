@@ -56,6 +56,7 @@ namespace WebAnime.MVC.Controllers
             var commentUser = await _userManager.FindByIdAsync(model.CreatedBy);
 
             var afterComment = await _blogCommentRepository.GetById(result);
+
             jsonResult.Data = new
             {
                 status = result,

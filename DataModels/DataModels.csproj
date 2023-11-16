@@ -194,6 +194,7 @@
     <Compile Include="Repository\Implement\EF6\CommentRepository.cs" />
     <Compile Include="Repository\Implement\EF6\CountryRepository.cs" />
     <Compile Include="Repository\Implement\EF6\EpisodeRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\RatingRepository.cs" />
     <Compile Include="Repository\Implement\EF6\ServerRepository.cs" />
     <Compile Include="Repository\Implement\EF6\StatusRepository.cs" />
     <Compile Include="Repository\Implement\EF6\StudioRepository.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="Repository\Interface\ICommentRepository.cs" />
     <Compile Include="Repository\Interface\ICountryRepository.cs" />
     <Compile Include="Repository\Interface\IEpisodeRepository.cs" />
+    <Compile Include="Repository\Interface\IRatingRepository.cs" />
     <Compile Include="Repository\Interface\IRepositoryBase.cs" />
     <Compile Include="Repository\Interface\IServerRepository.cs" />
     <Compile Include="Repository\Interface\IStatusRepository.cs" />

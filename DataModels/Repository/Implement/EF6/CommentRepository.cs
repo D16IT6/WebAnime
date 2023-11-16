@@ -41,17 +41,17 @@ namespace DataModels.Repository.Implement.EF6
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<CommentViewModel>> GetPaging(int animeId, int pageNumber, int pageSize)
+        public async Task<IEnumerable<CommentShowViewModel>> GetPaging(int animeId, int pageNumber, int pageSize)
         {
             var commentViewModels =
                 Context.Comments
                 .Where(x => !x.IsDeleted && x.AnimeId == animeId)
                 .Join(Context.Users, c => c.CreatedBy, u => u.Id, (c, u) =>
-                    new CommentViewModel()
+                    new CommentShowViewModel()
                     {
                         AnimeId = animeId,
                         Content = c.Content,
-                        CreatedBy = c.CreatedBy ?? 0,
+                        CreatedBy = c.CreatedBy,
                         CreatedDate = c.CreatedDate ?? DateTime.Now,
                         AvatarUrl = u.AvatarUrl,
                         UserFullName = u.FullName,
@@ -59,29 +59,37 @@ namespace DataModels.Repository.Implement.EF6
                     }
                 )
                 .OrderByDescending(x => x.CreatedDate)//Order before skip and take
-                .Skip(pageSize * pageNumber)
+                .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize);
 
-            //var query = (from a in Context.Animes
-            //        where a.Id == animeId && !a.IsDeleted
-            //        from c in a.Comments
-            //        where !c.IsDeleted
-            //        join u in Context.Users on c.CreatedBy equals u.Id
-            //        select new CommentViewModel
-            //        {
-            //            AnimeId = animeId,
-            //            Content = c.Content,
-            //            CreatedBy = c.CreatedBy ?? 0,
-            //            CreatedDate = c.CreatedDate ?? DateTime.Now,
-            //            AvatarUrl = u.AvatarUrl,
-            //            UserFullName = u.FullName,
-            //            Id = c.Id
-            //        })
-            //    .OrderByDescending(x => x.CreatedDate)//Order before skip and take
-            //    .Skip(pageSize * pageNumber)
-            //    .Take(pageSize);
-            //return await Task.FromResult(query).ConfigureAwait(false);
             return await Task.FromResult(commentViewModels).ConfigureAwait(false);
+        }
+
+        public async Task<CommentShowViewModel> Comment(Comments comment)
+        {
+            try
+            {
+                comment.CreatedDate = DateTime.Now;
+                Context.Comments.Add(comment);
+
+                await Context.SaveChangesAsync();
+                
+                var user = Context.Users.FirstOrDefault(x => !x.IsDeleted && x.Id == comment.CreatedBy);
+
+                return new CommentShowViewModel()
+                {
+                    AnimeId = comment.AnimeId,
+                    Content = comment.Content,
+                    CreatedBy = comment.CreatedBy,
+                    AvatarUrl = user?.AvatarUrl,
+                    UserFullName = user?.FullName,
+                    CreatedDate = comment.CreatedDate ?? DateTime.Now,
+                };
+            }
+            catch 
+            {
+                return null;
+            }
         }
     }
 }

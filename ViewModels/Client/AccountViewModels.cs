@@ -141,7 +141,6 @@ namespace ViewModels.Client
 
         [Display(Name = "Ảnh đại diện")]
         [Required(ErrorMessage = "{0} là bắt buộc")]
-        [RegularExpression("^(https?://(localhost|[\\w\\-]+(\\.[\\w\\-]+)+)(:\\d+)?(/[\\w\\-]+)+|/[\\w\\-]+)+\\.[a-zA-Z]{2,4}$", ErrorMessage = "{0} không hợp lệ, chỉ cho phép url hoặc đường dẫn ảnh trực tiếp")]
         [MaxLength(200, ErrorMessage = "{0} dài tối đa {1} ký tự")]
         public string AvatarUrl { get; set; }
 

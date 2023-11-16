@@ -51,6 +51,7 @@
                     @comment.Content
                 </p>
             </div>
+
         </div>
 
     }
@@ -77,13 +78,14 @@
     {
     @Html.Partial("_ValidationScripts")
     <script>
-        $(``)
         $(`.btnComment`).click(function (e) {
 
+            
             const item = $(this);
 
             const userId = item.data('userId');
             if (!userId) {
+                alert('Yêu cầu đăng nhập trước');
                 return;
             }
             const commentUrl = item.data('commentUrl');

@@ -24,7 +24,12 @@
                 <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="product__item">
                         <div class="product__item__pic set-bg" data-setbg="@item.Poster">
-                            <div class="ep">@item.CurrentEpisode / @item.TotalEpisode</div>
+                            @{
+                                var currentEpisode = item.CurrentEpisode ?? 0;
+                            }
+                            <div class="ep">
+                                @currentEpisode
+                                / @item.TotalEpisode</div>
                             <div class="comment"><i class="fa fa-comments"></i> @item.CommentCount</div>
                             <div class="view"><i class="fa fa-eye"></i> @item.ViewCount</div>
                         </div>

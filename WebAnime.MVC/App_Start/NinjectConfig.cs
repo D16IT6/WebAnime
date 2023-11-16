@@ -71,6 +71,7 @@ namespace WebAnime.MVC
             //kernel.Bind<IStatusRepository>().To<StatusRepository>();
             kernel.Bind<IStudioRepository>().To<StudioRepository>();
             kernel.Bind<ITypeRepository>().To<TypeRepository>();
+            kernel.Bind<IRatingRepository>().To<RatingRepository>();
         }
 
         static void RegisterRepositoryDapper(IKernel kernel)

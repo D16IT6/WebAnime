@@ -5301,6 +5301,14 @@
     <Content Include="Resources\Library\Admin\Theme\libs\vanilla-datatables-editable\datatable.editable.min.css" />
     <Content Include="Resources\Library\Admin\Theme\libs\vanilla-datatables-editable\datatable.editable.min.js" />
     <Content Include="Resources\Library\Admin\Theme\libs\wnumb\wNumb.min.js" />
+    <Content Include="Resources\Library\Client\Raty\fonts\raty.svg" />
+    <Content Include="Resources\Library\Client\Raty\images\cancel-off.png" />
+    <Content Include="Resources\Library\Client\Raty\images\cancel-on.png" />
+    <Content Include="Resources\Library\Client\Raty\images\star-half.png" />
+    <Content Include="Resources\Library\Client\Raty\images\star-off.png" />
+    <Content Include="Resources\Library\Client\Raty\images\star-on.png" />
+    <Content Include="Resources\Library\Client\Raty\jquery.raty.css" />
+    <Content Include="Resources\Library\Client\Raty\jquery.raty.js" />
     <Content Include="Resources\Library\Common\ckeditor\adapters\jquery.js" />
     <Content Include="Resources\Library\Common\ckeditor\build-config.js" />
     <Content Include="Resources\Library\Common\ckeditor\ckeditor.js" />
@@ -6886,6 +6894,11 @@
     <Content Include="Views\Anime\TrendingPartial.cshtml" />
     <Content Include="Views\Anime\RecenlyPartial.cshtml" />
     <Content Include="Views\Anime\Detail.cshtml" />
+    <Content Include="Resources\Library\Client\Raty\fonts\raty.eot" />
+    <Content Include="Resources\Library\Client\Raty\fonts\raty.ttf" />
+    <Content Include="Resources\Library\Client\Raty\fonts\raty.woff" />
+    <Content Include="Views\Anime\Watch.cshtml" />
+    <Content Include="Views\Account\UnconfirmedEmail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

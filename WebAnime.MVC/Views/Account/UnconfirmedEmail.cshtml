@@ -1,0 +1,27 @@
+﻿@model string
+@{
+    ViewBag.Title = "Chưa xác thực email";
+}
+
+<h2>Tài khoản chưa xác thực email: @Model </h2>
+<h4>Nếu như không thấy tin nhắn hoặc hết hạn liên kết. Vui lòng yêu cầu gửi lại.</h4>
+@using (Html.BeginForm())
+{
+    <div class="row mt-3 border-1 border-danger">
+        <label for="email" class="col-form-label col-auto" >Email</label>
+
+        <div class="col-3">
+            <input type="email" name="email" id="email" value="@Model" class="form-control"/>
+        </div>
+        <button class="col-auto btn btn-outline-danger">Gửi lại</button>
+    </div>
+}
+@section footerJs{
+    <script>
+        const email = $(`input#email`);
+        if (!email.val()) {
+            alert('yêu cầu nhập email và email cần đúng định dạng');
+            return;
+        }
+    </script>
+}

@@ -8,10 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ViewModels.Admin;
+using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [OnlyAdminAuthorize]
     public class UserController : Controller
     {
         private readonly UserManager _userManager;
@@ -245,7 +246,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             {
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("", error);
+                    ModelState.AddModelError(string.Empty, error);
                 }
                 return View(model);
             }

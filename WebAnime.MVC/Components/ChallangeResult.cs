@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using Microsoft.Owin.Security;
+﻿using Microsoft.Owin.Security;
+using System.Globalization;
 
 using System.Web;
 using System.Web.Mvc;

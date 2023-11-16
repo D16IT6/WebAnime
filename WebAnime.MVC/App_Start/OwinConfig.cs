@@ -3,12 +3,12 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.DataProtection;
+using Microsoft.Owin.Security.Google;
 using Owin;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Owin.Security.Google;
+using Microsoft.Owin.Security;
 
 namespace WebAnime.MVC
 {
@@ -18,17 +18,7 @@ namespace WebAnime.MVC
 
         public static void AuthConfig(IAppBuilder app)
         {
-            // Configure the db context, user manager and signin manager to use a single instance per request
-            //Ninject cover it
-
-            //app.CreatePerOwinContext(WebAnimeDbContext.Create);
-            //app.CreatePerOwinContext(UserManager.Create);
-            //app.CreatePerOwinContext<RoleManager>(RoleManager.Create);
-
-            // Enable the application to use a cookie to store information for the signed in user
-            // and to use a cookie to temporarily store information about a user logging in with a third party login provider
-            // Configure the sign in cookie
-            _ = app.UseCookieAuthentication(new CookieAuthenticationOptions()
+            app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Admin/Auth/Login"),
@@ -41,9 +31,10 @@ namespace WebAnime.MVC
                             regenerateIdentityCallback: (manager, user) =>
                                 GenerateUserIdentityAsync(user, manager),
                             getUserIdCallback: (id) => (id.GetUserId<int>()))
-                },
-
+                }
             });
+
+
 
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
@@ -76,7 +67,6 @@ namespace WebAnime.MVC
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            // Add custom user claims here
             return userIdentity;
         }
     }

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using AutoMapper;
+﻿using AutoMapper;
 using DataModels.EF;
 using DataModels.EF.Identity;
 using DataModels.Repository.Interface;
-using ViewModels.Admin;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using ViewModels.Client;
 using WebAnime.MVC.Components;
 
@@ -62,6 +60,7 @@ namespace WebAnime.MVC.Controllers
                 status = result,
                 avatarUrl = commentUser.AvatarUrl ?? CommonConstants.DefaultAvatarUrl,
                 commentDate = afterComment.CreatedDate?.ToString("dd/MM/yyyy - HH:mm:ss") ?? DateTime.Now.ToString("dd/MM/yyyy - HH:mm:ss"),
+                userFullName = commentUser.FullName,
                 content = result > 0 ? blogComment.Content : "Lỗi"
             };
             return jsonResult;

@@ -36,14 +36,16 @@ namespace DataModels.EF
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserRoles>().HasKey(x => new { x.RoleId, x.UserId });
-            modelBuilder.Entity<UserLogins>().HasKey(x => new { x.UserId, x.ProviderKey, x.LoginProvider });
 
             modelBuilder.Entity<Users>().ToTable("Users");
             modelBuilder.Entity<Roles>().ToTable("Roles");
             modelBuilder.Entity<UserRoles>().ToTable("UserRoles");
             modelBuilder.Entity<UserLogins>().ToTable("UserLogins");
             modelBuilder.Entity<UserClaims>().ToTable("UserClaims");
+
+            modelBuilder.Entity<UserRoles>().HasKey(x => new {  x.UserId,x.RoleId });
+            modelBuilder.Entity<UserLogins>().HasKey(x => new { x.UserId, x.ProviderKey, x.LoginProvider });
+
 
 
 
@@ -55,7 +57,7 @@ namespace DataModels.EF
             modelBuilder.Entity<Animes>()
                 .HasMany(e => e.Categories)
                 .WithMany(e => e.Animes)
-                .Map(m => m.ToTable("AnimeCategories").MapLeftKey("AnimeId").MapRightKey("CategoryId"));
+                .Map(m => m.ToTable("AnimeInCategories").MapLeftKey("AnimeId").MapRightKey("CategoryId"));
 
             modelBuilder.Entity<Blogs>()
                 .HasMany(e => e.BlogCategories)
@@ -65,7 +67,7 @@ namespace DataModels.EF
             modelBuilder.Entity<Animes>()
                 .HasMany(e => e.Studios)
                 .WithMany(e => e.Animes)
-                .Map(m => m.ToTable("AnimeStudios").MapLeftKey("AnimeId").MapRightKey("StudioId"));
+                .Map(m => m.ToTable("AnimeInStudios").MapLeftKey("AnimeId").MapRightKey("StudioId"));
 
 
 

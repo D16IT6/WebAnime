@@ -1,7 +1,7 @@
-﻿using System.Linq;
+﻿using DataModels.Repository.Interface;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using DataModels.Repository.Interface;
 using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Controllers
@@ -29,7 +29,7 @@ namespace WebAnime.MVC.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 Data = new
                 {
-                    data= commentPage.Select(x =>new
+                    data = commentPage.Select(x => new
                     {
                         AvatarUrl = x.AvatarUrl ?? CommonConstants.DefaultAvatarUrl,
                         x.Content,

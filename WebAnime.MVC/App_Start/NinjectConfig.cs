@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using DataModels.EF;
 using DataModels.EF.Identity;
+using DataModels.Repository.Implement.Dapper;
+using DataModels.Repository.Implement.EF6;
+using DataModels.Repository.Interface;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Ninject;
 using Ninject.Web.Common;
@@ -10,11 +14,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Web;
-using DataModels.Repository.Implement.Dapper;
-using DataModels.Repository.Interface;
-using DataModels.Repository.Implement.EF6;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security.DataProtection;
 
 namespace WebAnime.MVC
 {

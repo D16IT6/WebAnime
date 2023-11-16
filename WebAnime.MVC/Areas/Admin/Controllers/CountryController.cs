@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
 using DataModels.EF;
+using DataModels.Repository.Interface;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using DataModels.Repository.Implement.EF6;
-using DataModels.Repository.Interface;
 using ViewModels.Admin;
+using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [OnlyAdminAuthorize]
+
     public class CountryController : Controller
     {
         private readonly IMapper _mapper;

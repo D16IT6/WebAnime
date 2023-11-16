@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -12,29 +10,35 @@ namespace WebAnime.MVC.Components
     {
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
-            base.OnAuthorization(filterContext);
-            IsUserAuthorized(filterContext);
-        }
-
-        void IsUserAuthorized(AuthorizationContext filterContext)
-        {
             var user = filterContext.HttpContext.User;
             if (!user.Identity.IsAuthenticated)
             {
-                var returnUrl = filterContext.HttpContext.Request.Url?.AbsolutePath ?? "";
-                
-                filterContext.Result = new RedirectToRouteResult(
-                    new RouteValueDictionary(
-                        new
-                        {
-                            action = "Login",
-                            controller = "Account",
-                            returnUrl
-                        })
-                );
+                HandleUnauthorizedRequest(filterContext);
+                return;
+            }
 
+            if (!string.IsNullOrEmpty(Roles) && !user.IsInRole(Roles))
+            {
+                HandleUnauthorizedRequest(filterContext);
+                return;
             }
         }
+
+        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        {
+            var returnUrl = filterContext.HttpContext.Request.Url?.AbsolutePath ?? string.Empty;
+
+            filterContext.Result = new RedirectToRouteResult(
+                new RouteValueDictionary(
+                    new
+                    {
+                        action = "Login",
+                        controller = "Account",
+                        returnUrl
+                    })
+            );
+        }
     }
+
 
 }

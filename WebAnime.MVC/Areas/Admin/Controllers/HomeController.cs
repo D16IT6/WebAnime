@@ -1,12 +1,10 @@
-﻿
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using DataModels.EF.Identity;
-using Microsoft.AspNet.Identity;
+﻿using System.Web.Mvc;
+using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "Admin,Manager")]
+    [AdminAreaAuthorize]
+
     public class HomeController : Controller
     {
 

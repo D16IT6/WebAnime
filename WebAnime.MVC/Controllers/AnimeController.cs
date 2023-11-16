@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using AutoMapper;
+﻿using AutoMapper;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using System;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using ViewModels.Client;
 using WebAnime.MVC.Components;
 
@@ -90,7 +90,7 @@ namespace WebAnime.MVC.Controllers
             var json = new JsonResult()
             {
                 Data = new
-                { 
+                {
                     data = result
                 }
             };

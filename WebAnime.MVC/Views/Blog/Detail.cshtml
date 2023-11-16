@@ -40,7 +40,10 @@
         <div class="blog__details__comment__item">
 
             <div class="blog__details__comment__item__pic">
-                <img src="@CommonConstants.DefaultAvatarUrl" alt="">
+                @{
+                    var avatarUrl = comment.AvatarUrl ?? CommonConstants.DefaultAvatarUrl;
+                }
+                <img src="@avatarUrl" width="70"class="ratio-1x1" alt="Lỗi ảnh">
             </div>
             <div class="blog__details__comment__item__text">
                 <span>
@@ -75,61 +78,61 @@
     </form>
 </div>
 @section footerJs
-    {
+{
     @Html.Partial("_ValidationScripts")
     <script>
-        $(`.btnComment`).click(function (e) {
+    $(`.btnComment`).click(function(e) {
 
-            
-            const item = $(this);
 
-            const userId = item.data('userId');
-            if (!userId) {
-                alert('Yêu cầu đăng nhập trước');
-                return;
-            }
-            const commentUrl = item.data('commentUrl');
-            const content = $(`#txtComment`).val();
-            const blogId = item.data('blogId');
-            const parentId = item.data('parentId');
+        const item = $(this);
 
-            if (content.length < 5 || content.length > 200) {
-                alert('Nội dung bình luận phải từ 5 tới 200 ký tự');
-                return;
-            }
+        const userId = item.data('userId');
+        if (!userId) {
+            alert('Yêu cầu đăng nhập trước');
+            return;
+        }
+        const commentUrl = item.data('commentUrl');
+        const content = $(`#txtComment`).val();
+        const blogId = item.data('blogId');
+        const parentId = item.data('parentId');
 
-            console.log(commentUrl, content, blogId, parentId);
-            $.ajax({
-                type: "POST",
-                url: commentUrl,
-                data: {
-                    createdBy: userId,
-                    content: content,
-                    blogId: blogId
-                },
-                dataType: "json",
-                success: function (response) {
-                    console.log(response.content);
-                    if (response.content) {
-                        const newComment = `<div class="blog__details__comment__item">
+        if (content.length < 5 || content.length > 200) {
+            alert('Nội dung bình luận phải từ 5 tới 200 ký tự');
+            return;
+        }
+
+        console.log(commentUrl, content, blogId, parentId);
+        $.ajax({
+            type: "POST",
+            url: commentUrl,
+            data: {
+                createdBy: userId,
+                content: content,
+                blogId: blogId
+            },
+            dataType: "json",
+            success: function(response) {
+                console.log(response.content);
+                if (response.content) {
+                    const newComment = `<div class="blog__details__comment__item">
                             <div class="blog__details__comment__item__pic">
                                 <img src="${response.avatarUrl}" alt="" style="width:70px;height:70px;">
                             </div>
                             <div class="blog__details__comment__item__text">
                                 <span>${response.commentDate}</span>
-                                <h5>John Smith</h5>
+                                <h5>${response.userFullName}</h5>
                                 <p>
                                     ${response.content}
                                 </p>
                             </div>
                         </div>`;
-                        $(`.blog__details__comment`).append(newComment);
+                    $(`.blog__details__comment`).append(newComment);
 
-                        let commentCount = parseInt($(`.commentCount`).text());
-                        commentCount += 1;
-                        $(`.commentCount`).text(commentCount);
-                    }
+                    let commentCount = parseInt($(`.commentCount`).text());
+                    commentCount += 1;
+                    $(`.commentCount`).text(commentCount);
                 }
+            }
             });
         });
     </script>

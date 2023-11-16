@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using DataModels.EF.Identity;
 using DataModels.Helpers;
 using DataModels.Services;
@@ -154,11 +153,10 @@ namespace WebAnime.MVC.Controllers
         public async Task<ActionResult> UnconfirmedEmail(string email)
         {
 
-            ViewBag.Email = email;
-            return await Task.FromResult(View(model:email));
+            return await Task.FromResult(View(model: email));
         }
         [HttpPost]
-        public async Task<ActionResult> UnconfirmedEmail(string email,string temp)
+        public async Task<ActionResult> UnconfirmedEmail(string email, string temp)
         {
 
             var user = await _userManager.FindByEmailAsync(email);
@@ -213,8 +211,8 @@ namespace WebAnime.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            var userRole = _roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"))?.Id ?? 3;
-            model.RoleListIds = new[] { userRole };
+            var userRole = _roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"));
+            model.RoleListIds = new[] { userRole.Id  };
             var uploadImage = Request.Files["AvatarFile"];
             model.AvatarUrl = HandleFile(uploadImage);
             if (ModelState.IsValid)
@@ -225,6 +223,7 @@ namespace WebAnime.MVC.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user.Id, userRole.Name ?? "User");
 
                     string code = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
@@ -284,7 +283,7 @@ namespace WebAnime.MVC.Controllers
         public ActionResult ForgotPassword(string email)
         {
 
-            return View(new ForgotPasswordViewModel() { Email = email ?? "" });
+            return View(new ForgotPasswordViewModel() { Email = email ?? string.Empty });
         }
 
         [HttpPost]
@@ -578,10 +577,6 @@ namespace WebAnime.MVC.Controllers
                 return View(model);
             }
 
-            // The following code protects for brute force attacks against the two factor codes. 
-            // If a user enters incorrect codes for a specified amount of time then the user account 
-            // will be locked out for a specified amount of time. 
-            // You can configure the account lockout settings in IdentityConfig
             var result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {

@@ -34,14 +34,17 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home", new { area = "Admin" });
+                if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
+
+                return RedirectToAction("Index", "Home");
             }
             return await Task.FromResult<ActionResult>(View());
         }
         [HttpPost]
         public async Task<ActionResult> Login(LoginViewModel model)
         {
-            string returnUrl = Request.QueryString["returnUrl"] ?? "";
+            string returnUrl = Request.QueryString["returnUrl"] ?? string.Empty;
 
             if (ModelState.IsValid)
             {
@@ -67,7 +70,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                         return View();
                     }
-                    ModelState.AddModelError("",
+                    ModelState.AddModelError(string.Empty,
                         $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - loginFailCount} lượt)");
 
                     loginFailCount++;
@@ -101,13 +104,13 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                     case SignInStatus.Failure:
                     default:
-                        ModelState.AddModelError("",
+                        ModelState.AddModelError(string.Empty,
                             $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - user.AccessFailedCount} lượt)");
                         return View(model);
                 }
 
             }
-            ModelState.AddModelError("", @"Đầu vào chưa hợp lệ");
+            ModelState.AddModelError(string.Empty, @"Đầu vào chưa hợp lệ");
             return View(model);
         }
         [Authorize]

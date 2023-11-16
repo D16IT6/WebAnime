@@ -1,9 +1,8 @@
-﻿using System;
-using DataModels.EF.Identity;
+﻿using DataModels.EF.Identity;
 using DataModels.Helpers;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Owin;
+using System;
 using static WebAnime.MVC.OwinConfig;
 [assembly: OwinStartup(typeof(WebAnime.MVC.Startup))]
 
@@ -16,11 +15,11 @@ namespace WebAnime.MVC
         {
             AuthConfig(app);
 
-            //RegisterServices();
+            RegisterServices();
             //CreateDefaultRoles();
             //CreateDefaultUsers();
         }
-        
+
 
         RoleManager _roleManager;
         UserManager _userManager;
@@ -58,7 +57,7 @@ namespace WebAnime.MVC
                 PhoneNumberConfirmed = true
             };
 
-            var defaultPassword = "TalonEzio177!@#";
+            var defaultPassword = "manhngu123";
 
             _userManager
                 .CreateUserIfNotExist(adminUser, defaultPassword, "Admin")

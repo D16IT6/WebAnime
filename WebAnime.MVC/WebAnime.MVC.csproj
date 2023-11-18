@@ -563,6 +563,7 @@
     <Content Include="Resources\Library\Admin\Theme\libs\owl.carousel\dist\assets\owl.theme.green.min.css" />
     <Content Include="Resources\Library\Admin\Theme\libs\owl.carousel\dist\assets\owl.video.play.png" />
     <Content Include="Resources\Library\Admin\Theme\libs\owl.carousel\dist\owl.carousel.min.js" />
+    <Content Include="Resources\Library\Client\img\anime\video-player.svg" />
     <Content Include="Resources\Library\Client\Raty\fonts\raty.svg" />
     <Content Include="Resources\Library\Client\Raty\images\cancel-off.png" />
     <Content Include="Resources\Library\Client\Raty\images\cancel-on.png" />

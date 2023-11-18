@@ -5,7 +5,6 @@ using DataModels.Repository.Implement.Dapper;
 using DataModels.Repository.Implement.EF6;
 using DataModels.Repository.Interface;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Ninject;
 using Ninject.Web.Common;

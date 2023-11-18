@@ -158,7 +158,6 @@
     <Compile Include="EF\Ratings.cs" />
     <Compile Include="EF\Schedules.cs" />
     <Compile Include="Helpers\AuthConstants.cs" />
-    <Compile Include="Helpers\BaseDto.cs" />
     <Compile Include="EF\AgeRatings.cs" />
     <Compile Include="EF\Animes.cs" />
     <Compile Include="EF\Categories.cs" />

@@ -1,7 +1,350 @@
-﻿
+﻿@using Microsoft.AspNet.Identity
+@using WebAnime.MVC.Components
+@model ViewModels.Client.AnimeWatchingViewModel
 @{
     ViewBag.Title = "Watch";
+    int pageCount = (int)Math.Ceiling(Model.CommentCount * 1.0 / CommonConstants.AnimeCommentPageSize);
+    var userId = User.Identity.GetUserId<int>();
 }
 
-<h2>Watch</h2>
 
+@if (Model.Server.Any())
+{
+    <section class="anime-details spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="anime__video__player">
+                        <!--<video id="player" playsinline controls data-poster="./videos/anime-watch.jpg">
+                        <source src="videos/1.mp4" type="video/mp4" />-->
+                        <!-- Captions are optional -->
+                        <!--<track kind="captions" label="English captions" src="#" srclang="en" default />
+                        </video>-->
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe id="videoPlayer" src=""  scrolling="no" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    @foreach (var server in Model.Server)
+                    {
+                        <div class="anime__details__episodes">
+                            <div class="section-title">
+                                <h5>@server.Name</h5>
+                            </div>
+
+                            @foreach (var episode in server.Episodes)
+                            {
+                                <button type="button"
+                                        data-play-url="@episode.Url"
+                                        class="episodeItem btn btn-dark m-1"
+                                        data-episode-id="@episode.Id">
+                                    @episode.Title
+                                </button>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="col-lg-8 col-md-8">
+
+                    <div class="anime__details__review">
+                        <div class="section-title">
+                            <h5>Bình luận</h5>
+                        </div>
+                        <div id="commentBlock">
+                        </div>
+                    </div>
+
+                    <div class="my-3">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination"
+                                data-comment-count="@Model.CommentCount"
+                                data-current-page="1"
+                                data-anime-id="@Model.Id"
+                                data-comment-url="@Url.Action("LoadComment", "Comment")"
+                                data-page-size="@CommonConstants.AnimeCommentPageSize">
+
+                                @if (Model.CommentCount > CommonConstants.AnimeCommentPageSize)
+                                {
+                                    <li class="page-item">
+                                        <button class="page-link pagePrev" data-page-id="-1">
+                                            Trước
+                                        </button>
+                                    </li>
+
+
+                                    for (int i = 1; i <= Math.Min(pageCount, 3); ++i)
+                                    {
+                                        <li class="page-item" data-page-id="@i">
+                                            <button class="page-link" data-page-id="@i">
+                                                @i
+                                            </button>
+                                        </li>
+                                    }
+                                    if (pageCount > 3)
+                                    {
+                                        <li class="page-item">
+                                            <span class="page-link">...</span>
+                                        </li>
+
+                                        for (int i = pageCount - 2; i <= pageCount; i++)
+                                        {
+                                            <li class="page-item" data-page-id="@i">
+                                                <button class="page-link" data-page-id="@i">
+                                                    @i
+                                                </button>
+                                            </li>
+                                        }
+                                    }
+
+                                    <li class="page-item ">
+                                        <button class="page-link pageNext" data-page-id="+1"> Sau </button>
+                                    </li>
+                                }
+                            </ul>
+                            @if (Model.CommentCount > 0)
+                            {
+                                <div class="row mt-2">
+                                    <label class="col-form-label col-1" for="numPageIndex">Trang</label>
+                                    <div class="col-2">
+                                        <input type="number" id="numPageIndex" class="form-control" min="1" max="@pageCount" />
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-outline-danger w-100" id="btnGoToPage">Tới</button>
+                                    </div>
+                                </div>
+                            }
+                        </nav>
+                    </div>
+
+                    <div class="anime__details__form">
+                        <div class="section-title">
+                            <h5>Bình luận</h5>
+                        </div>
+                        <div id="comment"
+                             data-user-id="@userId"
+                             data-post-url="@Url.Action("Comment","Anime")"
+                             data-anime-id="@Model.Id"
+                             data-episode-id="0"></div>
+                        <form action="#">
+                            <textarea id="content" placeholder="Bình luận của bạn(không quá 50 từ)"></textarea>
+                            <button type="button" id="btnComment"><i class="fa fa-location-arrow"></i> Gửi</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div id="increaseView"
+         data-url="@Url.Action("IncreaseView","Anime")"
+         data-anime-id="@Model.Id"
+         data-increase-time="@CommonConstants.IncreaseViewAfterSecond"></div>
+}
+else
+{
+    <h3>Phim này chưa có tập gì, chờ admin cập nhật nhé!</h3>
+}
+@section footerCss{
+    <style>
+        #videoPlayer {
+            background: url("https://c4.wallpaperflare.com/wallpaper/388/330/367/minimalism-hi-tech-aimp-artem-izmaylov-media-player-wallpaper-preview.jpg") center center;
+        }
+    </style>
+}
+@section footerJs{
+    <script>
+        let isInCreaseView = false;
+        function increaseView() {
+            const increaseView = $(`#increaseView`);
+            const increaseViewUrl = increaseView.data('url');
+            const increaseViewAnimeId = increaseView.data('animeId');
+            const increaseViewSecond = increaseView.data('increaseTime') ?? 5;
+            console.log(increaseViewAnimeId, increaseViewSecond, increaseViewUrl);
+            setTimeout(function () {
+                if (increaseViewAnimeId === 0) return;
+                $.ajax({
+                    type: "POST",
+                    url: increaseViewUrl,
+                    data: {
+                        id: increaseViewAnimeId
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                            console.log('OK');
+                        }
+                    },
+                    error: function () {
+                        alert(`${increaseViewAnimeId} error`);
+                    }
+                });
+            }, increaseViewSecond * 1000);
+        }
+
+
+        function removeOldSelected() {
+            $('.episodeItem').removeClass('btn-danger').addClass('btn-dark');
+        }
+
+        $('.episodeItem').click(function () {
+            const selectedItem = $(this);
+            const url = selectedItem.data('playUrl');
+
+            removeOldSelected();
+            selectedItem.removeClass('btn-dark');
+            selectedItem.addClass('btn-danger');
+            $('iframe#videoPlayer').attr('src', url);
+
+            const episodeId = selectedItem.data('episodeId');
+
+            if (episodeId > 0) {
+                $(`#comment`).attr('data-episode-id', episodeId);
+            }
+            if (isInCreaseView === false) {
+                increaseView();
+                isInCreaseView = true;
+            }
+        });
+
+        function loadComment(data) {
+            const commentBlock = $(`#commentBlock`);
+            for (let i = 0; i < data.length; ++i) {
+                const commentItem = data[i];
+                let episodeItemBuilder = "";
+                if (commentItem.EpisodeTitle) {
+                    episodeItemBuilder = `<span class="text-info pl-2">${commentItem.EpisodeTitle}</span>`;
+                }
+                const commentHtml =
+                    `<div class="anime__review__item">
+                                     <div class="anime__review__item__pic">
+                                         <img src="${commentItem.AvatarUrl}" alt="">
+                                     </div>
+                                     <div class="anime__review__item__text">
+                                         <h6>${commentItem.UserFullName} - <span>${commentItem.CreatedDate}</span>${episodeItemBuilder}</h6>
+                                     <p>${commentItem.Content}</p>
+                                     </div>
+                                 </div>`;
+                commentBlock.append(commentHtml);
+            }
+        }
+
+        function fetchData(pageIndex) {
+            const pagination = $(`.pagination`);
+            const animeId = pagination.data('animeId');
+            const commentUrl = pagination.data('commentUrl');
+            const pageSize = pagination.data('pageSize');
+            const commentBlock = $(`#commentBlock`);
+            const input = $(`input#numPageIndex`);
+            pagination.attr('data-current-page', pageIndex);
+            input.val(pageIndex);
+            $.ajax({
+                type: "GET",
+                url: commentUrl,
+                data: {
+                    animeId: animeId,
+                    pageNumber: pageIndex,
+                    pageSize: pageSize
+                },
+                dataType: "json",
+                success: function (response) {
+                    commentBlock.empty();
+                    const data = response.data;
+                    loadComment(data);
+                }
+            });
+        }
+
+        fetchData(1);
+
+        $(`.page-link`).click(function () {
+            const pagination = $(`.pagination`);
+            const pageIndex = $(this).data('pageId');
+
+            if ($(this).hasClass('pagePrev') || $(this).hasClass('pageNext')) {
+                return;
+            }
+            if (pageIndex === pagination.attr('data-current-page')) return;
+
+
+            fetchData(pageIndex);
+        });
+        $(`.pagePrev`).click(function () {
+            const pagination = $(`.pagination`);
+            const currentPage = parseInt(pagination.attr('data-current-page')) - 1;
+            if (currentPage === 0) return;
+            fetchData(currentPage);
+        });
+        $(`.pageNext`).click(function () {
+            const pagination = $(`.pagination`);
+            const pageSize = pagination.data('pageSize');
+            const currentPage = parseInt(pagination.attr('data-current-page')) + 1;
+            const commentCount = pagination.data('commentCount');
+            const totalPage = Math.ceil(commentCount / pageSize);
+            if (currentPage > totalPage) return;
+            fetchData(currentPage);
+        });
+
+        $(`button#btnComment`).click(function () {
+
+            const comment = $(`#comment`);
+            const commentPostUrl = comment.data('postUrl');
+            const animeId = comment.data(`animeId`);
+            const userId = comment.data('userId');
+            const episodeId = comment.data('episodeId');
+
+            if (userId === 0) {
+                alert('Yêu cầu đăng nhập');
+                return;
+            }
+            if (animeId === 0) {
+                alert('có lỗi xảy ra');
+                return;
+            }
+            const content = $(`textarea#content`).val();
+            if (content.length <= 0 || content.length > 500) {
+                alert('Nội dung phải có và không quá 500 ký tự');
+                return;
+            }
+            console.log(animeId);
+
+            $.ajax({
+                type: "POST",
+                url: commentPostUrl,
+                data: {
+                    content: content,
+                    animeId: animeId,
+                    episodeId: episodeId,
+                    createdBy: userId
+                },
+                dataType: "json",
+                success: function (response) {
+                    alert('bình luận thành công');
+                    window.location.reload();
+                },
+                error: function () {
+                    alert('Lỗi không bình luận được, vui lòng thử lại');
+                }
+            });
+
+        });
+        $(`button#btnGoToPage`).click(function () {
+            const input = $(`input#numPageIndex`);
+            const pageIndex = input.val();
+            const pageMax = input.attr('max');
+            const pageMin = input.attr('min');
+
+            console.log(pageIndex, pageMax, pageMin);
+
+            if (pageIndex > pageMax || pageIndex < pageMin) {
+                alert('Không tồn tại trang này');
+                return;
+            }
+            fetchData(pageIndex);
+        });
+    </script>
+
+
+
+
+}

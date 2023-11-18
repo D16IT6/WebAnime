@@ -20,7 +20,6 @@ namespace WebAnime.MVC.Components
             if (!string.IsNullOrEmpty(Roles) && !user.IsInRole(Roles))
             {
                 HandleUnauthorizedRequest(filterContext);
-                return;
             }
         }
 

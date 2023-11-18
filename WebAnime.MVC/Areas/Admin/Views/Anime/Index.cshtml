@@ -1,6 +1,6 @@
 ﻿@using System.Text
 @using DataModels.EF
-@model IEnumerable< ViewModels.Admin.AnimeViewModel >
+@model IEnumerable< ViewModels.Admin.AnimeViewModel>
 @{
     ViewBag.Title = "Trang quản lý anime";
     int firstServerId = (int)ViewBag.FirstServerId;
@@ -13,8 +13,9 @@
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < length - 1; ++i)
         {
-            builder.Append($"{categoryList[categoryListIds[i]].Name}, ");
-            if (i == 2)
+            var categoryIndex = categoryListIds[i] - 1;
+            builder.Append($"{categoryList[categoryIndex].Name}, ");
+            if (i == 3)
             {
                 builder.Append("...");
                 break;
@@ -22,7 +23,7 @@
         }
         if (categoryListIds.Length < 3)
         {
-            builder.Append($"{categoryList[categoryListIds[length - 1]].Name}.");
+            builder.Append($"{categoryList[categoryListIds[length - 1] - 1].Name}.");
         }
         return builder.ToString();
     }

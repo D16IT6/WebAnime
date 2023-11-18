@@ -50,9 +50,11 @@ namespace WebAnime.MVC.Controllers
 
         }
 
-        public ActionResult Watch(int id)
+        public async Task<ActionResult> Watch(int id)
         {
-            return View();
+            var model = await _animeRepository.GetAnimeWatching(id);
+
+            return await Task.FromResult(View(model));
         }
 
         public async Task<ActionResult> Rate(int animeId, int userId, float ratePoint)
@@ -87,11 +89,36 @@ namespace WebAnime.MVC.Controllers
             if (String.IsNullOrEmpty(result.AvatarUrl)) result.AvatarUrl = CommonConstants.DefaultAvatarUrl;
             if (String.IsNullOrEmpty(result.UserFullName)) result.UserFullName = "Không biết";
 
+            if (String.IsNullOrEmpty(result.EpisodeTitle))
+            {
+                result.EpisodeTitle = "";
+            }
+            else
+            {
+                if (!(result.EpisodeTitle.Contains("Tập") || result.EpisodeTitle.Contains("Ep")))
+                {
+                    result.EpisodeTitle = "Tập "+ result.EpisodeTitle;
+                }
+            }
             var json = new JsonResult()
             {
                 Data = new
                 {
                     data = result
+                }
+            };
+            return json;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> IncreaseView(int id)
+        {
+            bool result = await _animeRepository.IncreaseView(id);
+            var json = new JsonResult()
+            {
+                Data = new
+                {
+                    success = result
                 }
             };
             return json;

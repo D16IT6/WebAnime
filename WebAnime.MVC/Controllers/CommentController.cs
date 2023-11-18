@@ -1,4 +1,5 @@
 ﻿using DataModels.Repository.Interface;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -29,12 +30,32 @@ namespace WebAnime.MVC.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 Data = new
                 {
-                    data = commentPage.Select(x => new
+                    data = commentPage.Select(x =>
                     {
-                        AvatarUrl = x.AvatarUrl ?? CommonConstants.DefaultAvatarUrl,
-                        x.Content,
-                        CreatedDate = x.CreatedDate!.Value.ToString("dd/MM/yyyy - HH:mm:ss"),
-                        UserFullName = x.UserFullName ?? "Khách vãng lai"
+                        if (String.IsNullOrEmpty(x.AvatarUrl)) x.AvatarUrl = CommonConstants.DefaultAvatarUrl;
+                        if (String.IsNullOrEmpty(x.UserFullName)) x.UserFullName = "Không biết";
+
+                        if (String.IsNullOrEmpty(x.EpisodeTitle))
+                        {
+                            x.EpisodeTitle = "";
+                        }
+                        else
+                        {
+                            if (!(x.EpisodeTitle.Contains("Tập") || x.EpisodeTitle.Contains("Ep")))
+                            {
+                                x.EpisodeTitle = "Tập " + x.EpisodeTitle;
+                            }
+                        }
+                        return new
+                        {
+                            x.AnimeId,
+                            x.AvatarUrl,
+                            x.UserFullName,
+                            x.EpisodeTitle,
+                            x.Content,
+                            x.Id,
+                            CreatedDate = x.CreatedDate?.ToString("dd/MM/yyyy - HH:mm:ss") ?? DateTime.Now.ToString("dd/MM/yyyy - HH:mm:ss")
+                        };
                     })
                 }
             };

@@ -15,5 +15,6 @@ namespace ViewModels.Client
         public string UserFullName { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string AvatarUrl { get; set; }
+        public string EpisodeTitle { get; set; }
     }
 }

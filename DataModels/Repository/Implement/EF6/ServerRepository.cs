@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using ViewModels.Client;
 
 namespace DataModels.Repository.Implement.EF6
 {
@@ -79,5 +80,6 @@ namespace DataModels.Repository.Implement.EF6
             return await Context.Servers.FirstOrDefaultAsync();
 
         }
+
     }
 }

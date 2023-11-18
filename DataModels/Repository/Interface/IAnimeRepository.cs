@@ -14,5 +14,8 @@ namespace DataModels.Repository.Interface
         public Task<IEnumerable<AnimeItemViewModel>> GetAnimeRecenly(int take = 9);
         public Task<AnimeDetailViewModel> GetAnimeDetail(int id);
 
+        public Task<AnimeWatchingViewModel> GetAnimeWatching(int id);
+
+        public Task<bool> IncreaseView(int id);
     }
 }

@@ -40,7 +40,7 @@
                                     <span>Phát hành:</span>
                                     @if (Model.Release != null)
                                     {
-                                        @Model.Release.Value.ToShortDateString()
+                                        @Model.Release.Value.ToString("dd/MM/yyyy")
                                     }
                                 </li>
                                 <li><span>Trạng thái:</span> @Model.Status</li>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="anime__details__btn">
                     <a href="#" class="follow-btn"><i class="fa fa-heart-o"></i>Yêu thích</a>
-                    <a href="#" class="watch-btn">
+                    <a href="@Url.Action("Watch","Anime",new{id = Model.Id})" class="watch-btn">
                         <span>Xem ngay</span> <i class="fa fa-angle-right"></i>
                     </a>
                 </div>
@@ -186,58 +186,39 @@
 
 @section footerCss{
     @*<style>
-        .pagination > li > a {
-            background-color: #1d1e39;
-            color: #ddd;
-        }
-
-            .pagination > li > a:focus,
-            .pagination > li > a:hover,
-            .pagination > li > span:focus,
-            .pagination > li > span:hover {
-                color: #1d1e39;
-                background-color: #eee;
-                border-color: #ddd;
+            .pagination > li > a {
+                background-color: #1d1e39;
+                color: #ddd;
             }
 
-        .pagination > .active > a {
-            color: white;
-            background-color: #ddd;
-            border: solid 1px #ddd;
-        }
+                .pagination > li > a:focus,
+                .pagination > li > a:hover,
+                .pagination > li > span:focus,
+                .pagination > li > span:hover {
+                    color: #1d1e39;
+                    background-color: #eee;
+                    border-color: #ddd;
+                }
 
-            .pagination > .active > a:hover {
+            .pagination > .active > a {
+                color: white;
                 background-color: #ddd;
                 border: solid 1px #ddd;
             }
-    </style>*@
+
+                .pagination > .active > a:hover {
+                    background-color: #ddd;
+                    border: solid 1px #ddd;
+                }
+        </style>*@
 }
 @section footerJs{
     <script>
-
-        function loadComment(data) {
-            const commentBlock = $(`#commentBlock`);
-            for (let i = 0; i < data.length; ++i) {
-                const commentItem = data[i];
-                const commentHtml =
-                    `<div class="anime__review__item">
-                                                 <div class="anime__review__item__pic">
-                                                     <img src="${commentItem.AvatarUrl}" alt="">
-                                                 </div>
-                                                 <div class="anime__review__item__text">
-                                                     <h6>${commentItem.UserFullName} - <span>${commentItem.CreatedDate}</span></h6>
-                                                 <p>${commentItem.Content}</p>
-                                                 </div>
-                                             </div>`;
-                commentBlock.append(commentHtml);
-            }
-        }
-
         $(`.rating`).raty({
             half: true,
             path: '/Resources/Library/Client/Raty/images',
             number: 5,
-            click: function (score, evt) {
+            click: function(score, evt) {
 
                 const item = $(this);
                 const url = item.data('rateUrl');
@@ -253,7 +234,7 @@
                         ratePoint: score
                     },
                     dataType: "json",
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success) {
                             alert('Cảm ơn bạn đã đánh giá, chúc bạn xem phim vui vẻ!');
                             window.location.reload();
@@ -261,16 +242,38 @@
                             alert('Bạn đã đánh giá rồi');
                         }
                     },
-                    error: function () {
+                    error: function() {
                         alert('Lỗi không đánh giá được, vui lòng thử lại');
                     }
                 });
             },
-            readOnly: function () {
+            readOnly: function() {
                 const userId = $(this).data('userId');
                 return userId === 0;
             }
         });
+
+        function loadComment(data) {
+            const commentBlock = $(`#commentBlock`);
+            for (let i = 0; i < data.length; ++i) {
+                const commentItem = data[i];
+                let episodeItemBuilder ="";
+                if (commentItem.EpisodeTitle) {
+                    episodeItemBuilder = `<span class="text-info pl-2">${commentItem.EpisodeTitle}</span>`;
+                }
+                const commentHtml =
+                    `<div class="anime__review__item">
+                         <div class="anime__review__item__pic">
+                             <img src="${commentItem.AvatarUrl}" alt="">
+                         </div>
+                         <div class="anime__review__item__text">
+                             <h6>${commentItem.UserFullName} - <span>${commentItem.CreatedDate}</span>${episodeItemBuilder}</h6>
+                         <p>${commentItem.Content}</p>
+                         </div>
+                     </div>`;
+                commentBlock.append(commentHtml);
+            }
+        }
 
         function fetchData(pageIndex) {
             const pagination = $(`.pagination`);
@@ -290,7 +293,7 @@
                     pageSize: pageSize
                 },
                 dataType: "json",
-                success: function (response) {
+                success: function(response) {
                     commentBlock.empty();
                     const data = response.data;
                     loadComment(data);
@@ -300,7 +303,7 @@
 
         fetchData(1);
 
-        $(`.page-link`).click(function () {
+        $(`.page-link`).click(function() {
             const pagination = $(`.pagination`);
             const pageIndex = $(this).data('pageId');
 
@@ -312,13 +315,13 @@
 
             fetchData(pageIndex);
         });
-        $(`.pagePrev`).click(function () {
+        $(`.pagePrev`).click(function() {
             const pagination = $(`.pagination`);
             const currentPage = parseInt(pagination.attr('data-current-page')) - 1;
             if (currentPage === 0) return;
             fetchData(currentPage);
         });
-        $(`.pageNext`).click(function () {
+        $(`.pageNext`).click(function() {
             const pagination = $(`.pagination`);
             const pageSize = pagination.data('pageSize');
             const currentPage = parseInt(pagination.attr('data-current-page')) + 1;
@@ -328,7 +331,7 @@
             fetchData(currentPage);
         });
 
-        $(`button#btnComment`).click(function () {
+        $(`button#btnComment`).click(function() {
 
             const comment = $(`#comment`);
             const commentPostUrl = comment.data('postUrl');
@@ -359,17 +362,17 @@
                     createdBy: userId
                 },
                 dataType: "json",
-                success: function (response) {
+                success: function(response) {
                     alert('bình luận thành công');
                     window.location.reload();
                 },
-                error: function () {
+                error: function() {
                     alert('Lỗi không bình luận được, vui lòng thử lại');
                 }
             });
 
         });
-        $(`button#btnGoToPage`).click(function () {
+        $(`button#btnGoToPage`).click(function() {
             const input = $(`input#numPageIndex`);
             const pageIndex = input.val();
             const pageMax = input.attr('max');

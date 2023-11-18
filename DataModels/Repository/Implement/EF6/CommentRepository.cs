@@ -55,7 +55,8 @@ namespace DataModels.Repository.Implement.EF6
                         CreatedDate = c.CreatedDate ?? DateTime.Now,
                         AvatarUrl = u.AvatarUrl,
                         UserFullName = u.FullName,
-                        Id = c.Id
+                        Id = c.Id,
+                        EpisodeTitle = Context.Episodes.FirstOrDefault(x => !x.IsDeleted && c.EpisodeId == x.Id).Title ?? "",
                     }
                 )
                 .OrderByDescending(x => x.CreatedDate)//Order before skip and take
@@ -64,7 +65,6 @@ namespace DataModels.Repository.Implement.EF6
 
             return await Task.FromResult(commentViewModels).ConfigureAwait(false);
         }
-
         public async Task<CommentShowViewModel> Comment(Comments comment)
         {
             try
@@ -84,6 +84,7 @@ namespace DataModels.Repository.Implement.EF6
                     AvatarUrl = user?.AvatarUrl,
                     UserFullName = user?.FullName,
                     CreatedDate = comment.CreatedDate ?? DateTime.Now,
+                    EpisodeTitle = Context.Episodes.FirstOrDefault(x => !x.IsDeleted && x.Id == comment.EpisodeId)?.Title ?? ""
                 };
             }
             catch 

@@ -21,9 +21,9 @@ namespace DataModels.Repository.Implement.EF6
             throw new NotImplementedException();
         }
 
-        public Task<Episodes> GetById(int id)
+        public async Task<Episodes> GetById(int id)
         {
-            throw new NotImplementedException();
+            return await Context.Episodes.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
         }
 
         public async Task<bool> Create(Episodes entity)

@@ -191,7 +191,7 @@ namespace DataModels.Repository.Implement.EF6
                     Type = x.Types.Name,
                     Status = x.Statuses.Name,
                     CurrentEpisode = x.Episodes
-                        .Where(x => !x.IsDeleted)
+                        .Where(episodes => !episodes.IsDeleted)
                         .GroupBy(z => z.ServerId)
                         .Max(t => t.Count()),
                     TotalEpisode = x.TotalEpisodes,
@@ -263,6 +263,53 @@ namespace DataModels.Repository.Implement.EF6
             return result;
         }
 
+        public async Task<AnimeWatchingViewModel> GetAnimeWatching(int id)
+        {
+            var anime = await Context.Animes.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == id);
+            if (anime == null) return null;
+            var result = new AnimeWatchingViewModel()
+            {
+                Id = anime.Id,
+                Title = anime.Title,
+                Server = Context.Servers
+                    .Where(server => !server.IsDeleted && server.Episodes.Any(y => y.AnimeId == id))
+                    .Select(server =>
+                        new ServerClientViewModel()
+                        {
+                            Id = server.Id,
+                            Name = server.Name,
+                            Description = server.Description,
+                            Episodes = server.Episodes
+                                .Where(episode => episode.AnimeId == id && !episode.IsDeleted)
+                                .Select(episode => new EpisodeClientViewModel()
+                                {
+                                    Id = episode.Id,
+                                    SortOrder = episode.SortOrder,
+                                    Title = episode.Title,
+                                    Url = episode.Url
+                                }),
+                        }),
+                CommentCount = await Context.Comments.Where(comment => !comment.IsDeleted && comment.AnimeId == anime.Id).CountAsync()
+            };
+
+            return await Task.FromResult(result);
+        }
+
+        public async Task<bool> IncreaseView(int id)
+        {
+            try
+            {
+                var anime = Context.Animes.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
+                if (anime == null) return false;
+                anime.ViewCount += 1;
+                await Context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 
 

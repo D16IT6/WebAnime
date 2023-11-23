@@ -43,6 +43,30 @@ namespace DataModels.Repository.Implement.EF6
 
         public async Task<IEnumerable<CommentShowViewModel>> GetPaging(int animeId, int pageNumber, int pageSize)
         {
+            //can lay comment cua anime gi do, trang thu x, trang day co y comment
+            //var anime = await 
+            //    Context.Animes
+            //    .Include(animes => animes.Comments.Select(comments => comments.User))
+            //    .FirstOrDefaultAsync(x => x.Id == animeId && !x.IsDeleted);
+
+            //if (anime == null) return null;
+
+            //var result = anime.Comments
+            //    .Where(x => !x.IsDeleted)
+            //    .OrderByDescending(x => x.CreatedDate)
+            //    .Select(x => new CommentShowViewModel()
+            //    {
+            //        AnimeId = animeId,
+            //        AvatarUrl = x.User.AvatarUrl ?? "",
+            //        Content = x.Content,
+            //        CreatedBy = x.User.Id,
+            //        CreatedDate = x.CreatedDate,
+            //    })
+            //    .Skip((pageNumber - 1) * pageSize)
+            //    .Take(pageSize);
+            //return result;
+
+
             var commentViewModels =
                 Context.Comments
                 .Where(x => !x.IsDeleted && x.AnimeId == animeId)
@@ -63,7 +87,7 @@ namespace DataModels.Repository.Implement.EF6
                 .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize);
 
-            return await Task.FromResult(commentViewModels).ConfigureAwait(false);
+            return await Task.FromResult(commentViewModels);
         }
         public async Task<CommentShowViewModel> Comment(Comments comment)
         {

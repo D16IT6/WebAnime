@@ -2,8 +2,10 @@
 using DataModels.EF.Identity;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.AspNet.Identity.Owin;
 using ViewModels.Admin;
 
 namespace WebAnime.API2.Controllers
@@ -12,11 +14,13 @@ namespace WebAnime.API2.Controllers
     {
         private readonly UserManager _userManager;
         private readonly IMapper _mapper;
-        public UserController(UserManager userManager, IMapper mapper)
+        private readonly SignInManager<Users, int> _signInManager;
+        public UserController(UserManager userManager, IMapper mapper, SignInManager<Users, int> signInManager)
         {
             _userManager = userManager;
             OwinConfig.RegisterTokenService(_userManager);
             _mapper = mapper;
+            _signInManager = signInManager;
         }
 
 
@@ -56,6 +60,20 @@ namespace WebAnime.API2.Controllers
                     passwordResetToken
                 }
             });
+        }
+
+        [HttpPost]
+        [Route("User/Login")]
+        public async Task<IHttpActionResult> Login(LoginViewModel loginViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(loginViewModel.UserName, loginViewModel.Password, false, false);
+                if (result == SignInStatus.Success)
+                {
+                }
+            }
+            return await Task.FromResult(BadRequest("Du lieu khong hop le"));
         }
     }
 }

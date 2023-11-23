@@ -24,7 +24,7 @@ namespace WebAnime.API2.Controllers
                     x.Id,
                     x.Title,
                     x.Slug,
-                    //x.Content,
+                    x.Content,
                     x.CreatedDate
                 })
             });

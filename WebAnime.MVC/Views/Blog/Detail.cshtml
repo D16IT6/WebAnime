@@ -21,11 +21,11 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-12">
+    @*<div class="col-lg-12">
         <div class="blog__details__pic">
             <img src="@Model.ImageUrl" alt="">
         </div>
-    </div>
+    </div>*@
     <div class="col-lg-12">
         @Html.Raw(Model.Content)
     </div>
@@ -111,8 +111,8 @@
                 blogId: blogId
             },
             dataType: "json",
-            success: function(response) {
-                console.log(response.content);
+            success: function (response) {
+                $(`#txtComment`).val('');
                 if (response.content) {
                     const newComment = `<div class="blog__details__comment__item">
                             <div class="blog__details__comment__item__pic">
@@ -131,6 +131,8 @@
                     let commentCount = parseInt($(`.commentCount`).text());
                     commentCount += 1;
                     $(`.commentCount`).text(commentCount);
+
+                    alert('Bình luận thành công');
                 }
             }
             });

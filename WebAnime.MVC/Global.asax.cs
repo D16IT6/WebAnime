@@ -7,13 +7,13 @@ namespace WebAnime.MVC
 {
     public class MvcApplication : NinjectHttpApplication
     {
-        protected override void OnApplicationStarted()
+        protected override void OnApplicationStarted()//Application_Start
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
 
-        protected override IKernel CreateKernel() => NinjectConfig.Kernel;
+        protected override IKernel CreateKernel() => NinjectConfig.Kernel;//DI Container
     }
 }

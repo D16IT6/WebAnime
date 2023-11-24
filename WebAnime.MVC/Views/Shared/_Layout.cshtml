@@ -1,6 +1,11 @@
-﻿<!DOCTYPE html>
-<html lang="zxx">
-
+﻿@using DataModels.EF.Identity
+@using Microsoft.AspNet.Identity
+@{
+    var userManager = NinjectConfig.GetService<UserManager>();
+    var currentUser = userManager.FindById(User.Identity.GetUserId<int>());
+}
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Anime Template">
@@ -51,7 +56,7 @@
                                 <li class="active1">
                                     <a href="@Url.Action("Index","Home")">Trang chủ</a>
                                 </li>
-                                <li>
+                                @*<li>
                                     <a href="./categories.html">Categories <span class="arrow_carrot-down"></span></a>
                                     <ul class="dropdown">
                                         <li>
@@ -67,7 +72,7 @@
                                             <a href="./blog-details.html">Blog Details</a>
                                         </li>
                                     </ul>
-                                </li>
+                                </li>*@
                                 <li>
                                     <a href="@Url.Action("Index","Blog")">Our Blog</a>
                                 </li>
@@ -81,7 +86,10 @@
                 <div class="col-lg-2">
                     <div class="header__right">
                         <a href="@Url.Action("Info", "Account")">
-                            @*<span>Xin chào </span>*@
+                            @if (currentUser != null)
+                            {
+                                <span>@currentUser.FullName</span>
+                            }
                             <span class="icon_profile"></span>
                         </a>
                     </div>

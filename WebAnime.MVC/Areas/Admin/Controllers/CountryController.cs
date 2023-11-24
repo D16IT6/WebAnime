@@ -47,13 +47,16 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                 if (await _countryRepository.Create(country))
                 {
+                    TempData[AlertConstants.SuccessMessage] = "Thêm quốc gia mới thành công";
                     return RedirectToAction("Index", "Country");
                 }
 
-                ModelState.AddModelError(string.Empty, @"Lỗi không thêm được, vui lòng thử lại");
+                TempData[AlertConstants.ErrorMessage] = "Lỗi không thêm được, vui lòng thử lại";
+                //ModelState.AddModelError(string.Empty, @"Lỗi không thêm được, vui lòng thử lại");
             }
-            ModelState.AddModelError(string.Empty, @"Đầu vào lỗi, vui lòng thử lại");
-            return View();
+            TempData[AlertConstants.ErrorMessage] = "Đầu vào lỗi, vui lòng thử lại";
+            //ModelState.AddModelError(string.Empty, @"Đầu vào lỗi, vui lòng thử lại");
+            return View(model);
         }
 
         [HttpGet]
@@ -74,11 +77,15 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                 if (await _countryRepository.Update(country))
                 {
+                    TempData[AlertConstants.SuccessMessage] = "Cập nhật quốc gia mới thành công";
                     return RedirectToAction("Index", "Country");
                 }
+                TempData[AlertConstants.ErrorMessage] = "Lỗi không cập nhật được, vui lòng thử lại";
 
-                ModelState.AddModelError(string.Empty, @"Lỗi không cập nhật được, vui lòng thử lại");
             }
+
+            TempData[AlertConstants.ErrorMessage] = "Đầu vào lỗi, vui lòng thử lại";
+
             ModelState.AddModelError(string.Empty, @"Đầu vào lỗi, vui lòng thử lại");
             return View();
         }
@@ -98,9 +105,13 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
             if (await _countryRepository.Delete(model.Id, deletedBy))
             {
+                TempData[AlertConstants.SuccessMessage] = "Xóa quốc gia mới thành công";
+
                 return RedirectToAction("Index", "Country");
             }
-            ModelState.AddModelError(string.Empty, @"Lỗi không xoá được, vui lòng thử lại");
+            TempData[AlertConstants.SuccessMessage] = "Lỗi không xoá được, vui lòng thử lại";
+
+            //ModelState.AddModelError(string.Empty, @"Lỗi không xoá được, vui lòng thử lại");
             return View();
         }
 

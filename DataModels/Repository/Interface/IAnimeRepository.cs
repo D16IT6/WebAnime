@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataModels.EF;
+using ViewModels.Admin;
 using ViewModels.Client;
 
 namespace DataModels.Repository.Interface
@@ -17,5 +18,7 @@ namespace DataModels.Repository.Interface
         public Task<AnimeWatchingViewModel> GetAnimeWatching(int id);
 
         public Task<bool> IncreaseView(int id);
+
+        public Task<Paging<Animes>> GetPaging(string searchTitle, int pageNumber,int pageSize);
     }
 }

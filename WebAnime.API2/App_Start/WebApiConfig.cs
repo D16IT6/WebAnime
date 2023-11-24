@@ -1,5 +1,6 @@
 ﻿
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace WebAnime.API2
 {
@@ -7,17 +8,6 @@ namespace WebAnime.API2
     {
         public static void Register(HttpConfiguration config)
         {
-            config.Routes.MapHttpRoute(
-                name: "SwaggerUI",
-                routeTemplate: "swagger/ui/{*path}",
-                defaults: new { controller = "Swagger" }
-            );
-
-            config.Routes.MapHttpRoute(
-                name: "OldSwaggerUI",
-                routeTemplate: "swagger/old/ui/{*path}",
-                defaults: new { controller = "OldSwagger" }
-            );
 
             config.MapHttpAttributeRoutes();
 
@@ -26,6 +16,8 @@ namespace WebAnime.API2
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            EnableCorsAttribute cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
         }
     }
 }

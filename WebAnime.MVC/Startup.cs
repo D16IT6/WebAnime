@@ -3,6 +3,7 @@ using DataModels.Helpers;
 using Microsoft.Owin;
 using Owin;
 using System;
+using WebAnime.MVC.Components;
 using static WebAnime.MVC.OwinConfig;
 [assembly: OwinStartup(typeof(WebAnime.MVC.Startup))]
 
@@ -15,12 +16,11 @@ namespace WebAnime.MVC
         {
             AuthConfig(app);
 
+            //Tạo sẵn dữ liệu cho ứng dụng
             RegisterServices();
             CreateDefaultRoles();
             CreateDefaultUsers();
         }
-
-
         RoleManager _roleManager;
         UserManager _userManager;
         void RegisterServices()
@@ -43,6 +43,7 @@ namespace WebAnime.MVC
                 UserName = "talonezio",
                 BirthDay = new DateTime(2003, 7, 17),
                 Email = "vuthemanh1707@gmail.com",
+                AvatarUrl = CommonConstants.DefaultAvatarUrl,
                 PhoneNumber = "0988344814",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
@@ -52,6 +53,7 @@ namespace WebAnime.MVC
                 UserName = "vuthemanh1707",
                 BirthDay = new DateTime(2003, 7, 17),
                 Email = "vuthemanh333@gmail.com",
+                AvatarUrl = CommonConstants.DefaultAvatarUrl,
                 PhoneNumber = "0988344814",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true

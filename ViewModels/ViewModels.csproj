@@ -74,10 +74,12 @@
     <Compile Include="Admin\EpisodeViewModel.cs" />
     <Compile Include="Admin\ForgotPasswordViewModel.cs" />
     <Compile Include="Admin\LoginViewModel.cs" />
+    <Compile Include="Admin\Paging.cs" />
     <Compile Include="Admin\ResetPasswordViewModel.cs" />
     <Compile Include="Admin\ServerViewModel.cs" />
     <Compile Include="Admin\StudioViewModel.cs" />
     <Compile Include="Admin\UserViewModel.cs" />
+    <Compile Include="API\LoginViewModel.cs" />
     <Compile Include="Client\AccountViewModels.cs" />
     <Compile Include="Client\AnimeDetailViewModel.cs" />
     <Compile Include="Client\AnimeItemViewModel.cs" />
@@ -99,5 +101,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

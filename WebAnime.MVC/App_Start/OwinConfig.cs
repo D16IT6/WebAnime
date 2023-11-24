@@ -8,7 +8,6 @@ using Owin;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Owin.Security;
 
 namespace WebAnime.MVC
 {
@@ -18,6 +17,7 @@ namespace WebAnime.MVC
 
         public static void AuthConfig(IAppBuilder app)
         {
+            //tạo middleware xác thực sử dụng cookie
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,

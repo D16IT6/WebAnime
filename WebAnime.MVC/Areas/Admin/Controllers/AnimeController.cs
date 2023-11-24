@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using DataModels.EF;
 using DataModels.Repository.Interface;
 using Microsoft.AspNet.Identity;
@@ -50,14 +51,19 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var animeViewModelList = _mapper.Map<IEnumerable<Animes>, IEnumerable<AnimeViewModel>>(await _animeRepository.GetAll());
+            //var animeViewModelList = _mapper.Map<IEnumerable<Animes>, IEnumerable<AnimeViewModel>>(await _animeRepository.GetAll());
+            //var firstServer = await _serverRepository.GetFirst();
+            //ViewBag.FirstServerId = firstServer.Id;
+
+            //var tempCategoriesEnumerable = await _categoryRepository.GetAll();
+            //ViewBag.categoryList = tempCategoriesEnumerable.ToArray();
+
+            //return View(animeViewModelList);
+
+
             var firstServer = await _serverRepository.GetFirst();
             ViewBag.FirstServerId = firstServer.Id;
-
-            var tempCategoriesEnumerable = await _categoryRepository.GetAll();
-            ViewBag.categoryList = tempCategoriesEnumerable.ToArray();
-
-            return View(animeViewModelList);
+            return View();
         }
         [HttpGet]
         public async Task<ActionResult> Create()
@@ -77,12 +83,18 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                 if (await _animeRepository.Create(entity))
                 {
+                    TempData[AlertConstants.SuccessHeader] = "Anime mới";
+                    TempData[AlertConstants.SuccessMessage] = "Thêm anime mới thành công";
+
                     return RedirectToAction("Index", "Anime");
                 }
                 await LoadEditData();
+                TempData[AlertConstants.ErrorMessage] = "Lỗi thêm mới, vui lòng thử lại";
                 ModelState.AddModelError(string.Empty, @"Lỗi thêm mới, vui lòng thử lại");
             }
             await LoadEditData();
+
+            TempData[AlertConstants.ErrorMessage] = "Lỗi đầu vào, vui lòng thử lại";
             ModelState.AddModelError(string.Empty, @"Lỗi đầu vào, vui lòng kiểm tra lại");
             return View();
         }
@@ -109,12 +121,18 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                 if (await _animeRepository.Update(entity))
                 {
+                    TempData[AlertConstants.SuccessMessage] = $"Cập nhật anime {entity.Title} thành công";
+                    TempData[AlertConstants.SuccessHeader] = "Cập nhật anime";
+
                     return RedirectToAction("Index", "Anime");
                 }
                 await LoadEditData();
+
+                TempData[AlertConstants.ErrorMessage] = "Lỗi cập nhật, vui lòng thử lại";
                 ModelState.AddModelError(string.Empty, @"Lỗi cập nhật, vui lòng thử lại");
             }
             await LoadEditData();
+            TempData[AlertConstants.ErrorMessage] = "Lỗi đầu vào, vui lòng thử lại";
             ModelState.AddModelError(string.Empty, @"Lỗi đầu vào, vui lòng kiểm tra lại");
             return View(model);
         }
@@ -136,11 +154,47 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
             if (await _animeRepository.Delete(model.Id, deletedBy))
             {
+                TempData[AlertConstants.SuccessMessage] = $"Xóa anime {model.Title} thành công!";
+                TempData[AlertConstants.SuccessHeader] = "Xóa anime";
                 return RedirectToAction("Index", "Anime");
             }
+            TempData[AlertConstants.ErrorMessage] = "Lỗi xóa anime, vui lòng thử lại";
             ModelState.AddModelError(string.Empty, @"Lỗi xoá, vui lòng thử lại");
             return View(model);
         }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetPaging(string searchTitle,int pageNumber,int pageSize)
+        {
+            if(pageNumber <= 0 || pageSize <= 0) return HttpNotFound(string.Empty);
+
+            var queryResult = await _animeRepository.GetPaging(searchTitle, pageNumber, pageSize);
+            var result = queryResult.Data
+                .Select(
+                    x => new
+                    {
+                        x.Title,
+                        x.OriginalTitle,
+                        x.Id,
+                        x.Duration,
+                        x.TotalEpisodes,
+                        x.Synopsis,
+                        Release = x.Release?.ToString("dd/MM/yyyy") ?? "Khong biet",
+                        Categories = String.Join(",",x.Categories.Where(z =>!z.IsDeleted).Select(c => c.Name)) +"."
+                    }
+                );
+
+            return Json(new
+            {
+                data = result,
+                queryResult.PageCount,
+                queryResult.TotalPages
+
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+
 
         async Task LoadEditData()
         {

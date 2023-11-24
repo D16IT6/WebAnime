@@ -34,8 +34,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+                if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    TempData[AlertConstants.InfoMessage] = "Chào mừng trở lại";
                     return RedirectToAction("Index", "Home", new { area = "Admin" });
+                }
 
                 return RedirectToAction("Index", "Home");
             }

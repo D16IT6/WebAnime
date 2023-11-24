@@ -11,7 +11,7 @@ namespace WebAnime.API2
     {
         public static void Register()
         {
-            var thisAssembly = typeof(SwaggerConfig).Assembly;
+            //var thisAssembly = typeof(SwaggerConfig).Assembly;
 
             GlobalConfiguration.Configuration
                 .EnableSwagger(c =>

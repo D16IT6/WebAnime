@@ -16,8 +16,8 @@ namespace WebAnime.MVC
             AuthConfig(app);
 
             RegisterServices();
-            //CreateDefaultRoles();
-            //CreateDefaultUsers();
+            CreateDefaultRoles();
+            CreateDefaultUsers();
         }
 
 

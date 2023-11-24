@@ -12,7 +12,7 @@ using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
-    [OnlyAdminAuthorize]
+    //[OnlyAdminAuthorize]
     public class UserController : Controller
     {
         private readonly UserManager _userManager;

@@ -1,33 +1,31 @@
-﻿@using System.Text
-@using DataModels.EF
-@model IEnumerable< ViewModels.Admin.AnimeViewModel>
+﻿@model IEnumerable<ViewModels.Admin.AnimeViewModel>
 @{
     ViewBag.Title = "Trang quản lý anime";
     int firstServerId = (int)ViewBag.FirstServerId;
-    Categories[] categoryList = ViewBag.categoryList;
+    //Categories[] categoryList = ViewBag.categoryList;
 }
-@functions {
-    string GetCategories(Categories[] categoryList, int[] categoryListIds)
-    {
-        var length = categoryListIds.Length;
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < length - 1; ++i)
+@*@functions {
+        string GetCategories(Categories[] categoryList, int[] categoryListIds)
         {
-            var categoryIndex = categoryListIds[i] - 1;
-            builder.Append($"{categoryList[categoryIndex].Name}, ");
-            if (i == 3)
+            var length = categoryListIds.Length;
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < length - 1; ++i)
             {
-                builder.Append("...");
-                break;
+                var categoryIndex = categoryListIds[i] - 1;
+                builder.Append($"{categoryList[categoryIndex].Name}, ");
+                if (i == 3)
+                {
+                    builder.Append("...");
+                    break;
+                }
             }
+            if (categoryListIds.Length < 3)
+            {
+                builder.Append($"{categoryList[categoryListIds[length - 1] - 1].Name}.");
+            }
+            return builder.ToString();
         }
-        if (categoryListIds.Length < 3)
-        {
-            builder.Append($"{categoryList[categoryListIds[length - 1] - 1].Name}.");
-        }
-        return builder.ToString();
-    }
-}
+    }*@
 <div class="row">
     <div class="col-auto">
         <h2>
@@ -38,45 +36,58 @@
         @Html.ActionLink("Thêm mới", "Create", null, new { @class = "text-decoration-none btn btn-primary" })
     </div>
 </div>
-@if (!Model.Any())
+@using (Html.BeginForm())
 {
-    <h2>Chưa có dữ liệu gì!</h2>
+    <div class="row mb-3 justify-content-center">
+        <label class="col-form-label col-auto" for="searchTitle">Tiêu đề</label>
+        <div class="col-3">
+            <input type="text" name="searchTitle" id="searchTitle" value="" class="form-control" />
+        </div>
+        <div class="col-3">
+            <button type="button" class="btn btn-info btnSearch">Tìm kiếm</button>
+        </div>
+        <label class="col-form-label col-auto" for="pageNumber">Trang</label>
+
+        <div class="col-2">
+            <input type="number" name="pageNumber" id="pageNumber" class="form-control" min="1" max="10" value="1" />
+        </div>
+
+    </div>
 }
-else
-{
-    <table class="table table-hover table-bordered">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(x => x.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.OriginalTitle)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.Duration)
 
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.TotalEpisodes)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.Synopsis)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.Release)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.CategoriesId)
-                </th>
-                <th>
-                    Chức năng
-                </th>
-            </tr>
-        </thead>
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(x => x.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.OriginalTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.Duration)
 
-        <tbody>
-            @foreach (var anime in Model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.TotalEpisodes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.Synopsis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.Release)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.CategoriesId)
+            </th>
+            <th>
+                Chức năng
+            </th>
+        </tr>
+    </thead>
+
+    <tbody id="tableBody">
+        @*@foreach (var anime in Model)
             {
                 <tr>
                     <td>@anime.Title</td>
@@ -111,12 +122,10 @@ else
                         </div>
                     </td>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            }*@
+    </tbody>
+</table>
 <div>
-
 
     <!-- sample modal content -->
     <div class="modal fade"
@@ -153,9 +162,108 @@ else
 @section footerJs
 {
     <script>
-        $(`.btnShowSynopsis`).click(function () {
-            var synopsisHtml = $(this).data(`synopsisHtml`);
-            $(`.animeSynopsis`).html(synopsisHtml);
+        const pageSize = 3;
+
+        fetchData('', 1, pageSize);
+
+        function fetchData(searchTitle, pageNumber, pageSize, isChangeNumeric = true) {
+            if (pageNumber <= 0 || pageSize <= 0) return;
+            const url = `@Url.Action("GetPaging", "Anime")`;
+            console.log(url);
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    searchTitle: searchTitle,
+                    pageNumber: pageNumber,
+                    pageSize: pageSize
+
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    if (response.data.length > 0) {
+                        toastr.success('Lấy dữ liệu thành công', "Thông báo");
+
+                    } else {
+                        toastr.warning('Không tìm thấy dữ liệu', 'Cảnh báo');
+                    }
+                    dumpData(response.data);
+                    if (isChangeNumeric === true)
+                        changeNumeric(parseInt(response.TotalPages));
+
+                }
+            });
+        }
+        function changeNumeric(totalPages) {
+            console.log('change numeric');
+            //if (totalPages <= 0) return;
+            const numberic = $(`#pageNumber`);
+            const minPage = totalPages <= 0 ? totalPages : 1;
+
+            numberic.attr('min', minPage);
+            numberic.attr('max', totalPages);
+            numberic.val(minPage);
+        }
+        function dumpData(data) {
+            const tableBody = $(`#tableBody`);
+            tableBody.html('');
+
+            for (let i = 0; i < data.length; ++i) {
+                const item = data[i];
+                const html =
+                    `
+                <tr>
+                    <td>${item.Title}</td>
+                    <td>${item.OriginalTitle}</td>
+                    <td>${item.Duration} phút</td>
+                    <td>${item.TotalEpisodes}</td>
+                    <td>
+                        <button class="btn me-1 mb-1 btn-light-primary text-primary btn-lg px-4 fs-4 btnShowSynopsis"
+                        data-bs-toggle="modal"
+                        type="button"
+                        data-bs-target="#btn-anime-synopsis"
+                        data-synopsis-html="${item.Synopsis}">Xem </button>
+                    </td>
+                    <td>${item.Release}</td>
+                    <td>${item.Categories}</td>
+                    <td>
+                        <div class="btn-group w-100">
+                        <a href="@Url.Action("Update", "Anime", new { area = "Admin" })/${item.Id}" class = "btn btn-primary text-decoration-none">Sửa</a>
+
+                        <a href="@Url.Action("Index", "Episode", new { area = "Admin" })?animeId=${item.Id}&serverId=@firstServerId" class="btn btn-info text-white">Tập</a>
+
+                        <a href="@Url.Action("Delete", "Anime", new { area = "Admin" })/${item.Id}" class = "btn btn-danger text-decoration-none">Xóa</a>
+
+                    </td>
+                </tr>`;
+
+                tableBody.append(html);
+            }
+
+        }
+
+        $('#tableBody').on('click',
+            '.btnShowSynopsis',
+            function() {
+                var synopsisHtml = $(this).data('synopsisHtml');
+                $('.animeSynopsis').html('');
+                $('.animeSynopsis').html(synopsisHtml);
+            });
+
+
+        $(`.btnSearch`).click(function() {
+            const searchTitle = $(`#searchTitle`).val();
+            console.log(searchTitle);
+            fetchData(searchTitle,1,pageSize);
         });
+
+        $(`#pageNumber`).change(function() {
+            const current = $(this);
+            const pageNumber = current.val();
+            const searchTitle = $(`#searchTitle`).val();
+            console.log('search: ' + searchTitle);
+            fetchData(searchTitle, pageNumber, pageSize,false);
+        })
     </script>
 }

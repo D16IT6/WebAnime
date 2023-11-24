@@ -49,15 +49,15 @@
                         {
                             <ul>
                                 <li>
-                                    <button name="provider" class="facebook" value="facebook">
+                                    <button name="provider" class="facebook site-btn btnFacebook" value="facebook">
                                         <i class="fa fa-facebook"></i>
                                         Đăng nhập với Facebook
                                     </button>
                                 </li>
 
                                 <li>
-                                    <button name="provider" value="Google">
-                                        <i class="fa fa-facebook"></i>
+                                    <button name="provider" value="Google" class="site-btn">
+                                        <i class="fa fa-google"></i>
                                         Đăng nhập với Google
                                     </button>
                                 </li>
@@ -73,15 +73,19 @@
 @section footerCss
 {
     <style>
+        .btnFacebook {
+            background-color: #4267b2;
+        }
         .validate--box {
             -ms-transform: translate(10px, -10px);
             -webkit-transform: translate(10px, -10px);
             transform: translate(10px, -10px);
         }
 
-            .validate--box span {
-                color: red;
-            }
+
+        .validate--box span {
+            color: red;
+        }
 
         .validation--simarry {
             -ms-transform: translate(10px, -10px);
@@ -89,9 +93,9 @@
             transform: translate(10px, -10px);
         }
 
-            .validation--simarry ul {
-                list-style-type: none;
-            }
+        .validation--simarry ul {
+            list-style-type: none;
+        }
 
         .validation--summary li {
             color: red;

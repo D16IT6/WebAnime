@@ -49,8 +49,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             var result = await _blogRepository.Create(blog);
             if (result)
             {
+                TempData[AlertConstants.SuccessMessage] = "Thêm mới bài viết thành công!";
                 return RedirectToAction("Index");
             }
+
+            TempData[AlertConstants.ErrorMessage] = "Có lỗi xảy ra, vui lòng thử lại";
             return await Task.FromResult(View(model));
         }
 
@@ -76,11 +79,13 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 var result = await _blogRepository.Update(blog);
                 if (result)
                 {
+                    TempData[AlertConstants.SuccessMessage] = "Cập nhật bài viết thành công!";
                     return RedirectToAction("Index");
 
                 }
             }
 
+            TempData[AlertConstants.ErrorMessage] = "Có lỗi xảy ra, vui lòng thử lại";
             return await Task.FromResult(View(model));
         }
         [HttpGet]
@@ -99,8 +104,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             bool result = await _blogRepository.Delete(model.Id, deletedBy);
             if (result)
             {
+                TempData[AlertConstants.SuccessMessage] = "Xóa bài viết thành công";
                 return RedirectToAction("Index");
             }
+
+            TempData[AlertConstants.SuccessMessage] = "Có lỗi xảy ra, vui lòng thử lại";
             ModelState.AddModelError(string.Empty, @"Lỗi xóa, vui lòng thử lại");
             return View(model);
         }

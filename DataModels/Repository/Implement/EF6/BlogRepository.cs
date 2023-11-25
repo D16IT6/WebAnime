@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataModels.EF;
 using DataModels.Repository.Interface;
-using ViewModels.Client;
+using Org.BouncyCastle.Math.EC.Rfc7748;
+using ViewModels.Admin;
+using BlogViewModel = ViewModels.Client.BlogViewModel;
 
 namespace DataModels.Repository.Implement.EF6
 {
@@ -108,6 +110,27 @@ namespace DataModels.Repository.Implement.EF6
         public Task<BlogViewModel> GetBlogViewModel(int blogId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<Paging<Blogs>> GetPaping(string searchTitile, int pageSize, int pageNumber)
+        {
+            var searchResult = Context.Blogs
+                .Where(x =>
+                    (!x.IsDeleted) && (x.Title.Contains(searchTitile) || (String.IsNullOrEmpty(searchTitile))));
+            
+            var searchShow = searchResult
+                .OrderBy(x=>x.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+            var searchCount = await searchResult.CountAsync();
+                var result = new Paging<Blogs>()
+            {
+                Data = searchShow,
+                PageSize = pageSize,
+                PageNumber = pageNumber,
+                TotalPages = (int)Math.Ceiling(searchCount * 1.0 / pageSize)
+            };
+            return await Task.FromResult(result);
         }
 
         public Task<Blogs> GetByIdForClient(int id)

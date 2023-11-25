@@ -328,7 +328,6 @@ namespace DataModels.Repository.Implement.EF6
             var result = new Paging<Animes>()
             {
                 Data = searchResult,
-                PageCount = searchCount,
                 TotalPages = (int)Math.Ceiling(searchCount * 1.0 / pageSize),
                 PageNumber = pageNumber,
                 PageSize = pageSize

@@ -17,6 +17,7 @@
     <thead>
         <tr class="text-center">
             <th>
+               
                 @Html.DisplayNameFor(x => x.UserName)
             </th>
             <th>
@@ -46,7 +47,10 @@
         {
             <tr>
                 <td>
-                    @user.UserName
+                    <span>
+                        @user.UserName
+                    </span>
+                   
                 </td>
                 <td>
                     @user.FullName
@@ -55,7 +59,10 @@
                     @user.BirthDay.ToString("dd/MM/yyyy")
                 </td>
                 <td>
-                    @user.Email
+                    <span>
+                        @user.Email
+                        </span>
+                    
                 </td>
                 <td>
                     @user.PhoneNumber

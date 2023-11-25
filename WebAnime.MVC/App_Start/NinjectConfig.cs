@@ -70,15 +70,17 @@ namespace WebAnime.MVC
             kernel.Bind<IStudioRepository>().To<StudioRepository>();
             kernel.Bind<ITypeRepository>().To<TypeRepository>();
             kernel.Bind<IRatingRepository>().To<RatingRepository>();
+            kernel.Bind<IBlogRepository>().To<BlogRepository>();
         }
 
         static void RegisterRepositoryDapper(IKernel kernel)
         {
             RegisterConnection(kernel);
+            //kernel.Bind<IBlogRepository>().To<BlogRepositoryDapper>();
 
             kernel.Bind<IAgeRatingRepository>().To<AgeRatingRepositoryDapper>();
             kernel.Bind<IBlogCategoryRepository>().To<BlogCategoryRepositoryDapper>();
-            kernel.Bind<IBlogRepository>().To<BlogRepositoryDapper>();
+            
             kernel.Bind<IBlogCommentRepository>().To<BlogCommentRepositoryDapper>();
             kernel.Bind<ICountryRepository>().To<CountryRepositoryDapper>();
             //kernel.Bind<IEpisodeRepository>().To<EpisodeRepositoryDapper>();

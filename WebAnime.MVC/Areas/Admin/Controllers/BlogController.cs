@@ -3,8 +3,10 @@ using DataModels.EF;
 using DataModels.Repository.Interface;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using ViewModels.Admin;
 using WebAnime.MVC.Components;
 
@@ -113,10 +115,36 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetPaging(string searchTitle, int pageNumber, int pageSize)
+        {
+            var queryResult = await _blogRepository.GetPaping(searchTitle, pageSize, pageNumber);
+            var result = queryResult.Data
+                .Select(
+                    x => new
+                    {
+                        x.Title,
+                        x.Content,
+                        x.ImageUrl,
+                        x.Id
+                    });
+
+            if (result == null)
+                return HttpNotFound();
+
+            return Json(new
+            {
+                data=result,
+                queryResult.TotalPages,
+            },JsonRequestBehavior.AllowGet);
+        }
+
         async Task LoadDependencies()
         {
             var blogCategories = await _blogCategoryRepository.GetAll();
             ViewBag.BlogCategories = blogCategories;
         }
+
+        
     }
 }

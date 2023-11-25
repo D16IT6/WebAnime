@@ -20,5 +20,7 @@ namespace DataModels.Repository.Interface
         public Task<bool> IncreaseView(int id);
 
         public Task<Paging<Animes>> GetPaging(string searchTitle, int pageNumber,int pageSize);
+
+        public Task<Paging<AnimeItemViewModel>> AdvanceSearch(AnimeSearchViewModel model);
     }
 }

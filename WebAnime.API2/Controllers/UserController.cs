@@ -18,7 +18,6 @@ namespace WebAnime.API2.Controllers
         public UserController(UserManager userManager, IMapper mapper, SignInManager<Users, int> signInManager)
         {
             _userManager = userManager;
-            OwinConfig.RegisterTokenService(_userManager);
             _mapper = mapper;
             _signInManager = signInManager;
         }
@@ -74,6 +73,13 @@ namespace WebAnime.API2.Controllers
                 }
             }
             return await Task.FromResult(BadRequest("Du lieu khong hop le"));
+        }
+
+        [HttpGet]
+        [Route("User/Login/Facebook")]
+        public async Task<IHttpActionResult> LoginFacebook()
+        {
+            return await Task.FromResult(Ok());
         }
     }
 }

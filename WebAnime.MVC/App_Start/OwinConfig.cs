@@ -8,6 +8,8 @@ using Owin;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Owin.Security.Facebook;
+using Microsoft.Owin.Security.OAuth;
 
 namespace WebAnime.MVC
 {
@@ -51,9 +53,12 @@ namespace WebAnime.MVC
             //    clientId: "",
             //    clientSecret: "");
 
-            app.UseFacebookAuthentication(
-                appId: "358603550031804",
-                appSecret: "90c2fc87b53ede3b985e5a002cdbbe85");
+            app.UseFacebookAuthentication(new FacebookAuthenticationOptions()
+            {
+                AppId = "358603550031804",
+                AppSecret = "90c2fc87b53ede3b985e5a002cdbbe85",
+                SignInAsAuthenticationType = DefaultAuthenticationTypes.ExternalBearer,
+            });
 
 
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()

@@ -2037,6 +2037,7 @@
     <Content Include="Resources\Library\Client\Raty\fonts\raty.woff" />
     <Content Include="Views\Anime\Watch.cshtml" />
     <Content Include="Views\Account\UnconfirmedEmail.cshtml" />
+    <Content Include="Views\Home\Search.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

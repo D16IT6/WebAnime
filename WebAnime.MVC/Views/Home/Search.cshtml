@@ -1,0 +1,178 @@
+﻿@using DataModels.EF
+@model ViewModels.Client.AnimeSearchViewModel
+@{
+    ViewBag.Title = "Tìm kiếm";
+    var ageRatingsList = new List<AgeRatings>() { new() { Id = 0, Name = "Tất cả" } };
+
+    ageRatingsList.AddRange(ViewBag.AgeRating as IEnumerable<AgeRatings> ?? Array.Empty<AgeRatings>());
+
+    var categoriesList = new List<Categories>();
+    categoriesList.AddRange(ViewBag.Category as IEnumerable<Categories> ?? Array.Empty<Categories>());
+
+    var countryList = new List<Countries>() { new() { Id = 0, Name = "Tất cả" } };
+    countryList.AddRange(ViewBag.Country as IEnumerable<Countries> ?? Array.Empty<Countries>());
+
+    var statusList = new List<Statuses>() { new() { Id = 0, Name = "Tất cả" } };
+
+    statusList.AddRange(ViewBag.Status as IEnumerable<Statuses> ?? Array.Empty<Statuses>());
+
+    var typeList = new List<Types>() { new() { Id = 0, Name = "Tất cả" } };
+    typeList.AddRange(ViewBag.Type as IEnumerable<Types> ?? Array.Empty<Types>());
+
+    var ratingHigerList = new List<int>() { 1, 2, 3, 4 };
+
+    var viewCountHigherList = new List<int>() { 1, 5, 10, 20, 50, 100 };
+
+}
+
+<h2>Tìm kiếm</h2>
+
+<div class="row">
+    @Html.LabelFor(x => x.SearchTitle, new { @class = "col-form-label col-lg-2" })
+    <div class="col-lg-3">
+        @Html.TextBoxFor(x => x.SearchTitle, new { @class = "form-control" })
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        @Html.LabelFor(x => x.TypeId)
+        @Html.DropDownListFor(x => x.TypeId, new SelectList(typeList, "Id", "Name"))
+    </div>
+
+    <div class="col">
+        @Html.LabelFor(x => x.CategoryIds)
+        @Html.ListBoxFor(x => x.CategoryIds, new MultiSelectList(categoriesList, "Id", "Name"))
+    </div>
+
+    <div class="col">
+        @Html.LabelFor(x => x.StatusId)
+        @Html.DropDownListFor(x => x.StatusId, new SelectList(statusList, "Id", "Name"))
+    </div>
+    <div class="col">
+        @Html.LabelFor(x => x.CountryId)
+        @Html.DropDownListFor(x => x.CountryId, new SelectList(countryList, "Id", "Name"))
+    </div>
+
+    <div class="col">
+        @Html.LabelFor(x => x.AgeRatingId)
+        @Html.DropDownListFor(x => x.AgeRatingId, new SelectList(ageRatingsList, "Id", "Name"))
+    </div>
+    <div class="col">
+        @Html.LabelFor(x => x.RatingHigher)
+        @Html.DropDownListFor(x => x.RatingHigher, new SelectList(ratingHigerList))
+    </div>
+
+    <div class="col">
+        @Html.LabelFor(x => x.ViewCountHigher)
+        @Html.DropDownListFor(x => x.ViewCountHigher, new SelectList(viewCountHigherList))
+    </div>
+
+    @*<div class="col">
+            <div class="searchDate"></div>
+        </div>*@
+
+    <div class="col">
+        <button type="submit" id="btnSearch">Tìm kiếm</button>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div class="row searchAnime">
+            <h3>Dữ liệu tìm thấy sẽ ở đây</h3>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section footerCss
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+        .current, .option {
+            color: black !important;
+        }
+    </style>
+
+}
+@section footerJs
+{
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="~/Resources/Library/Client/js/jquery.nice-select.min.js"></script>
+    <script>
+
+        function dumpHtml(data) {
+            const searchAnime = $(`.searchAnime`);
+            searchAnime.html('');
+            for (let i = 0; i < data.length; ++i) {
+
+                const item = data[i];
+                const html = `
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="product__item">
+
+                        <div class="product__item__pic set-bg" data-setbg="${item.Poster}">
+                            <div class="ep">${item.CurrentEpisode} / ${item.TotalEpisode}</div>
+                            <div class="comment"><i class="fa fa-comments"></i> ${item.CommentCount}</div>
+                            <div class="view"><i class="fa fa-eye"></i> ${item.ViewCount}</div>
+                        </div>
+
+                        <div class="product__item__text">
+                            <ul>
+                                <li>${item.Status}</li>
+                                <li>${item.Type}</li>
+                            </ul>
+                            <h5><a href="#">${item.Title}</a></h5>
+                        </div>
+                    </div>
+                </div>`;
+                searchAnime.append(html);
+
+            }
+            $('.set-bg').each(function () {
+                var bg = $(this).data('setbg');
+                $(this).css('background-image', 'url(' + bg + ')');
+            });
+        }
+
+        function sendRequest(model) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("AdvancedSearch", "Anime")",
+                data: model,
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    dumpHtml(response.data);
+                }
+            });
+        }
+
+        $(`#btnSearch`).click(function() {
+            const searchTitle = $(`#SearchTitle`).val();
+            const typeId = $(`#TypeId`).val();
+            const categoryIds = $(`#CategoryIds`).val();
+            const statusId = $(`#StatusId`).val();
+            const countryId = $(`#CountryId`).val();
+            const ageRatingId = $(`#AgeRatingId`).val();
+            const ratingHigher = $(`#RatingHigher`).val();
+            const viewCountHigher = $(`#ViewCountHigher`).val();
+            const model = {
+                searchTitle,
+                typeId,
+                categoryIds,
+                statusId,
+                countryId,
+                ageRatingId,
+                ratingHigher,
+                viewCountHigher,
+                PageNumber: 1,
+                PageSize: 9
+            };
+            sendRequest(model);
+        });
+    </script>
+}

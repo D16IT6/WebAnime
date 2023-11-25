@@ -16,6 +16,7 @@ namespace DataModels.Repository.Implement.EF6
         {
             Context = context;
         }
+
         public WebAnimeDbContext Context { get; set; }
 
         public async Task<IEnumerable<Animes>> GetAll()
@@ -168,7 +169,8 @@ namespace DataModels.Repository.Implement.EF6
 
             foreach (var categoryId in insertCategoryIds)
             {
-                var insertCategory = await Context.Categories.FirstOrDefaultAsync(x => x.Id == categoryId && !x.IsDeleted);
+                var insertCategory =
+                    await Context.Categories.FirstOrDefaultAsync(x => x.Id == categoryId && !x.IsDeleted);
                 if (insertCategory != null)
                 {
                     updateEntity.Categories.Add(insertCategory);
@@ -290,7 +292,8 @@ namespace DataModels.Repository.Implement.EF6
                                     Url = episode.Url
                                 }),
                         }),
-                CommentCount = await Context.Comments.Where(comment => !comment.IsDeleted && comment.AnimeId == anime.Id).CountAsync()
+                CommentCount = await Context.Comments
+                    .Where(comment => !comment.IsDeleted && comment.AnimeId == anime.Id).CountAsync()
             };
 
             return await Task.FromResult(result);
@@ -336,7 +339,58 @@ namespace DataModels.Repository.Implement.EF6
 
             return await Task.FromResult(result);
         }
+
+        public async Task<Paging<AnimeItemViewModel>> AdvanceSearch(AnimeSearchViewModel model)
+        {
+            int length = model.CategoryIds.Length;
+            var result = Context.Animes
+                .Where(x =>
+                    !x.IsDeleted &&
+                    (x.Title.ToLower().Contains(model.SearchTitle.ToLower()) ||
+                     String.IsNullOrEmpty(model.SearchTitle)) &&
+                    (x.OriginalTitle.ToLower().Contains(model.SearchTitle.ToLower()) ||
+                     String.IsNullOrEmpty(model.SearchTitle)) &&
+                    (x.TypeId == model.TypeId || model.TypeId == 0) &&
+                    (x.CountryId == model.CountryId || model.CountryId == 0) &&
+                    (x.StatusId == model.StatusId || model.StatusId == 0) &&
+                    (x.AgeRatingId == model.AgeRatingId || model.AgeRatingId == 0) &&
+                    (model.CategoryIds.Except(x.Categories
+                        .Where(c => !c.IsDeleted)
+                        .Select(c => c.Id)).Count() != length || length == 0) &&
+                    (model.RatingHigher <=
+                     (x.Ratings.Any() ? x.Ratings.Sum(r => r.RatePoint) * 1.0 / x.Ratings.Count() : 1) ||
+                     model.RatingHigher == 0)
+                    && (model.ViewCountHigher <= x.ViewCount || model.ViewCountHigher == 0)
+                )
+                .OrderByDescending(x => x.ViewCount);
+
+
+            var totalPages = await result.CountAsync();
+            return await Task.FromResult(new Paging<AnimeItemViewModel>()
+            {
+                Data = result
+                    .Skip((model.PageNumber - 1) * model.PageSize)
+                    .Take(model.PageSize)
+                    .Select(x => new AnimeItemViewModel()
+                    {
+                        Id = x.Id,
+                        Title = x.Title,
+                        Poster = x.Poster,
+                        ViewCount = x.ViewCount,
+                        Type = x.Types.Name,
+                        Status = x.Statuses.Name,
+                        CurrentEpisode = x.Episodes
+                            .Where(z => !z.IsDeleted)
+                            .GroupBy(z => z.ServerId)
+                            .Max(t => t.Count()),
+                        TotalEpisode = x.TotalEpisodes,
+                        CommentCount = Context.Comments.Count(y => y.AnimeId == x.Id)
+                    }),
+                TotalPages = totalPages,
+                PageCount = (int)Math.Ceiling(totalPages * 1.0 / model.PageSize),
+                PageSize = model.PageSize,
+                PageNumber = model.PageNumber
+            });
+        }
     }
-
-
 }

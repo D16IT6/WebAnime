@@ -98,6 +98,10 @@ namespace WebAnime.MVC
 
                     cfg.CreateMap<RegisterViewModel, Users>();
 
+                    cfg.CreateMap<Users, ViewModels.Client.UserViewModel>();
+
+                    cfg.CreateMap<Users,UserChangePasswordViewModel>();
+
                 }
             );
             return config.CreateMapper();

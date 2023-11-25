@@ -1,8 +1,19 @@
 ﻿@using DataModels.EF.Identity
 @using Microsoft.AspNet.Identity
+@using WebAnime.MVC.Components
 @{
     var userManager = NinjectConfig.GetService<UserManager>();
     var currentUser = userManager.FindById(User.Identity.GetUserId<int>());
+
+    string successMessage = (string)TempData[AlertConstants.SuccessMessage];
+    string warningMessage = (string)TempData[AlertConstants.WarningMessage];
+    string errorMessage = (string)TempData[AlertConstants.ErrorMessage];
+    string infoMessage = (string)TempData[AlertConstants.InfoMessage];
+
+    string successHeader = (string)TempData[AlertConstants.SuccessHeader] ?? "Thành công";
+    string warningHeader = (string)TempData[AlertConstants.WarningHeader] ?? "Cảnh báo";
+    string errorHeader = (string)TempData[AlertConstants.ErrorHeader] ?? "Lỗi";
+    string infoHeader = (string)TempData[AlertConstants.ErrorHeader] ?? "Thông báo";
 }
 <!DOCTYPE html>
 <html lang="vi">
@@ -29,6 +40,11 @@
     <link rel="stylesheet" href="~/Resources/Library/Client/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="~/Resources/Library/Client/css/style.css" type="text/css">
     <link href="~/Resources/Library/Client/Raty/jquery.raty.css" rel="stylesheet" />
+    <link href="~/Resources/Library/Common/Toastr/toastr.min.css" rel="stylesheet" />
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="~/Resources/Library/Common/Toastr/toastr.js"></script>
     @RenderSection("footerCss", false)
 </head>
 
@@ -57,22 +73,22 @@
                                     <a href="@Url.Action("Index","Home")">Trang chủ</a>
                                 </li>
                                 @*<li>
-                                    <a href="./categories.html">Categories <span class="arrow_carrot-down"></span></a>
-                                    <ul class="dropdown">
-                                        <li>
-                                            <a href="./categories.html">Categories</a>
-                                        </li>
-                                        <li>
-                                            <a href="./anime-details.html">Anime Details</a>
-                                        </li>
-                                        <li>
-                                            <a href="./anime-watching.html">Anime Watching</a>
-                                        </li>
-                                        <li>
-                                            <a href="./blog-details.html">Blog Details</a>
-                                        </li>
-                                    </ul>
-                                </li>*@
+                                        <a href="./categories.html">Categories <span class="arrow_carrot-down"></span></a>
+                                        <ul class="dropdown">
+                                            <li>
+                                                <a href="./categories.html">Categories</a>
+                                            </li>
+                                            <li>
+                                                <a href="./anime-details.html">Anime Details</a>
+                                            </li>
+                                            <li>
+                                                <a href="./anime-watching.html">Anime Watching</a>
+                                            </li>
+                                            <li>
+                                                <a href="./blog-details.html">Blog Details</a>
+                                            </li>
+                                        </ul>
+                                    </li>*@
                                 <li>
                                     <a href="@Url.Action("Index","Blog")">Our Blog</a>
                                 </li>
@@ -99,9 +115,33 @@
         </div>
     </header>
     <!-- Header End -->
-    <div class="container text-white my-3">
-        @RenderBody()
-    </div>
+<div class="container text-white my-3">
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <script>
+            toastr['error'](`@errorMessage`,`@errorHeader`)
+        </script>
+    }
+    @if (!string.IsNullOrEmpty(successMessage))
+    {
+        <script>
+            toastr['success'](`@successMessage`, `@successHeader`)
+        </script>
+    }
+    @if (!string.IsNullOrEmpty(warningMessage))
+    {
+        <script>
+            toastr['warning'](`@warningMessage`, `@warningHeader`)
+        </script>
+    }
+    @if (!string.IsNullOrEmpty(infoMessage))
+    {
+        <script>
+            toastr['info'](`@infoMessage`, `@infoHeader`)
+        </script>
+    }
+    @RenderBody()
+</div>
     <!-- Footer Section Begin -->
     <footer class="footer">
         <div class="page-up">
@@ -162,12 +202,10 @@
     </div>
     <!-- Search model end -->
     <!-- Js Plugins -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="~/Resources/Library/Client/js/bootstrap.min.js"></script>
     <script src="~/Resources/Library/Common/ckfinder/ckfinder.js"></script>
     <script src="~/Resources/Library/Common/ckeditor/ckeditor.js"></script>
     <script src="~/Resources/Library/Client/js/player.js"></script>
-    <script src="~/Resources/Library/Client/js/jquery.nice-select.min.js"></script>
     <script src="~/Resources/Library/Client/js/mixitup.min.js"></script>
     <script src="~/Resources/Library/Client/js/jquery.slicknav.js"></script>
     <script src="~/Resources/Library/Client/js/owl.carousel.min.js"></script>

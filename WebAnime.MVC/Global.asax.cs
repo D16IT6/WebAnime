@@ -12,8 +12,6 @@ namespace WebAnime.MVC
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
-
-
         protected override IKernel CreateKernel() => NinjectConfig.Kernel;//DI Container
     }
 }

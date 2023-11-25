@@ -10,6 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Jwt;
 using System.Text;
+using Microsoft.Owin.Security.Google;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 
 namespace WebAnime.API2
@@ -17,20 +20,8 @@ namespace WebAnime.API2
 
     public class OwinConfig
     {
-        private static IDataProtectionProvider DataProtectionProvider { get; set; }
-        public static void RegisterTokenService(UserManager userManager)
-        {
-            var dataProtectorProvider = DataProtectionProvider;
-
-            var provider = dataProtectorProvider.Create("WebAnime.MVC.ResetTokenKey.Abc!@#)(&");
-            userManager.UserTokenProvider = new DataProtectorTokenProvider<Users, int>(provider)
-            {
-                TokenLifespan = TimeSpan.FromHours(1)
-            };
-        }
         public static void AuthConfig(IAppBuilder app)
         {
-            DataProtectionProvider = app.GetDataProtectionProvider();
             // Configure the db context, user manager and signin manager to use a single instance per request
             //Ninject cover it
 
@@ -45,7 +36,16 @@ namespace WebAnime.API2
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Admin/Auth/Login"),
-                ExpireTimeSpan = TimeSpan.FromDays(7)
+                ExpireTimeSpan = TimeSpan.FromDays(7),
+                Provider = new CookieAuthenticationProvider()
+                {
+                    OnValidateIdentity = SecurityStampValidator
+                        .OnValidateIdentity<UserManager, Users, int>(
+                            validateInterval: TimeSpan.FromMinutes(30),
+                            regenerateIdentityCallback: (manager, user) =>
+                                GenerateUserIdentityAsync(user, manager),
+                            getUserIdCallback: (id) => (id.GetUserId<int>()))
+                }
             });
 
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
@@ -63,30 +63,36 @@ namespace WebAnime.API2
             //    clientId: "",
             //    clientSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "358603550031804",
-            //   appSecret: "90c2fc87b53ede3b985e5a002cdbbe85");
+            app.UseFacebookAuthentication(
+                appId: "358603550031804",
+                appSecret: "90c2fc87b53ede3b985e5a002cdbbe85");
 
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "1054362713534-ihmibg6jq40g5v4f78dn734ore89fe5p.apps.googleusercontent.com",
+                ClientSecret = "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"
+            });
 
-            
-            app.UseJwtBearerAuthentication(
-                new JwtBearerAuthenticationOptions
-                {
-                    AuthenticationMode = AuthenticationMode.Active,
-                    TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("abcxyz"))
-                    }
-                });
+
+            //app.UseJwtBearerAuthentication(
+            //    new JwtBearerAuthenticationOptions
+            //    {
+            //        AuthenticationMode = AuthenticationMode.Active,
+            //        TokenValidationParameters = new TokenValidationParameters()
+            //        {
+            //            ValidateIssuer = false,
+            //            ValidateAudience = false,
+            //            ValidateIssuerSigningKey = true,
+            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("abcxyz"))
+            //        }
+            //    });
+        }
+        public static async Task<ClaimsIdentity> GenerateUserIdentityAsync(Users user, UserManager manager)
+        {
+            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
+            var userIdentity = await manager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            return userIdentity;
         }
     }
 }

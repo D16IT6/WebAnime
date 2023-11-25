@@ -10,8 +10,6 @@ namespace WebAnime.API2
         public void Configuration(IAppBuilder app)
         {
             OwinConfig.AuthConfig(app);
-
-
         }
     }
 }

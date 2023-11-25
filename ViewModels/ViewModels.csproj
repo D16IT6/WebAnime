@@ -83,6 +83,7 @@
     <Compile Include="Client\AccountViewModels.cs" />
     <Compile Include="Client\AnimeDetailViewModel.cs" />
     <Compile Include="Client\AnimeItemViewModel.cs" />
+    <Compile Include="Client\AnimeSearchViewModel.cs" />
     <Compile Include="Client\AnimeWatchingViewModel.cs" />
     <Compile Include="Client\BlogCategoryViewModel.cs" />
     <Compile Include="Client\BlogCommentShowViewModel.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Client\LoginViewModel.cs" />
     <Compile Include="Client\ManageViewModels.cs" />
     <Compile Include="Client\ServerClientViewModel.cs" />
+    <Compile Include="Client\UserChangePasswordViewModel.cs" />
     <Compile Include="Client\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

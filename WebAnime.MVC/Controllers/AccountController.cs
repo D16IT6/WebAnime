@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using DataModels.EF.Identity;
 using DataModels.Helpers;
 using DataModels.Services;
@@ -44,11 +45,102 @@ namespace WebAnime.MVC.Controllers
         }
 
         [UserAuthorize]
+        [HttpGet]
         public async Task<ActionResult> Info()
         {
-            var userEmail = await _userManager.GetEmailAsync(User.Identity.GetUserId<int>());
-            ViewBag.UserEmail = userEmail;
-            return await Task.FromResult(View());
+            var user = _userManager.FindById(User.Identity.GetUserId<int>());
+            var userViewModel = _mapper.Map<UserViewModel>(user);
+            return await Task.FromResult(View(userViewModel));
+        }
+
+        [UserAuthorize]
+        [HttpPost]
+        public async Task<ActionResult> Info(UserViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null) return await Task.FromResult(new HttpNotFoundResult("cannot found account"));
+
+            var uploadImage = Request.Files["AvatarFile"];
+            if (uploadImage is { ContentLength: > 0 } && user.AvatarUrl.Equals(CommonConstants.DefaultAvatarUrl))
+            {
+                model.AvatarUrl = HandleFile(uploadImage);
+            }
+            if (ModelState.IsValid)
+            {
+                user.FullName = model.FullName;
+                user.AvatarUrl = model.AvatarUrl;
+                user.BirthDay = model.BirthDay;
+                user.PhoneNumber = model.PhoneNumber;
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    TempData[AlertConstants.SuccessMessage] = "Cập nhật thông tin thành công";
+                    return View(model);
+                }
+
+                // Handle errors, for example, by adding ModelState errors
+                var builder= new StringBuilder();
+                foreach (var error in result.Errors)
+                {
+                    builder.AppendLine(error);
+                }
+
+                TempData[AlertConstants.ErrorMessage] = builder.ToString();
+                return View(model);
+            }
+
+            TempData[AlertConstants.ErrorMessage] = "Lỗi không xác định, vui lòng thử lại";
+            return await Task.FromResult(View(model));
+        }
+
+        [UserAuthorize]
+        [HttpGet]
+        public async Task<ActionResult> ChangePassword()
+        {
+            var user = await _userManager.FindByIdAsync(User.Identity.GetUserId<int>());
+            if (user == null)
+            {
+                TempData[AlertConstants.ErrorMessage] = "Yêu cầu đăng nhập";
+                return RedirectToAction("Login");
+            }
+
+            var userViewModel = _mapper.Map<UserChangePasswordViewModel>(user);
+            return View(userViewModel);
+        }
+
+        [UserAuthorize]
+        [HttpPost]
+        public async Task<ActionResult> ChangePassword(UserChangePasswordViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(User.Identity.GetUserId<int>());
+            if (user == null)
+            {
+                TempData[AlertConstants.ErrorMessage] = "Yêu cầu đăng nhập";
+                return RedirectToAction("Login");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var result = await _userManager.ChangePasswordAsync(user.Id, model.OldPassword, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    TempData[AlertConstants.SuccessMessage] = "Đổi mật thành công, vui lòng đăng nhập lại";
+                    _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                    return RedirectToAction("Login");
+                }
+
+                var builder = new StringBuilder();
+                foreach (var error in result.Errors)
+                {
+                    builder.AppendLine(error);
+                }
+
+                TempData[AlertConstants.ErrorMessage] = builder.ToString();
+                return View(model);
+            }
+            TempData[AlertConstants.ErrorMessage] = "Lỗi không xác định, vui lòng thử lại";
+            return await Task.FromResult(View(model));
         }
 
         [HttpPost]
@@ -105,7 +197,7 @@ namespace WebAnime.MVC.Controllers
 
                     loginFailCount++;
                     Session[CommonConstants.LoginFailCount] = loginFailCount;
-
+                    TempData[AlertConstants.ErrorMessage] = "Đăng nhập thất bại";
                     return View(model);
 
                 }
@@ -123,8 +215,10 @@ namespace WebAnime.MVC.Controllers
                         if (!await _userManager.IsEmailConfirmedAsync(user.Id))
                         {
                             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            TempData[AlertConstants.WarningMessage] = "Yêu cầu xác thực email";
                             return RedirectToAction("UnconfirmedEmail", new { email = user.Email });
                         }
+                        TempData[AlertConstants.SuccessMessage] = $"Chào mừng trở lại, {user.FullName}";
 
                         return RedirectToLocal(returnUrl);
 
@@ -145,6 +239,8 @@ namespace WebAnime.MVC.Controllers
                 }
 
             }
+
+            TempData[AlertConstants.ErrorMessage] = "Đầu vào không hợp lệ";
             ModelState.AddModelError(string.Empty, @"Đầu vào chưa hợp lệ");
             return View(model);
         }
@@ -212,7 +308,7 @@ namespace WebAnime.MVC.Controllers
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             var userRole = _roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"));
-            model.RoleListIds = new[] { userRole.Id  };
+            model.RoleListIds = new[] { userRole.Id };
             var uploadImage = Request.Files["AvatarFile"];
             model.AvatarUrl = HandleFile(uploadImage);
             if (ModelState.IsValid)
@@ -297,18 +393,22 @@ namespace WebAnime.MVC.Controllers
                 if (user == null)
                 {
                     //return View("ForgotPasswordConfirmation");
+                    TempData[AlertConstants.ErrorMessage] = "Không thấy user";
                     ModelState.AddModelError("NotFoundUser", @"Không thấy user");
                     return View(model);
                 }
 
                 if (!(await _userManager.IsEmailConfirmedAsync(user.Id)))
                 {
+                    TempData[AlertConstants.ErrorMessage] = "Email chưa được xác nhận";
+
                     ModelState.AddModelError("NoConfirmEmail", @"Email chưa được xác nhận");
                     return View(model);
                 }
 
                 if (user.IsDeleted)
                 {
+                    TempData[AlertConstants.ErrorMessage] = "Tài khoản đã bị xóa khỏi hết thống";
                     ModelState.AddModelError("DeletedAccount",
                         @"Tài khoản đã bị xóa khỏi hệ thống, vui lòng liên hệ admin để cập nhật");
                     return View(model);
@@ -378,6 +478,7 @@ namespace WebAnime.MVC.Controllers
             {
                 if (!model.Password.Equals(model.ConfirmPassword))
                 {
+                    TempData[AlertConstants.ErrorMessage] = "Mật khẩu xác nhận không đúng, vui lòng thử lại";
                     ModelState.AddModelError("PasswordError", @"Mật khẩu xác nhận không đúng, vui lòng thử lại");
                     return View(model);
                 }
@@ -390,6 +491,7 @@ namespace WebAnime.MVC.Controllers
 
                 foreach (var error in result.Errors)
                 {
+
                     ModelState.AddModelError(error, error);
                 }
                 return View(model);

@@ -262,8 +262,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Library\Admin\Toastr\toastr.css" />
-    <Content Include="Resources\Library\Admin\Toastr\toastr.min.css" />
+    <Content Include="Resources\Library\Common\Toastr\toastr.css" />
+    <Content Include="Resources\Library\Common\Toastr\toastr.min.css" />
     <Content Include="Resources\Library\Admin\JqueryValidation\jquery.validate.js" />
     <Content Include="Resources\Library\Admin\JqueryValidation\jquery.validate.unobtrusive.js" />
     <Content Include="Resources\Library\Admin\Theme\css\icons\crypto-icons\cryptocoins-colors.css" />
@@ -1829,8 +1829,8 @@
     <Content Include="Areas\Admin\Views\Blog\Delete.cshtml" />
     <None Include="Resources\Library\Admin\Jquery\jquery-3.7.1.intellisense.js" />
     <Content Include="Resources\Library\Admin\Jquery\jquery-3.7.1.js" />
-    <Content Include="Resources\Library\Admin\Toastr\toastr.js" />
-    <Content Include="Resources\Library\Admin\Toastr\toastr.min.js" />
+    <Content Include="Resources\Library\Common\Toastr\toastr.js" />
+    <Content Include="Resources\Library\Common\Toastr\toastr.min.js" />
     <Content Include="Uploads\images\136926.jpg" />
     <Content Include="Uploads\images\92364.jpg" />
     <Content Include="Uploads\images\ahgkajhg-1617261830.jpg" />
@@ -2037,6 +2037,8 @@
     <Content Include="Resources\Library\Client\Raty\fonts\raty.woff" />
     <Content Include="Views\Anime\Watch.cshtml" />
     <Content Include="Views\Account\UnconfirmedEmail.cshtml" />
+    <Content Include="Views\Home\Search.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

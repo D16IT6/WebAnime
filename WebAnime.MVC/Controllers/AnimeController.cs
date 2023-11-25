@@ -124,5 +124,25 @@ namespace WebAnime.MVC.Controllers
             return json;
         }
 
+        [HttpGet]
+        public async Task<ActionResult> AdvancedSearch(AnimeSearchViewModel model)
+        {
+            model.CategoryIds ??= new int[] { };
+            var result = await _animeRepository.AdvanceSearch(model);
+            
+
+            return await Task.FromResult(
+                Json(new
+                    {
+                        data = result.Data,
+                        result.PageCount,
+                        result.TotalPages,
+                        result.PageSize,
+                        result.PageNumber
+                    }, 
+                    JsonRequestBehavior.AllowGet)
+                );
+        }
+
     }
 }

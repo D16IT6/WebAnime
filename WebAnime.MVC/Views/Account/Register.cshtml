@@ -9,7 +9,7 @@
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.RoleListIds)
-    @Html.HiddenFor(x=>x.AvatarUrl)
+    @Html.HiddenFor(x => x.AvatarUrl)
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="row mb-2">
         @Html.LabelFor(x => x.FullName, new { @class = "col-form-label col-md-3" })
@@ -53,7 +53,7 @@
     </div>
 
     <div class="row mb-2">
-        @Html.LabelFor(x => x.Email, new { @class = "col-form-label col-md-3",type="email" })
+        @Html.LabelFor(x => x.Email, new { @class = "col-form-label col-md-3", type = "email" })
         <div class="col-md-5">
             @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email" })
             @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
@@ -73,9 +73,7 @@
         @Html.LabelFor(x => x.AvatarUrl, new { @class = "col-form-label col-md-3" })
         <div class="col-md-5">
             <input type="file" name="AvatarFile" id="AvatarFile" class="form-control-file" /><br />
-            @*<div class="input-group">
-                <button class="btn btn-outline-primary" id="btnSelectAvatar" type="button">Chọn</button>
-            </div>*@
+
         </div>
     </div>
 
@@ -110,15 +108,26 @@
             width: 0;
             height: 0;
         }
+
         li label {
             color: black;
         }
-/*        .nice-select {
-            width: 0;
-            height: 0;
-            -ms-opacity: 0;
-            opacity: 0;
-        }*/
+
+        .form-control {
+            background-color: #0b0c2a!important; /* Màu nền tùy chỉnh - bạn có thể thay đổi giá trị này */
+            color: #495057; /* Màu chữ tùy chỉnh - bạn có thể thay đổi giá trị này */
+        }
+
+        /* Thay đổi màu nền của nút */
+        button.site-btn {
+            background-color: #007bff; /* Màu nền tùy chỉnh cho nút - bạn có thể thay đổi giá trị này */
+            color: #ffffff; /* Màu chữ tùy chỉnh cho nút - bạn có thể thay đổi giá trị này */
+        }
+
+        [id$="-error"] {
+            color: red !important;
+        }
+
     </style>
 
 }
@@ -149,7 +158,7 @@
             altFormat: "d/m/Y"
         });
 
-        
+
 
         const listMultiSelect = document.querySelectorAll(`.ms-options-wrap button`);
         for (const item of listMultiSelect) {
@@ -158,14 +167,5 @@
             item.classList.add(`p-2`);
         }
 
-        $(`#btnSelectAvatar`).click(function () {
-            const ckFinder = new CKFinder();
-            ckFinder.selectActionFunction = function (url) {
-                $(`input#AvatarUrl`).val(url);
-            }
-            ckFinder.popup();
-
-        }); 
-        //$(``)
     </script>
 }

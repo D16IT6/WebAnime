@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,9 +43,10 @@ namespace DataModels.Repository.Implement.EF6
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<BlogCategories>> GetAllBlogCategoriesByBlogId(int blogId)
+        public async Task<IEnumerable<BlogCategories>> GetAllBlogCategoriesByBlogId(int blogId)
         {
-            throw new NotImplementedException();
+            return (await Context.Blogs.Include(blogs => blogs.BlogCategories)
+                .FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == blogId))?.BlogCategories;
         }
     }
 }

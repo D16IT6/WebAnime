@@ -105,15 +105,43 @@ namespace DataModels.Repository.Implement.EF6
             }
         }
 
-        public Task<BlogViewModel> GetBlogViewModel(int blogId)
+        public async Task<BlogViewModel> GetBlogViewModel(int blogId)
         {
-            throw new NotImplementedException();
+            var result = await Context.Blogs
+                .Include(blogs => blogs.BlogCategories)
+                .Include(blogs => blogs.BlogComments.Select(blogComments => blogComments.User))
+                .FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == blogId);
+            if (result == null) return null;
+            return new BlogViewModel()
+            {
+                Id = result.Id,
+                CreatedBy = result.CreatedBy,
+                CreatedDate = result.CreatedDate ?? DateTime.Now,
+                Content = result.Content,
+                Slug = result.Slug,
+                Title = result.Title,
+                ImageUrl = result.ImageUrl,
+                BlogCategories = result.BlogCategories
+                    .Where(x => !x.IsDeleted)
+                    .Select(x => new BlogCategoryViewModel()
+                    { Id = x.Id, Name = x.Name }
+                    ),
+                BlogComments = result.BlogComments
+                    .Where(x => !x.IsDeleted)
+                    .Select(x => new BlogCommentViewModel()
+                    {
+                        Id = x.Id,
+                        AvatarUrl = x.User.AvatarUrl,
+                        BlogId = blogId,
+                        Content = x.Content,
+                        CreatedBy = x.CreatedBy ?? 1,
+                        CreatedDate = x.CreatedDate ?? DateTime.Now,
+                    }
+                    )
+            };
+
         }
 
-        public Task<Blogs> GetByIdForClient(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         private async Task UpdateCategories(Blogs entity, Blogs updateEntity)
         {

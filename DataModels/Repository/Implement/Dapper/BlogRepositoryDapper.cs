@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
 using DataModels.EF;
 using DataModels.Repository.Interface;
-using Org.BouncyCastle.Utilities.Collections;
 using ViewModels.Client;
-using static Dapper.SqlMapper;
 
 namespace DataModels.Repository.Implement.Dapper
 {
@@ -18,14 +14,12 @@ namespace DataModels.Repository.Implement.Dapper
     {
         private readonly IDbConnection _connection;
         private readonly IBlogCategoryRepository _blogCategoryRepository;
-        private readonly IBlogCommentRepository _blogCommentRepository;
         private readonly IMapper _mapper;
 
-        public BlogRepositoryDapper(IDbConnection connection, IBlogCategoryRepository blogCategoryRepository, IBlogCommentRepository blogCommentRepository, IMapper mapper)
+        public BlogRepositoryDapper(IDbConnection connection, IBlogCategoryRepository blogCategoryRepository, IMapper mapper)
         {
             _connection = connection;
             _blogCategoryRepository = blogCategoryRepository;
-            _blogCommentRepository = blogCommentRepository;
             _mapper = mapper;
         }
 
@@ -128,13 +122,6 @@ namespace DataModels.Repository.Implement.Dapper
                 commandType: CommandType.StoredProcedure) > 0;
         }
 
-        public async Task<Blogs> GetByIdForClient(int id)
-        {
-            var blog = await GetById(id);
-            if (blog == null) return null;
-            blog.BlogComments = (ICollection<BlogComments>)await _blogCommentRepository.GetByBlogId(id);
-            return blog;
-        }
 
         public async Task<BlogViewModel> GetBlogViewModel(int blogId)
         {

@@ -98,6 +98,9 @@ namespace WebAnime.MVC
 
                     cfg.CreateMap<RegisterViewModel, Users>();
 
+                    cfg.CreateMap<ScheduleViewModel, Schedules>();
+                    cfg.CreateMap<Schedules, ScheduleViewModel>();
+
                 }
             );
             return config.CreateMapper();

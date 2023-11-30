@@ -3,7 +3,7 @@
     ViewBag.Title = "Index";
 }
 
-@Html.ActionLink("Tạo mới", "Create", "Blog", new { @area = "Admin" }, new { @class = "btn btn-primary" })
+<h2>Danh sách bài viết</h2> @Html.ActionLink("Tạo mới", "Create", "Blog", new { @area = "Admin" }, new { @class = "btn btn-primary" })
 @if (!Model.Any())
 {
     <h2>Chưa có gì</h2>
@@ -31,7 +31,7 @@ else
 
     }
 
-    <h2>Danh sách bài viết</h2>
+    
     <table class="table border text-nowrap mb-0 align-middle">
         <thead>
         <tr class="text-center">

@@ -95,9 +95,8 @@ namespace DataModels.EF
                 .HasMany(e => e.Episodes)
                 .WithRequired(e => e.Animes)
                 .HasForeignKey(e => e.AnimeId);
-
-
         }
 
+       
     }
 }

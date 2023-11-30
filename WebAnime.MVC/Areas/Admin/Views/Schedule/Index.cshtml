@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ViewModels.Admin.ScheduleViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Quản lý lịch chiếu</h2>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DayOfWeek)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Time)
+            </th>
+
+            <th>Chức năng</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DayOfWeek)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Time)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Sửa", "Update", "Schedule", new { id = ViewBag.AnimeId, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
+                    @Html.ActionLink("Xoá", "Delete", new { id = ViewBag.AnimeId }, new { @class = "btn btn-danger text-decoration-none" })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+else
+{
+    @Html.ActionLink("Thêm mới", "Create", new { id = ViewBag.AnimeId}, new { @class = "text-decoration-none btn btn-primary" })
+    <p>Không có dữ liệu gì</p>
+}
+

@@ -37,20 +37,7 @@
         <th>Chức Năng</th>
     </tr>
     <tbody id="tableBody">
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    <div class="btn-group">
-                        @Html.ActionLink("Cập nhật", "Update", new { id = item.Id }, new { @class = "btn btn-primary" })
-                        @Html.ActionLink("Xoá", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
-                    </div>
-                </td>
-            </tr>
-        }
+      
     </tbody>
 
 

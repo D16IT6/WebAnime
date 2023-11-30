@@ -1827,6 +1827,10 @@
     <Content Include="Areas\Admin\Views\Blog\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Blog\Update.cshtml" />
     <Content Include="Areas\Admin\Views\Blog\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Schedule\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Schedule\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Schedule\Update.cshtml" />
+    <Content Include="Areas\Admin\Views\Schedule\Delete.cshtml" />
     <None Include="Resources\Library\Admin\Jquery\jquery-3.7.1.intellisense.js" />
     <Content Include="Resources\Library\Admin\Jquery\jquery-3.7.1.js" />
     <Content Include="Resources\Library\Admin\Toastr\toastr.js" />
@@ -1862,6 +1866,7 @@
     <Compile Include="Areas\Admin\Controllers\EpisodeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ErrorController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ScheduleController.cs" />
     <Compile Include="Areas\Admin\Controllers\ServerController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\StudioController.cs" />

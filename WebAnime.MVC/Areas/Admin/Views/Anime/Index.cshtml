@@ -38,7 +38,7 @@
 </div>
 @using (Html.BeginForm())
 {
-    <div class="row mb-3 justify-content-center">
+    <div class="row mb-3 my-3">
         <label class="col-form-label col-auto" for="searchTitle">Tiêu đề</label>
         <div class="col-3">
             <input type="text" name="searchTitle" id="searchTitle" value="" class="form-control" />
@@ -47,10 +47,13 @@
             <button type="button" class="btn btn-info btnSearch">Tìm kiếm</button>
         </div>
         <label class="col-form-label col-auto" for="pageNumber">Trang</label>
-
-        <div class="col-2">
-            <input type="number" name="pageNumber" id="pageNumber" class="form-control" min="1" max="10" value="1" />
+  
+        <button type="button" class="btn btn-info col-1" id="btnPrevious">Prev</button>
+        <div class=" col-1 ">
+            <input type="number" name="pageNumber" id="pageNumber" value="0" class="form-control text-center " />
         </div>
+        <button type="button" class="btn btn-info col-1 " id="btnNext">Next</button>
+       
 
     </div>
 }
@@ -83,46 +86,14 @@
             <th>
                 Chức năng
             </th>
+            <th>
+                Tập và Lịch
+            </th>
         </tr>
     </thead>
 
     <tbody id="tableBody">
-        @*@foreach (var anime in Model)
-            {
-                <tr>
-                    <td>@anime.Title</td>
-                    <td>@anime.OriginalTitle</td>
-                    <td>@anime.Duration phút</td>
-                    <td>@anime.TotalEpisodes</td>
-                    <td>
-                        <button class="btn me-1 mb-1 btn-light-primary text-primary btn-lg px-4 fs-4 btnShowSynopsis"
-                                data-bs-toggle="modal"
-                                data-bs-target="#btn-anime-synopsis"
-                                data-synopsis-html="@anime.Synopsis">
-                            Xem
-                        </button>
-                    </td>
-                    <td>
-                        @if (anime.Release != null)
-                        {
-                            @anime.Release.Value.ToShortDateString()
-                        }
-                        else
-                        {
-                            <text>Không rõ</text>
-                        }
-                    </td>
-                    <td>@GetCategories(categoryList, anime.CategoriesId)</td>
-
-                    <td>
-                        <div class="btn-group w-100">
-                            @Html.ActionLink("Sửa", "Update", "Anime", new { id = anime.Id, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
-                            @Html.ActionLink("Tập", "Index", "Episode", new { animeId = anime.Id, serverId = firstServerId, area = "Admin" }, new { @class = "btn btn-info text-white" })
-                            @Html.ActionLink("Xoá", "Delete", new { id = anime.Id }, new { @class = "btn btn-danger text-decoration-none" })
-                        </div>
-                    </td>
-                </tr>
-            }*@
+       
     </tbody>
 </table>
 <div>
@@ -163,7 +134,7 @@
 {
     <script>
         const pageSize = 3;
-
+        var totalPage = 0;
         fetchData('', 1, pageSize);
 
         function fetchData(searchTitle, pageNumber, pageSize, isChangeNumeric = true) {
@@ -189,6 +160,7 @@
                         toastr.warning('Không tìm thấy dữ liệu', 'Cảnh báo');
                     }
                     dumpData(response.data);
+                    totalPage = response.TotalPages
                     if (isChangeNumeric === true)
                         changeNumeric(parseInt(response.TotalPages));
 
@@ -196,7 +168,7 @@
             });
         }
         function changeNumeric(totalPages) {
-            console.log('change numeric');
+       
             //if (totalPages <= 0) return;
             const numberic = $(`#pageNumber`);
             const minPage = totalPages <= 0 ? totalPages : 1;
@@ -231,11 +203,17 @@
                         <div class="btn-group w-100">
                         <a href="@Url.Action("Update", "Anime", new { area = "Admin" })/${item.Id}" class = "btn btn-primary text-decoration-none">Sửa</a>
 
-                        <a href="@Url.Action("Index", "Episode", new { area = "Admin" })?animeId=${item.Id}&serverId=@firstServerId" class="btn btn-info text-white">Tập</a>
+                        
 
                         <a href="@Url.Action("Delete", "Anime", new { area = "Admin" })/${item.Id}" class = "btn btn-danger text-decoration-none">Xóa</a>
 
                     </td>
+                     <td>
+                     <div class="btn-group w-100">                  
+                     <a href="@Url.Action("Index", "Episode", new { area = "Admin" })?animeId=${item.Id}&serverId=@firstServerId" class="btn btn-info text-white">Tập</a>
+
+                     <a href="@Url.Action("Index", "Schedule", new { area = "Admin" })?animeId=${item.Id}" class="btn btn-success text-decoration-none">Lịch </a>
+                     </td>
                 </tr>`;
 
                 tableBody.append(html);
@@ -264,6 +242,23 @@
             const searchTitle = $(`#searchTitle`).val();
             console.log('search: ' + searchTitle);
             fetchData(searchTitle, pageNumber, pageSize,false);
+        })
+        $(`#btnPrevious`).click(function () {
+            var currentPage = $(`#pageNumber`).val();
+            if (currentPage > 1) {
+                currentPage--;
+                $(`#pageNumber`).val(currentPage)
+                fetchData($('#searchTitle').val(), currentPage, pageSize, false);
+            }
+        })
+        $(`#btnNext`).click(function () {
+            var currentPage = $(`#pageNumber`).val();
+            if (currentPage < totalPage) {
+                currentPage++;
+                $(`#pageNumber`).val(currentPage)
+           
+                fetchData($('#searchTitle').val(), currentPage, pageSize, false);
+            }
         })
     </script>
 }

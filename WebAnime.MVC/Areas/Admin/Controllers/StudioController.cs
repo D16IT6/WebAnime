@@ -41,7 +41,6 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 var studio = _mapper.Map<Studios>(model);
                 studio.CreatedBy = User.Identity.GetUserId<int>();
                 if (await _studioRepository.Create(studio))

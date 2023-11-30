@@ -8,16 +8,14 @@ namespace WebAnime.MVC.Controllers
     public class HomeController : Controller
     {
         private readonly IAgeRatingRepository _ageRatingRepository;
-        private readonly IAnimeRepository _animeRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ITypeRepository _typeRepository;
         private readonly ICountryRepository _countryRepository;
         private readonly IStatusRepository _statusRepository;
 
-        public HomeController(IAgeRatingRepository ageRatingRepository, IAnimeRepository animeRepository, ICategoryRepository categoryRepository, ITypeRepository typeRepository, ICountryRepository countryRepository, IStatusRepository statusRepository)
+        public HomeController(IAgeRatingRepository ageRatingRepository, ICategoryRepository categoryRepository, ITypeRepository typeRepository, ICountryRepository countryRepository, IStatusRepository statusRepository)
         {
             _ageRatingRepository = ageRatingRepository;
-            _animeRepository = animeRepository;
             _categoryRepository = categoryRepository;
             _typeRepository = typeRepository;
             _countryRepository = countryRepository;

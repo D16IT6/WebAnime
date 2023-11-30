@@ -12,9 +12,9 @@ namespace WebAnime.MVC.Components
         {
             var user = context.HttpContext.User;
             if (user.Identity.IsAuthenticated &&
-                (user.IsInRole(AdminRoleName) || user.IsInRole(ManagerRoleName))
-                )
+                (user.IsInRole(AdminRoleName) || user.IsInRole(ManagerRoleName)))
             {
+
             }
             else
             {

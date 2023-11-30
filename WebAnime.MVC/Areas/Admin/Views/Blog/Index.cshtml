@@ -238,6 +238,7 @@ else
             fetchData(searchTitle,pageNumber,pageSize)
         })
         $(`#pageNumber`).change(function () {
+            console.log('a')
             const current = $(this)
             if (current.val() > totalPage) {
                 current.val(totalPage)
@@ -254,7 +255,8 @@ else
             var currentPage = $(`#pageNumber`).val();
             if (currentPage > 1) {
                 currentPage--;
-                $(`#pageNumber`).val(currentPage).change()    
+                $(`#pageNumber`).val(currentPage)
+                fetchData($('#searchTitle').val(), currentPage, pageSize, false);
             }
                   
         })
@@ -262,7 +264,8 @@ else
             var currentPage = $(`#pageNumber`).val();
             if (currentPage < totalPage) {
                 currentPage++;
-                $(`#pageNumber`).val(currentPage).change()
+                $(`#pageNumber`).val(currentPage)
+                fetchData($('#searchTitle').val(), currentPage, pageSize, false);
             }
         })
     </script>

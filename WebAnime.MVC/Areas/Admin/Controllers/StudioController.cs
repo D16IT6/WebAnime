@@ -3,6 +3,7 @@ using DataModels.EF;
 using DataModels.Repository.Interface;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ViewModels.Admin;
@@ -102,6 +103,27 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             }
             ModelState.AddModelError(string.Empty, @"Lỗi không xoá được, vui lòng thử lại");
             return View(); ;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetPaging(string searchName, int pageNumber, int pageSize)
+        {
+            var searchResult = await _studioRepository.GetPaging(searchName, pageSize, pageNumber);
+
+            var result = searchResult.Data.Select
+            (x => new
+                {
+                    x.Id,
+                    x.Name,
+                });
+
+            if (result == null)
+                return HttpNotFound();
+            return Json(new
+            {
+                data = result,
+                TotalPages = searchResult.TotalPages
+            }, JsonRequestBehavior.AllowGet);
         }
 
     }

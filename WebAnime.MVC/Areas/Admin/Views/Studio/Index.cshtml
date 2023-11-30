@@ -7,28 +7,163 @@
 <h2>Danh sách studio</h2>
 
 <p>
-    @Html.ActionLink("Tạo studio mới", "Create",null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Tạo studio mới", "Create", null, new { @class = "btn btn-primary" })
 </p>
+@using (Html.BeginForm())
+{
+    <div class="row nb-3 my-3">
+        <label class="col-form-label col-auto">Tìm kiếm </label>
+        <div class="col-3">
+            <input type="text" name="searchName" id="searchName" value="" class="form-control">
+        </div>
+        <div class="col-3">
+            <button type="button" class="btn btn-info" id="btnsearch">Tìm Kiếm</button>
+        </div>
+        <label class="col-form-label col-auto">Trang</label>
+        <button type="button" class="btn btn-info col-1" id="btnPrevious">Prev</button>
+        <div class=" col-1 ">
+            <input type="number" name="pageNumber" id="pageNumber" value="0" class="form-control text-center " />
+        </div>
+        <button type="button" class="btn btn-info col-1 " id="btnNext">Next</button>
+    </div>
+
+
+}
 <table class="table table-hover table-responsive">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        <th></th>
+        <th>Chức Năng</th>
     </tr>
+    <tbody id="tableBody">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @Html.ActionLink("Cập nhật", "Update", new { id = item.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Xoá", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            <div class="btn-group">
-                @Html.ActionLink("Cập nhật", "Update", new { id=item.Id },new{@class="btn btn-primary"})
-                @Html.ActionLink("Xoá", "Delete", new { id=item.Id }, new { @class = "btn btn-danger" })
-            </div>
-        </td>
-    </tr>
-}
 
 </table>
+@section footerJs
+{
+    <script>
+
+    const pageSize = 2;
+
+    var totalPage = 0;
+
+    fetchData('', 1, pageSize);
+
+
+    function fetchData  (searchName, pageNumber, pageSize, isChangeNumber = true)  {
+        const url = "@Url.Action("GetPaging", "Studio")";
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {
+                searchName: searchName,
+                pageNumber: pageNumber,
+                pageSize: pageSize
+            },
+            dataType: "json",
+            success: function (response) {
+                if (response.data.length > 0) {
+                    toastr.success('Lấy dữ liệu thành công', "Thông báo");
+
+                } else {
+                    toastr.warning('Không tìm thấy dữ liệu', 'Cảnh báo');
+                }
+                dumpData(response.data)
+                totalPage = response.TotalPages;
+                console.log(totalPage)
+                if (isChangeNumber)
+                chagePageNumber(parseInt(totalPage))
+            }
+        });
+    }
+
+
+
+    const chagePageNumber = (totalPages) => {
+        const minPage = totalPages <= 0 ? totalPages : 1;
+        const numberic = $(`#pageNumber`)
+        numberic.attr('min', minPage)
+        numberic.attr('max', totalPages)
+        numberic.val(minPage);
+    }
+    const dumpData = (data) => {
+        const tableBody = $(`#tableBody`);
+        tableBody.html('');
+        for (let i = 0; i < data.length; i++)
+        {
+
+            const item = data[i];
+            const html =
+                    `<tr>
+                        <td>
+                            ${item.Name}
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                 <a href="@Url.Action("Update", "Studio", new { area = "Admin" })/${item.Id}" class = "btn btn-primary text-decoration-none">Sửa</a>
+                                 <a href="@Url.Action("Delete", "Studio", new { area = "Admin" })/${item.Id}" class = "btn btn-danger text-decoration-none">Xoá</a>
+                            </div>
+                        </td>
+                    </tr>`;
+
+            tableBody.append(html)
+        }
+
+
+    }
+
+    $(`#btnsearch`).click(() => {
+        const searchName = $(`#searchName`).val();
+        const pageNumber = 1;
+
+        fetchData(searchName,pageNumber,pageSize)
+    })
+    $(`#pageNumber`).change(function () {
+        console.log('a')
+        const current = $(this)
+        if (current.val() > totalPage) {
+            current.val(totalPage)
+        }
+        else if (current.val() < 0) {
+            current.val(1)
+        }
+        const pageNumber = current.val();
+        console.log(pageNumber)
+        const searchName = $(`#searchName`).val();
+        fetchData(searchName, pageNumber, pageSize, false)
+    })
+    $(`#btnPrevious`).click(function () {
+        var currentPage = $(`#pageNumber`).val();
+        if (currentPage > 1) {
+            currentPage--;
+            $(`#pageNumber`).val(currentPage)
+            fetchData($('#searchName').val(), currentPage, pageSize, false);
+        }
+
+    })
+    $(`#btnNext`).click(function () {
+        var currentPage = $(`#pageNumber`).val();
+        if (currentPage < totalPage) {
+            currentPage++;
+            $(`#pageNumber`).val(currentPage)
+            fetchData($('#searchName').val(), currentPage, pageSize, false);
+        }
+    })
+    </script>
+}

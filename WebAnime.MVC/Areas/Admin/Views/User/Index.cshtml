@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<ViewModels.Admin.UserViewModel>
 @{
     ViewBag.Title = "Index";
+  
 }
 
 <div class="row mb-3">
@@ -12,74 +13,206 @@
 
     </div>
 </div>
-
+@using (Html.BeginForm())
+{
+<div class="row nb-3 my-3">
+    <label class="col-form-label col-auto">Tìm kiếm </label>
+    <div class="col-2">
+        <input type="text" name="textSearch" id="textSearch" value="" class="form-control">
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-info" id="btnsearch">Tìm Kiếm</button>
+    </div> 
+    <label class="col-form-label col-auto">Loại tìm kiếm </label>
+    <div class="col-2">
+        <select name="select" id="select" class="form-select">
+            <option value="UserName">Tên Tài khoản</option>
+            <option value="FullName">Tên đầy đủ</option>
+            <option value="Email">Email</option>
+            <option value="PhoneNumber">Số điện thoại</option>
+        </select>
+    </div>
+    <label class="col-form-label col-auto">Trang</label>
+    <button type="button" class="btn btn-info col-1" id="btnPrevious">Prev</button>
+    <div class=" col-1 ">
+        <input type="number" name="pageNumber" id="pageNumber" value="1" class="form-control text-center " />
+    </div>
+    <button type="button" class="btn btn-info col-1 " id="btnNext">Next</button>
+</div>
+}
 <table class="table border text-nowrap mb-0 align-middle">
     <thead>
-        <tr class="text-center">
-            <th>
-               
-                @Html.DisplayNameFor(x => x.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.BirthDay)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.AvatarUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(x => x.RoleList)
-            </th>
+    <tr class="text-center">
+        <th>
+            @Html.DisplayNameFor(x => x.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.BirthDay)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.PhoneNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.AvatarUrl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(x => x.RoleList)
+        </th>
 
-            <th>Chức năng</th>
-        </tr>
+        <th>Chức năng</th>
+    </tr>
     </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>
-                    <span>
-                        @user.UserName
-                    </span>
-                   
-                </td>
-                <td>
-                    @user.FullName
-                </td>
-                <td>
-                    @user.BirthDay.ToString("dd/MM/yyyy")
-                </td>
-                <td>
-                    <span>
-                        @user.Email
-                        </span>
-                    
-                </td>
-                <td>
-                    @user.PhoneNumber
-                </td>
-                <td>
-                    <img src="@user.AvatarUrl" class="rounded-circle ratio ratio-1x1" style="width: 100px;height:100px"/>
-                </td>
-                <td>
-                    @String.Join(",", user.RoleList)
-                </td>
-                <td>
-                    <div class="btn btn-group d-flex justify-content-center">
-                        @Html.ActionLink("Sửa", "Update", new { @id = user.Id }, new { @class = "btn btn-primary" })
-                        @Html.ActionLink("Xóa", "Delete", new { @id = user.Id }, new { @class = "btn btn-danger" })
-                    </div>
-                </td>
-            </tr>
-        }
+    <tbody id="tableBody">
+   
     </tbody>
 </table>
+
+<script>
+    const pageSize = 2;
+    var totalPage = 1;
+    var selectedPropertyName = $(`#select`).val();
+
+    fetchData('', 1, pageSize, selectedPropertyName)
+    function fetchData(textSearch, pageNumber, pageSize, selectedPropertyName ,isChangeNumber = true )  {
+            const url = "@Url.Action("GetPaging","User")";
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    textSearch: textSearch,
+                    pageNumber: pageNumber,
+                    pageSize: pageSize,
+                    selectedPropertyName: selectedPropertyName,
+                },
+                dataType: "json",
+                success: function (x) {
+                    const response = JSON.parse(x);   
+
+                    console.log(response)
+                    if (response.data.length > 0) {
+                        toastr.success('Lấy dữ liệu thành công', "Thông báo");
+
+                    } else {
+                        toastr.warning('Không tìm thấy dữ liệu', 'Cảnh báo');
+                    }             
+                    dumpData(response.data)
+                    totalPage = response.totalPage;                 
+                    if (isChangeNumber)
+                    chagePageNumber(parseInt(totalPage))
+                }
+            });
+    }
+    function dumpData(data) {
+        const tablebody = $(`#tableBody`)
+        tablebody.html('')
+        for (let i = 0; i < data.length; i++)
+        {
+            const item = data[i];       
+            var html =
+                `<tr>
+                         <td>
+                             <span>
+                                 ${item.UserName}
+                             </span>
+
+                         </td>
+                         <td>
+                             ${item.FullName}
+                         </td>
+                         <td>
+                             ${item.BirthDay}
+                         </td>
+                         <td>
+                             <span>
+                                  ${item.Email}
+                             </span>
+
+                         </td>
+                         <td>
+                             ${item.PhoneNumber}
+                         </td>
+                         <td>
+                             <img src=' ${item.AvatarUrl} ' class="rounded-circle ratio ratio-1x1" style="width: 100px;height:100px"/>
+                         </td>
+                         <td>
+                              ${item.RoleList.map(x => x.Name).join(',')}
+                         </td>
+                         <td>
+                             <div class="btn btn-group d-flex justify-content-center">
+                                 <a href="@Url.Action("Update", "User", new { area = "Admin" })/${item.Id}" class = "btn btn-primary text-decoration-none">Sửa</a>
+                                <a href="@Url.Action("Delete", "User", new { area = "Admin" })/${item.Id}" class = "btn btn-danger text-decoration-none">Xoá</a>
+                             </div>
+                         </td>
+                     </tr>`;
+            tablebody.append(html);
+
+        }
+    }
+    function chagePageNumber(totalPPage) {
+
+        const minNumber = totalPage <= 0 ? totalPage : 1;
+        const pageNumber = $(`#pageNumber`)
+        pageNumber.attr('min', minNumber);
+        pageNumber.attr('max', totalPage);
+        pageNumber.val(minNumber);
+    }
+    $(`#btnsearch`).click(function () {
+
+        const textSearch = $(`#textSearch`).val();
+        const pageNumber = 1
+        var selectedPropertyName = $(`#select`).val();
+        fetchData(textSearch, pageNumber, pageSize, selectedPropertyName);
+    })
+    $(`#pageNumber`).change(function () {
+        console.log("a")
+        const current = $(this)
+        if (current.val() < 1)
+            current.val(1)
+        else if (current.val() > totalPage)
+            current.val(totalPage)
+
+        const pageNumber = current.val()
+        const textSearch = $(`#textSearch`).val();
+        var selectedPropertyName = $(`#select`).val();
+        fetchData(textSearch, pageNumber, pageSize, selectedPropertyName,false )
+
+    })
+
+    $(`#btnPrevious`).click(function () {
+        var currentPage = parseInt($(`#pageNumber`).val(), 10);
+        if (!isNaN(currentPage) && currentPage > 1) {
+            currentPage--;
+            $(`#pageNumber`).val(currentPage);
+            var selectedPropertyName = $(`#select`).val();
+            fetchData($('#textSearch').val(), currentPage, pageSize, selectedPropertyName,false);
+        }
+    });
+
+    $(`#btnNext`).click(function () {
+        var currentPage = parseInt($(`#pageNumber`).val(), 10);
+        if (!isNaN(currentPage) && currentPage < totalPage) {
+            currentPage++;
+            $(`#pageNumber`).val(currentPage);
+            var selectedPropertyName = $(`#select`).val();
+            fetchData($('#textSearch').val(), currentPage, pageSize, selectedPropertyName,false);
+        }
+    });
+    $(document).ready(function () {
+        // Bắt sự kiện khi giá trị của dropdown thay đổi
+        $("#select").change(function () {
+            // Lấy giá trị của thuộc tính name được chọn
+            var selectedPropertyName = $(this).val();
+            var currentPage = $(`#pageNumber`).val();
+
+            console.log(selectedPropertyName)
+            // In giá trị ra console (bạn có thể thay đổi thành xử lý khác)
+            fetchData($('#textSearch').val(), currentPage, pageSize, selectedPropertyName,false)
+        });
+    });
+</script>

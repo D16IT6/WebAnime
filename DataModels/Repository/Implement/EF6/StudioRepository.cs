@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using ViewModels.Admin;
 
 namespace DataModels.Repository.Implement.EF6
 {
@@ -80,6 +81,27 @@ namespace DataModels.Repository.Implement.EF6
             {
                 return false;
             }
+        }
+
+        public async Task<Paging<Studios>> GetPaging(string searchName, int pageSize, int pageNumber)
+        {
+            var searchResult = Context.Studios
+                .Where(x =>
+                    (!x.IsDeleted) && (x.Name.Contains(searchName) || (String.IsNullOrEmpty(searchName))));
+
+            var searchShow = searchResult
+                .OrderBy(x => x.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+            var searchCount = await searchResult.CountAsync();
+            var result = new Paging<Studios>()
+            {
+                Data = searchShow,
+                PageSize = pageSize,
+                PageNumber = pageNumber,
+                TotalPages = (int)Math.Ceiling(searchCount * 1.0 / pageSize)
+            };
+            return await Task.FromResult(result);
         }
     }
 }

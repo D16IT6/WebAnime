@@ -11,21 +11,23 @@ namespace WebAnime.MVC.Components
         public void OnAuthentication(AuthenticationContext context)
         {
             var user = context.HttpContext.User;
-            if (user.Identity.IsAuthenticated &&
-                (user.IsInRole(AdminRoleName) || user.IsInRole(ManagerRoleName)))
+            switch (user.Identity.IsAuthenticated)
             {
-
-            }
-            else
-            {
-                context.Result = new HttpUnauthorizedResult();
+                case false:
+                    context.Result = new HttpNotFoundResult();
+                    break;
+                case true when
+                    (user.IsInRole(AdminRoleName) || user.IsInRole(ManagerRoleName)):
+                    break;
+                default:
+                    context.Result = new HttpUnauthorizedResult();
+                    break;
             }
         }
 
         public void OnAuthenticationChallenge(AuthenticationChallengeContext context)
         {
             var returnUrl = context.HttpContext.Request.Url?.AbsolutePath ?? string.Empty;
-
             if (context.Result == null || context.Result is HttpUnauthorizedResult)
             {
                 context.Result = new RedirectToRouteResult(
@@ -35,10 +37,23 @@ namespace WebAnime.MVC.Components
                             action = "NotFound",
                             controller = "Error",
                             area = "Admin",
-                            returnUrl
                         }
                         )
                     );
+            }
+            if (context.Result == null || context.Result is HttpNotFoundResult)
+            {
+                context.Result = new RedirectToRouteResult(
+                    new System.Web.Routing.RouteValueDictionary(
+                        new
+                        {
+                            action = "Login",
+                            controller = "Auth",
+                            area = "Admin",
+                            returnUrl
+                        }
+                    )
+                );
             }
         }
     }

@@ -9,11 +9,9 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Owin.Security.Facebook;
-using Microsoft.Owin.Security.OAuth;
 
 namespace WebAnime.MVC
 {
-
     public class OwinConfig
     {
 

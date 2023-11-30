@@ -1,5 +1,10 @@
 ﻿@{
     Layout = null;
+    var urlBuilder = !User.IsInRole("Admin") && !User.IsInRole("Manager")
+        ? Url.Action("Index", "Home", new { area = "" })
+        : Url.Action("Index", "Home", new { area = "Admin" });
+
+}
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +42,7 @@
                             <img src="~/Resources/Library/Admin/Theme/images/backgrounds/errorimg.svg" alt="" class="img-fluid" width="500">
                             <h1 class="fw-semibold mb-7 fs-9">Opps!!!</h1>
                             <h4 class="fw-semibold mb-7">Trang bạn tìm không thấy rồi!!!</h4>
-                            <a class="btn btn-primary" href="@Url.Action("Index","Home",new{area="Admin"})" role="button">Quay về trang chủ</a>
+                            <a class="btn btn-primary" href="@urlBuilder" role="button">Quay về trang chủ</a>
                         </div>
                     </div>
                 </div>

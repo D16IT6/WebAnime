@@ -45,7 +45,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Create(int id)
         {
             ViewBag.AnimeID = id;
-            return View();
+            return await Task.FromResult(View());
         }
 
         [HttpPost]

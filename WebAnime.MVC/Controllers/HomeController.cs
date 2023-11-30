@@ -9,5 +9,9 @@ namespace WebAnime.MVC.Controllers
         {
             return await Task.FromResult(View());
         }
+        public async Task<ActionResult> Contact()
+        {
+            return await Task.FromResult(View());
+        }
     }
 }

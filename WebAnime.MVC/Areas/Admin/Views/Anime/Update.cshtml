@@ -17,7 +17,7 @@
 
     var releaseDate = Model.Release ?? DateTime.Now;
 
-    var releaseDateBuilder = $"{releaseDate.Year}-{releaseDate.Month.ToString().PadLeft(2,'0')}-{releaseDate.Day}";
+    var releaseDateBuilder = $"{releaseDate.Year}-{releaseDate.Month.ToString().PadLeft(2,'0')}-{releaseDate.Day.ToString().PadLeft(2,'0')}";
 }
 
 <h2>Cập nhật anime</h2>

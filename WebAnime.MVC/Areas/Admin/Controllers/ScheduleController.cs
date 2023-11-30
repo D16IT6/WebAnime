@@ -1,44 +1,37 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using DataModels.EF;
-using DataModels.Repository.Implement.EF6;
 using DataModels.Repository.Interface;
 using Microsoft.AspNet.Identity;
 using ViewModels.Admin;
 using WebAnime.MVC.Components;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
-    //[AdminAreaAuthorize]
+    [AdminAreaAuthorize]
     public class ScheduleController : Controller
     {
-        
+
         private readonly IMapper _mapper;
         private readonly IScheduleRepository _scheduleRepository;
-        private readonly IAnimeRepository _animeRepository;
-    
-        public ScheduleController(IMapper mapper,IScheduleRepository scheduleRepository,IAnimeRepository animeRepository)
+
+        public ScheduleController(IMapper mapper, IScheduleRepository scheduleRepository)
         {
-            _mapper=mapper;
-            _scheduleRepository=scheduleRepository; 
-            _animeRepository=animeRepository;
+            _mapper = mapper;
+            _scheduleRepository = scheduleRepository;
         }
         [HttpGet]
-        public async Task<ActionResult> Index(int animeID)
+        public async Task<ActionResult> Index(int animeId)
         {
             var scheduleList = await _scheduleRepository.GetAll();
-            var test =scheduleList.Where(x => x.Id == animeID).ToList();
-            ViewBag.AnimeId= animeID;
+            var test = scheduleList.Where(x => x.Id == animeId).ToList();
+            ViewBag.AnimeId = animeId;
             var scheduleRepsitoryViewModelList = _mapper.Map<IEnumerable<Schedules>, IEnumerable<ScheduleViewModel>>(test);
-            return View(scheduleRepsitoryViewModelList); 
-            
+            return View(scheduleRepsitoryViewModelList);
+
         }
 
         [HttpGet]
@@ -51,12 +44,12 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ScheduleViewModel model)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 int animeId = model.Id;
                 var entity = _mapper.Map<Schedules>(model);
                 entity.ModifiedBy = User.Identity.GetUserId<int>();
-                entity.Id=animeId;
+                entity.Id = animeId;
                 if (await _scheduleRepository.Create(entity))
                 {
                     TempData[AlertConstants.SuccessHeader] = "Lịch mới";
@@ -65,15 +58,16 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Anime");
                 }
                 TempData[AlertConstants.ErrorMessage] = "Lỗi thêm mới, vui lòng thử lại";
-                ModelState.AddModelError(string.Empty, @"Lỗi thêm mới, vui lòng thử lại");
-                 }
-                 TempData[AlertConstants.ErrorMessage] = "Lỗi đầu vào, vui lòng thử lại";
-            ModelState.AddModelError(string.Empty, @"Lỗi đầu vào, vui lòng kiểm tra lại");
+                ModelState.AddModelError(string.Empty, "Lỗi thêm mới, vui lòng thử lại");
+            }
+            TempData[AlertConstants.ErrorMessage] = "Lỗi đầu vào, vui lòng thử lại";
+            ModelState.AddModelError(string.Empty, "Lỗi đầu vào, vui lòng kiểm tra lại");
             return View();
         }
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
+            ViewBag.AnimeID = id;
             var update = _mapper.Map<ScheduleViewModel>(await _scheduleRepository.GetById(id));
             if (update == null)
                 return HttpNotFound();
@@ -90,7 +84,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 {
                     TempData[AlertConstants.SuccessHeader] = "Lịch mới";
                     TempData[AlertConstants.SuccessMessage] = "Sửa lịch chiếu thành công";
-                    return RedirectToAction("Index","Schedule",new{ animeId = entity.Id});
+                    return RedirectToAction("Index", "Schedule", new { animeId = entity.Id });
                 }
                 TempData[AlertConstants.ErrorHeader] = "Lỗi";
                 TempData[AlertConstants.ErrorMessage] = "Sửa không thành công";
@@ -103,15 +97,16 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            var delete = _mapper.Map<ScheduleViewModel>(await _scheduleRepository.GetById(id)) ;
-            if(delete == null) return HttpNotFound();
+            ViewBag.AnimeID = id;
+            var delete = _mapper.Map<ScheduleViewModel>(await _scheduleRepository.GetById(id));
+            if (delete == null) return HttpNotFound();
             return View(delete);
         }
         [HttpPost]
         public async Task<ActionResult> Delete(ScheduleViewModel model)
         {
             int deletedBy = User.Identity.GetUserId<int>();
-            if (await _scheduleRepository.Delete(model.Id,deletedBy))
+            if (await _scheduleRepository.Delete(model.Id, deletedBy))
             {
                 TempData[AlertConstants.SuccessHeader] = "Xoá";
                 TempData[AlertConstants.SuccessMessage] = "Xoá lịch chiếu thành công";

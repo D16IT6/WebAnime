@@ -8,6 +8,6 @@ namespace DataModels.Repository.Interface
     public interface IBlogRepository : IRepositoryBase<Blogs, int>
     {
         Task<BlogViewModel> GetBlogViewModel(int blogId);
-        Task<Paging<Blogs>> GetPaping(string searchTitle,int pageSize,int pageNumber);
+        Task<Paging<Blogs>> GetPaging(string searchTitle,int pageSize,int pageNumber);
     }
 }

@@ -6,7 +6,9 @@ using AutoMapper;
 using Dapper;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using ViewModels.Admin;
 using ViewModels.Client;
+using BlogViewModel = ViewModels.Client.BlogViewModel;
 
 namespace DataModels.Repository.Implement.Dapper
 {
@@ -136,6 +138,11 @@ namespace DataModels.Repository.Implement.Dapper
                 );
             result.BlogComments = await GetBlogCommentViewModel(blogId);
             return result;
+        }
+
+        public Task<Paging<Blogs>> GetPaging(string searchTitle, int pageSize, int pageNumber)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task<IEnumerable<BlogCommentViewModel>> GetBlogCommentViewModel(int blogId)

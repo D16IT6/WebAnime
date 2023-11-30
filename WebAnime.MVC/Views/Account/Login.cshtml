@@ -9,9 +9,10 @@
             <div class="col-lg-6">
                 <div class="login__form">
                     <h3>Đăng nhập</h3>
+                    @Html.ValidationSummary(true, "", new { @class = "validation--summary" })
+
                     @using (Html.BeginForm())
                     {
-                        @Html.ValidationSummary(true, "", new { @class = "validation--summary" })
                         <div class="input__item">
                             @Html.TextBoxFor(x => x.UserName, new { @placeholder = "Tên đăng nhập" })
                             <span class="icon_profile"></span>

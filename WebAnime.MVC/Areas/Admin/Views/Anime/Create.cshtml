@@ -195,8 +195,7 @@
             $(`#${id}`).val(selectedIds);
         }
 
-        $(`#btnCreate`).click(function (e) {
-            e.preventDefault();
+        $(`#btnCreate`).click(function () {
             const inputHtml = $(`#SynopsisCkEditor`).val();
             $(`#Synopsis`).val(inputHtml);
 

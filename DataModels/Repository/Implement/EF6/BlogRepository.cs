@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using ViewModels.Admin;
 using ViewModels.Client;
+using BlogViewModel = ViewModels.Admin.BlogViewModel;
 
 namespace DataModels.Repository.Implement.EF6
 {
@@ -104,15 +106,34 @@ namespace DataModels.Repository.Implement.EF6
                 return false;
             }
         }
+        public async Task<Paging<Blogs>> GetPaging(string searchTitile, int pageSize, int pageNumber)
+        {
+            var searchResult = Context.Blogs
+                .Where(x =>
+                    (!x.IsDeleted) && (x.Title.Contains(searchTitile) || (String.IsNullOrEmpty(searchTitile))));
 
-        public async Task<BlogViewModel> GetBlogViewModel(int blogId)
+            var searchShow = searchResult
+                .OrderBy(x => x.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+            var searchCount = await searchResult.CountAsync();
+            var result = new Paging<Blogs>()
+            {
+                Data = searchShow,
+                PageSize = pageSize,
+                PageNumber = pageNumber,
+                TotalPages = (int)Math.Ceiling(searchCount * 1.0 / pageSize)
+            };
+            return await Task.FromResult(result);
+        }
+        public async Task<ViewModels.Client.BlogViewModel> GetBlogViewModel(int blogId)
         {
             var result = await Context.Blogs
                 .Include(blogs => blogs.BlogCategories)
                 .Include(blogs => blogs.BlogComments.Select(blogComments => blogComments.User))
                 .FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == blogId);
             if (result == null) return null;
-            return new BlogViewModel()
+            return new ViewModels.Client.BlogViewModel()
             {
                 Id = result.Id,
                 CreatedBy = result.CreatedBy,

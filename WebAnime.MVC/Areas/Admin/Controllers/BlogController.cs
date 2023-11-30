@@ -118,7 +118,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> GetPaging(string searchTitle, int pageNumber, int pageSize)
         {
-            var queryResult = await _blogRepository.GetPaping(searchTitle, pageSize, pageNumber);
+            var queryResult = await _blogRepository.GetPaging(searchTitle, pageSize, pageNumber);
             var result = queryResult.Data
                 .Select(
                     x => new

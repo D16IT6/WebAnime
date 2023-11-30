@@ -131,7 +131,6 @@ namespace WebAnime.MVC.Controllers
                 Json(new
                     {
                         data = result.Data,
-                        result.PageCount,
                         result.TotalPages,
                         result.PageSize,
                         result.PageNumber

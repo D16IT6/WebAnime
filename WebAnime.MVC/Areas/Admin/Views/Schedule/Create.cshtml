@@ -8,10 +8,10 @@
 
 <h2>@animeId</h2>
 
-@using (Html.BeginForm("Create","Schedule",FormMethod.Post,new{id="formCreateSchedule"})) 
+@using (Html.BeginForm("Create", "Schedule", FormMethod.Post, new { id = "formCreateSchedule" }))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>ScheduleViewModel</h4>
         <hr />
@@ -41,5 +41,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index",new { area="Admin", animeId },new{@class="my-3"})
 </div>

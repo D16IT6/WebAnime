@@ -61,7 +61,7 @@ namespace WebAnime.MVC.Controllers
             if (user == null) return await Task.FromResult(new HttpNotFoundResult("cannot found account"));
 
             var uploadImage = Request.Files["AvatarFile"];
-            if (uploadImage is { ContentLength: > 0 } && user.AvatarUrl.Equals(CommonConstants.DefaultAvatarUrl))
+            if (uploadImage is { ContentLength: > 0 })
             {
                 model.AvatarUrl = HandleFile(uploadImage);
             }
@@ -185,6 +185,7 @@ namespace WebAnime.MVC.Controllers
 
                     if (loginFailCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
                     {
+                        TempData[AlertConstants.ErrorMessage] = "Không thể đăng nhập";
                         ModelState.AddModelError("FakeLogin", @"Bạn đang cố đăng nhập vì điều gì?");
                         ModelState.AddModelError("Hint", @"Chưa có tài khoản? Hãy tạo tài khoản mới");
                         ModelState.AddModelError("AdminFb", @"Liên hệ facebook: https://facebook.com/vuthemanh1707");
@@ -192,6 +193,7 @@ namespace WebAnime.MVC.Controllers
 
                         return View(model);
                     }
+                    TempData[AlertConstants.ErrorMessage] = "Không thể đăng nhập";
                     ModelState.AddModelError(string.Empty,
                         $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - loginFailCount} lượt)");
 
@@ -223,8 +225,9 @@ namespace WebAnime.MVC.Controllers
                         return RedirectToLocal(returnUrl);
 
                     case SignInStatus.LockedOut:
+                        TempData[AlertConstants.ErrorMessage] = $"Tài khoản của bạn đã bị khóa do đăng nhập sai quá {AuthConstants.MaxFailedAccessAttemptsBeforeLockout} lần hoặc bị admin khóa.";
                         ModelState.AddModelError("LockoutMessage",
-                            $@"Tài khoản của bạn đã bị khóa do đăng nhập sai quá {AuthConstants.MaxFailedAccessAttemptsBeforeLockout} lần hoặc bị admin khóa.");
+                            $"Tài khoản của bạn đã bị khóa do đăng nhập sai quá {AuthConstants.MaxFailedAccessAttemptsBeforeLockout} lần hoặc bị admin khóa.");
                         ModelState.AddModelError("LogoutHint", $@"Vui lòng thử lại sau {AuthConstants.LockoutMinutes} phút hoặc liên hệ admin.");
                         return View(model);
 
@@ -233,6 +236,7 @@ namespace WebAnime.MVC.Controllers
 
                     case SignInStatus.Failure:
                     default:
+                        TempData[AlertConstants.ErrorMessage] = $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - user.AccessFailedCount} lượt)";
                         ModelState.AddModelError(string.Empty,
                             $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - user.AccessFailedCount} lượt)");
                         return View(model);

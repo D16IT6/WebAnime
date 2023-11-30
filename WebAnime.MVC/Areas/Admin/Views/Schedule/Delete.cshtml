@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "Delete";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int animeId = ViewBag.AnimeId ?? 0;
+
 }
 
 <h2>Xoá dữ liệu</h2>
@@ -39,3 +41,4 @@
         </div>
     }
 </div>
+@Html.ActionLink("Back to List", "Index",new { area="Admin", animeId },new{@class="my-3"})

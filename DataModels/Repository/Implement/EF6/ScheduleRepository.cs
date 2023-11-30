@@ -32,10 +32,24 @@ namespace DataModels.Repository.Implement.EF6
         {
             try
             {
-                entity.ModifiedDate = entity.CreatedDate = DateTime.Now;
-                Context.Schedules.Add(entity);
+                var prevEntity = Context.Schedules.FirstOrDefault(s => s.Id == entity.Id);
+                if (prevEntity == null)
+                {
+                    entity.ModifiedDate = entity.CreatedDate = DateTime.Now;
+                    Context.Schedules.Add(entity);
+                    await Context.SaveChangesAsync();
+                    return true;
+                }
+
+                prevEntity.ModifiedDate = DateTime.Now;
+                prevEntity.DayOfWeek = entity.DayOfWeek;
+                prevEntity.Time = entity.Time;
+                prevEntity.ModifiedBy = entity.ModifiedBy;
+                prevEntity.IsDeleted = false;
+
                 await Context.SaveChangesAsync();
                 return true;
+
             }
             catch
             {

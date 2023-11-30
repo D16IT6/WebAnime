@@ -19,33 +19,33 @@
     var typeList = new List<Types>() { new() { Id = 0, Name = "Tất cả" } };
     typeList.AddRange(ViewBag.Type as IEnumerable<Types> ?? Array.Empty<Types>());
 
-    var ratingHigherList = new List<int>() { 1, 2, 3, 4 };
+    var ratingHigherList = new List<int>() { 0, 1, 2, 3, 4 };
 
-    var viewCountHigherList = new List<int>() { 1, 5, 10, 20, 50, 100 };
+    var viewCountHigherList = new List<int>() { 0, 1, 5, 10, 20, 50, 100 };
 
 }
 
 <h2>Tìm kiếm</h2>
 
-<div class="row">
+<div class="row mb-2 justify-content-lg-center">
     @Html.LabelFor(x => x.SearchTitle, new { @class = "col-form-label col-lg-2" })
-    <div class="col-lg-3">
+    <div class="col-lg-6">
         @Html.TextBoxFor(x => x.SearchTitle, new { @class = "form-control" })
     </div>
 
-    @Html.LabelFor(x => x.CategoryIds,new {@class="col-form-label col-lg-2"})
-    <div class="col-lg-3">
-        @Html.ListBoxFor(x => x.CategoryIds, new MultiSelectList(categoriesList, "Id", "Name"), new { @class = "form-control" })
-</div>
+    @*@Html.LabelFor(x => x.CategoryIds, new { @class = "col-form-label col-lg-2" })
+        <div class="col-lg-3">
+            @Html.ListBoxFor(x => x.CategoryIds, new MultiSelectList(categoriesList, "Id", "Name"), new { @class = "form-control" })
+        </div>*@
 </div>
 
-<div class="row">
+<div class="row mb-2">
     <div class="col-lg-3">
         @Html.LabelFor(x => x.TypeId)
         @Html.DropDownListFor(x => x.TypeId, new SelectList(typeList, "Id", "Name"), new { @class = "form-control" })
     </div>
 
-    <div class="col">
+    <div class="col-lg-6">
         @Html.LabelFor(x => x.CategoryIds)
         @Html.ListBoxFor(x => x.CategoryIds, new MultiSelectList(categoriesList, "Id", "Name"))
     </div>
@@ -76,15 +76,15 @@
         @Html.DropDownListFor(x => x.ViewCountHigher, new SelectList(viewCountHigherList), new { @class = "form-control" })
     </div>
 
-    <div class="col-lg-3">
+    <div class="col-lg-3 my-2">
         <button type="submit" id="btnSearch" class="btn btn-primary">Tìm kiếm</button>
     </div>
 </div>
 
 
-<div class="row justify-content-center">
+<div class="row mb-2 my-3 justify-content-center">
     <div class="col-8">
-        <div class="row searchAnime">
+        <div class="row mb-2 searchAnime">
             <h3>Dữ liệu tìm thấy sẽ ở đây</h3>
         </div>
     </div>
@@ -101,6 +101,22 @@
         .current, .option {
             color: black !important;
         }
+
+        .ms-options-wrap button {
+            border-color: rgb(222, 226, 230);
+        }
+
+            .ms-options-wrap button span {
+                font-size: 16px;
+            }
+
+        .ms-options-wrap > button:after {
+            right: 15px;
+        }
+
+        .ms-options-wrap > .ms-options > ul label, .ms-options-wrap button span {
+            color: black;
+        }
     </style>
 
 }
@@ -113,9 +129,14 @@
         $('select#CategoryIds[multiple]').multiselect({
             columns: 4,
             texts: {
-                placeholder: 'Select options'
+                placeholder: 'Chọn thể loại',
+                attributes: {
+                    custom1: 'value1',
+                    custom2: 'value2'
+                }
             }
         });
+
         function dumpHtml(data) {
             const searchAnime = $(`.searchAnime`);
             searchAnime.html('');
@@ -137,14 +158,14 @@
                                 <li>${item.Status}</li>
                                 <li>${item.Type}</li>
                             </ul>
-                            <h5><a href="#">${item.Title}</a></h5>
+                            <h5><a href="@Url.Action("Detail", "Anime")/${item.Id}">${item.Title}</a></h5>
                         </div>
                     </div>
                 </div>`;
                 searchAnime.append(html);
 
             }
-            $('.set-bg').each(function () {
+            $('.set-bg').each(function() {
                 var bg = $(this).data('setbg');
                 $(this).css('background-image', 'url(' + bg + ')');
             });
@@ -156,6 +177,7 @@
                 url: "@Url.Action("AdvancedSearch", "Anime")",
                 data: model,
                 dataType: "json",
+                traditional: true,
                 success: function(response) {
                     console.log(response);
                     dumpHtml(response.data);
@@ -167,6 +189,7 @@
             const searchTitle = $(`#SearchTitle`).val();
             const typeId = $(`#TypeId`).val();
             const categoryIds = $(`#CategoryIds`).val();
+            console.log(categoryIds);
             const statusId = $(`#StatusId`).val();
             const countryId = $(`#CountryId`).val();
             const ageRatingId = $(`#AgeRatingId`).val();
@@ -184,7 +207,14 @@
                 PageNumber: 1,
                 PageSize: 9
             };
+            console.log(model);
             sendRequest(model);
         });
+        const listMultiSelect = document.querySelectorAll(`.ms-options-wrap button`);
+        for (const item of listMultiSelect) {
+            item.classList.add(`form-control`);
+            item.classList.add(`border-1`);
+            item.classList.add(`p-2`);
+        }
     </script>
 }

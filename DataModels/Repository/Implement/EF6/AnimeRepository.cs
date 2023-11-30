@@ -318,14 +318,15 @@ namespace DataModels.Repository.Implement.EF6
 
         public async Task<Paging<Animes>> GetPaging(string searchTitle, int pageNumber, int pageSize)
         {
+            searchTitle = searchTitle.ToLower();
             var searchResult = Context.Animes
-                .Where(x => (x.Title.Contains(searchTitle) || String.IsNullOrEmpty(searchTitle)) && !x.IsDeleted)
+                .Where(x => (x.Title.ToLower().Contains(searchTitle) || String.IsNullOrEmpty(searchTitle)) && !x.IsDeleted)
                 .OrderBy(x => x.Title)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize);
 
             var searchCount = await Context.Animes
-                .Where(x => (x.Title.Contains(searchTitle) || String.IsNullOrEmpty(searchTitle)) && !x.IsDeleted)
+                .Where(x => (x.Title.ToLower().Contains(searchTitle) || String.IsNullOrEmpty(searchTitle)) && !x.IsDeleted)
                 .CountAsync();
 
             var result = new Paging<Animes>()
@@ -341,29 +342,30 @@ namespace DataModels.Repository.Implement.EF6
 
         public async Task<Paging<AnimeItemViewModel>> AdvanceSearch(AnimeSearchViewModel model)
         {
+            model.SearchTitle ??= "";
+            model.SearchTitle = model.SearchTitle.ToLower();
             int length = model.CategoryIds.Length;
             var result = Context.Animes
-                .Where(x =>
-                    !x.IsDeleted &&
-                    (x.Title.ToLower().Contains(model.SearchTitle.ToLower()) ||
-                     String.IsNullOrEmpty(model.SearchTitle)) &&
-                    (x.OriginalTitle.ToLower().Contains(model.SearchTitle.ToLower()) ||
-                     String.IsNullOrEmpty(model.SearchTitle)) &&
-                    (x.TypeId == model.TypeId || model.TypeId == 0) &&
-                    (x.CountryId == model.CountryId || model.CountryId == 0) &&
-                    (x.StatusId == model.StatusId || model.StatusId == 0) &&
-                    (x.AgeRatingId == model.AgeRatingId || model.AgeRatingId == 0) &&
-                    (model.CategoryIds.Except(x.Categories
-                        .Where(c => !c.IsDeleted)
-                        .Select(c => c.Id)).Count() != length || length == 0) &&
-                    (model.RatingHigher <=
-                     (x.Ratings.Any() ? x.Ratings.Sum(r => r.RatePoint) * 1.0 / x.Ratings.Count() : 1) ||
-                     model.RatingHigher == 0)
-                    && (model.ViewCountHigher <= x.ViewCount || model.ViewCountHigher == 0)
+                .Where((x) =>
+                            !x.IsDeleted &&
+                            ((x.Title.ToLower().Contains(model.SearchTitle) || String.IsNullOrEmpty(model.SearchTitle)) ||
+                            (x.OriginalTitle.ToLower().Contains(model.SearchTitle) || String.IsNullOrEmpty(model.SearchTitle))) &&
+                            (x.TypeId == model.TypeId || model.TypeId == 0) &&
+                            (x.CountryId == model.CountryId || model.CountryId == 0) &&
+                            (x.StatusId == model.StatusId || model.StatusId == 0) &&
+                            (x.AgeRatingId == model.AgeRatingId || model.AgeRatingId == 0) &&
+                            (model.CategoryIds.Except(
+                                x.Categories
+                                .Where(c => !c.IsDeleted)
+                                .Select(c => c.Id)).Count() != length || length == 0) &&
+                            (model.RatingHigher <=
+                             (x.Ratings.Any() ? x.Ratings.Sum(r => r.RatePoint) * 1.0 / x.Ratings.Count() : 1) ||
+                             model.RatingHigher == 0)
+                            && (model.ViewCountHigher <= x.ViewCount || model.ViewCountHigher == 0)
                 )
                 .OrderByDescending(x => x.ViewCount);
 
-
+            //var totalPages = result.Count();
             var totalPages = await result.CountAsync();
             return await Task.FromResult(new Paging<AnimeItemViewModel>()
             {

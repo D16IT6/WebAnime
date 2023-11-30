@@ -32,8 +32,8 @@ namespace WebAnime.MVC.Components
                     new System.Web.Routing.RouteValueDictionary(
                         new
                         {
-                            action = "Login",
-                            controller = "Auth",
+                            action = "NotFound",
+                            controller = "Error",
                             area = "Admin",
                             returnUrl
                         }

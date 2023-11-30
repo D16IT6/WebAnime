@@ -44,6 +44,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             }
             return await Task.FromResult<ActionResult>(View());
         }
+
         [HttpPost]
         public async Task<ActionResult> Login(LoginViewModel model)
         {

@@ -544,6 +544,7 @@ namespace WebAnime.MVC.Controllers
             var loginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
+                TempData[AlertConstants.ErrorMessage] = "Lỗi đăng nhập bên thứ 3, vui lòng thử lại";
                 return RedirectToAction("Login");
             }
 

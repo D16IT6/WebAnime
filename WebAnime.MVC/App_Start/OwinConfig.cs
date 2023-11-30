@@ -19,7 +19,6 @@ namespace WebAnime.MVC
 
         public static void AuthConfig(IAppBuilder app)
         {
-            //tạo middleware xác thực sử dụng cookie
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
@@ -35,8 +34,6 @@ namespace WebAnime.MVC
                             getUserIdCallback: (id) => (id.GetUserId<int>()))
                 }
             });
-
-
 
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 

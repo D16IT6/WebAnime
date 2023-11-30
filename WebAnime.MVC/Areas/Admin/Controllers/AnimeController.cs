@@ -3,12 +3,10 @@ using AutoMapper;
 using DataModels.EF;
 using DataModels.Repository.Interface;
 using Microsoft.AspNet.Identity;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using ViewModels.Admin;
-using ViewModels.Client;
 using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers

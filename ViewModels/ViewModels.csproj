@@ -76,6 +76,7 @@
     <Compile Include="Admin\LoginViewModel.cs" />
     <Compile Include="Admin\Paging.cs" />
     <Compile Include="Admin\ResetPasswordViewModel.cs" />
+    <Compile Include="Admin\ScheduleViewModel.cs" />
     <Compile Include="Admin\ServerViewModel.cs" />
     <Compile Include="Admin\StudioViewModel.cs" />
     <Compile Include="Admin\UserViewModel.cs" />

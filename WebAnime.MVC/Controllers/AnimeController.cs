@@ -24,10 +24,6 @@ namespace WebAnime.MVC.Controllers
             _mapper = mapper;
         }
 
-        public async Task<ActionResult> Index()
-        {
-            return await Task.FromResult(View());
-        }
 
         public async Task<ActionResult> Detail(int id)
         {
@@ -39,7 +35,7 @@ namespace WebAnime.MVC.Controllers
         public async Task<ActionResult> TrendingPartial()
         {
             var animeTrending = await _animeRepository.GetAnimeTrending();
-            return await Task.FromResult(PartialView(animeTrending));
+            return PartialView(animeTrending);
         }
 
         [ChildActionOnly]

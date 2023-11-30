@@ -97,7 +97,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="@Url.Action("Index","Home",new{@area="Admin"})" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-aperture"></i>
+                                    <i class="ti ti-home"></i>
                                 </span>
                                 <span class="hide-menu">Trang chủ</span>
                             </a>
@@ -105,7 +105,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="@Url.Action("Index","User",new{@area="Admin"})" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-aperture"></i>
+                                    <i class="ti ti-user"></i>
                                 </span>
                                 <span class="hide-menu">Người dùng</span>
                             </a>
@@ -113,7 +113,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="@Url.Action("Index","Anime",new{@area="Admin"})" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-aperture"></i>
+                                    <i class="ti ti-brand-youtube"></i>
                                 </span>
                                 <span class="hide-menu">Anime</span>
                             </a>
@@ -122,7 +122,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="@Url.Action("Index","Blog",new{@area="Admin"})" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-aperture"></i>
+                                    <i class="ti ti-brand-disqus"></i>
                                 </span>
                                 <span class="hide-menu">Bài viết</span>
                             </a>
@@ -131,7 +131,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="@Url.Action("Index","Country",new{@area="Admin"})" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-aperture"></i>
+                                    <i class="ti ti-flag"></i>
                                 </span>
                                 <span class="hide-menu">Quốc gia</span>
                             </a>
@@ -139,7 +139,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="@Url.Action("Index","Server",new{@area="Admin"})" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-aperture"></i>
+                                    <i class="ti ti-server-bolt"></i>
                                 </span>
                                 <span class="hide-menu">Server</span>
                             </a>
@@ -147,7 +147,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="@Url.Action("Index","Studio",new{@area="Admin"})" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-aperture"></i>
+                                    <i class="ti ti-device-tv"></i>
                                 </span>
                                 <span class="hide-menu">Studio</span>
                             </a>
@@ -155,11 +155,11 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="sidebar-item">
-                                <a class="sidebar-link" href="@Url.Action("Logout","Auth",new{@area="Admin"})" aria-expanded="false">
+                                <a id ="logout"class="sidebar-link text-decoration-none" href="@Url.Action("Logout","Auth",new{@area="Admin"})" aria-expanded="false">
                                     <span>
-                                        <i class="ti ti-aperture"></i>
+                                        <i class="ti ti-logout"></i>
                                     </span>
-                                    <span class="hide-menu">Đăng xuất</span>
+                                    <span class="hide-menu text-dark">Đăng xuất</span>
                                 </a>
                             </li>
                         }
@@ -193,6 +193,9 @@
                         </li>
                         <li class="nav-item dropdown-hover d-none d-lg-block">
                             @Html.ActionLink("Anime", "Index", "Anime", new { area = "Admin" }, new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item dropdown-hover d-none d-lg-block">
+                            @Html.ActionLink("Bài viết", "Index", "Blog", new { area = "Admin" }, new { @class = "nav-link" })
                         </li>
                         <li class="nav-item dropdown-hover d-none d-lg-block">
                             @Html.ActionLink("Quốc gia", "Index", "Country", new { area = "Admin" }, new { @class = "nav-link" })

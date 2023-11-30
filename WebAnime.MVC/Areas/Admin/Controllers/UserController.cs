@@ -4,15 +4,18 @@ using DataModels.Helpers;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using ViewModels.Admin;
 using WebAnime.MVC.Components;
+using Newtonsoft.Json;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
-    [OnlyAdminAuthorize]
+    //[OnlyAdminAuthorize]
     public class UserController : Controller
     {
         private readonly UserManager _userManager;
@@ -251,6 +254,66 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 return View(model);
             }
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetPaging(string textSearch, int pageNumber, int pageSize,
+            string selectedPropertyName)
+        {
+            var result = Enumerable.Empty<Users>().AsQueryable();
+
+            switch (selectedPropertyName)
+            {
+                case "UserName": 
+                    result = _userManager.Users
+                    .Where(x => (!x.IsDeleted) &&
+                                (x.UserName.Contains(textSearch) || String.IsNullOrEmpty(textSearch)));
+                    break;
+                case "FullName":
+                    result = _userManager.Users
+                    .Where(x => (!x.IsDeleted) &&
+                                (x.FullName.Contains(textSearch) || String.IsNullOrEmpty(textSearch)));
+                    break;
+                case "PhoneNumber":
+                    result = _userManager.Users
+                    .Where(x => (!x.IsDeleted) &&
+                                (x.PhoneNumber.Contains(textSearch) || String.IsNullOrEmpty(textSearch)));
+                    break;
+                case "Email":
+                    result = _userManager.Users
+                    .Where(x => (!x.IsDeleted) &&
+                                (x.Email.Contains(textSearch) || String.IsNullOrEmpty(textSearch)));
+                    break;
+            }
+            var resultCount = await result.CountAsync();
+
+            var searchResult = (await result
+                .OrderBy(x => x.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync())
+                .Select(x => new
+                {
+                    x.Id,
+                    x.UserName,
+                    x?.FullName,
+                    x.PhoneNumber,
+                    BirthDay = x.BirthDay?.ToString("dd/MM/yyyy"),
+                    x.Email,
+                    x.AvatarUrl,
+                    RoleList = x.Roles.Select(x => new
+                    {
+                        x.Roles.Name,
+                        x.Roles.Id
+                    })
+                });
+
+
+            return Json(JsonConvert.SerializeObject(new
+            {
+                data = searchResult,
+                totalPage= Math.Ceiling((resultCount*1.0)/pageSize),
+            }), JsonRequestBehavior.AllowGet);
         }
     }
 }

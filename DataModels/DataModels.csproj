@@ -173,10 +173,6 @@
     <Compile Include="Helpers\LoadFirstData.cs" />
     <Compile Include="Helpers\RoleManagerExtensions.cs" />
     <Compile Include="Helpers\UserManagerExtensions.cs" />
-    <Compile Include="Migrations\202311161454536_fix_relationship.cs" />
-    <Compile Include="Migrations\202311161454536_fix_relationship.designer.cs">
-      <DependentUpon>202311161454536_fix_relationship.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EF\Episodes.cs" />
@@ -198,6 +194,7 @@
     <Compile Include="Repository\Implement\EF6\CountryRepository.cs" />
     <Compile Include="Repository\Implement\EF6\EpisodeRepository.cs" />
     <Compile Include="Repository\Implement\EF6\RatingRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\ScheduleRepository.cs" />
     <Compile Include="Repository\Implement\EF6\ServerRepository.cs" />
     <Compile Include="Repository\Implement\EF6\StatusRepository.cs" />
     <Compile Include="Repository\Implement\EF6\StudioRepository.cs" />
@@ -213,6 +210,7 @@
     <Compile Include="Repository\Interface\IEpisodeRepository.cs" />
     <Compile Include="Repository\Interface\IRatingRepository.cs" />
     <Compile Include="Repository\Interface\IRepositoryBase.cs" />
+    <Compile Include="Repository\Interface\IScheduleRepository.cs" />
     <Compile Include="Repository\Interface\IServerRepository.cs" />
     <Compile Include="Repository\Interface\IStatusRepository.cs" />
     <Compile Include="Repository\Interface\IStudioRepository.cs" />
@@ -228,11 +226,6 @@
       <Project>{d9099fe9-cfb8-448b-8179-70f4d27e1a00}</Project>
       <Name>ViewModels</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202311161454536_fix_relationship.resx">
-      <DependentUpon>202311161454536_fix_relationship.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

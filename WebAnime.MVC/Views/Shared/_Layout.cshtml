@@ -90,10 +90,10 @@
                                         </ul>
                                     </li>*@
                                 <li>
-                                    <a href="@Url.Action("Index","Blog")">Our Blog</a>
+                                    <a href="@Url.Action("Index","Blog")">Bài viết</a>
                                 </li>
                                 <li>
-                                    <a href="#">Contacts</a>
+                                    <a href="@Url.Action("Contact","Home")">Liên hệ</a>
                                 </li>
                             </ul>
                         </nav>
@@ -153,7 +153,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="footer__logo">
-                        <a href="./index.html">
+                        <a href="@Url.Action("Index","Home")">
                             <img src="~/Resources/Library/Client/img/logo.png" alt="">
                         </a>
                     </div>
@@ -162,16 +162,19 @@
                     <div class="footer__nav">
                         <ul>
                             <li class="active">
-                                <a href="./index.html">Homepage</a>
+                                <a href="@Url.Action("Index","Home")">Homepage</a>
                             </li>
                             <li>
-                                <a href="./categories.html">Categories</a>
+                                <a href="@Url.Action("Index","Blog")">Bài viết</a>
                             </li>
                             <li>
-                                <a href="./blog.html">Our Blog</a>
+                                <a href="@Url.Action("Contact","Home")">Liên hệ</a>
                             </li>
                             <li>
-                                <a href="#">Contacts</a>
+                                <a href="https://www.facebook.com/vuthemanh1707">Liên hệ Admin .net</a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/tienanh.la.7">Liên hệ đến tôi </a>
                             </li>
                         </ul>
                     </div>

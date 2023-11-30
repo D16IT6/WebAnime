@@ -187,7 +187,6 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             return Json(new
             {
                 data = result,
-                queryResult.PageCount,
                 queryResult.TotalPages
 
             }, JsonRequestBehavior.AllowGet);

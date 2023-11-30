@@ -3,66 +3,55 @@
     ViewBag.Title = "Index";
 }
 
-@Html.ActionLink("Tạo mới", "Create", "Blog", new { @area = "Admin" }, new { @class = "btn btn-primary" })
+<h2>Danh sách bài viết</h2> @Html.ActionLink("Tạo mới", "Create", "Blog", new { @area = "Admin" }, new { @class = "btn btn-primary" })
 @if (!Model.Any())
 {
     <h2>Chưa có gì</h2>
 }
 else
 {
-    <h2>Danh sách bài viết</h2>
+    using (Html.BeginForm())
+    {
+<div class="row nb-3 my-3">
+    <label class="col-form-label col-auto">Tìm kiếm Tiêu Đề</label>
+    <div class="col-3">
+        <input type="text" name="searchTitle" id="searchTitle" value="" class="form-control">
+    </div>
+    <div class="col-3">
+        <button type="button" class="btn btn-info" id="btnsearch">Tìm Kiếm</button>
+    </div>
+    <label class="col-form-label col-auto">Trang</label> 
+    <button type="button" class="btn btn-info col-1" id="btnPrevious">Prev</button>
+    <div class=" col-1 ">
+        <input type="number" name="pageNumber" id="pageNumber" value="0" class="form-control text-center " />
+    </div> 
+    <button type="button" class="btn btn-info col-1 " id="btnNext">Next</button>
+</div>
+       
+
+    }
+
+    
     <table class="table border text-nowrap mb-0 align-middle">
         <thead>
-            <tr class="text-center">
-                <th>
-                    @Html.DisplayNameFor(x => x.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.Content)
-                </th>
-                <th>
-                    @*@Html.DisplayNameFor(x => x.ImageUrl)*@
-                    Ảnh nền
-                </th>
-                <th>Chức năng</th>
-            </tr>
+        <tr class="text-center">
+            <th>
+                @Html.DisplayNameFor(x => x.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x.Content)
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(x => x.ImageUrl)*@
+                Ảnh nền
+            </th>
+            <th>Chức năng</th>
+        </tr>
         </thead>
-        <tbody>
-            @foreach (var blog in Model)
-            {
-                <tr>
-                    <td>
-                        <h5> @blog.Title</h5>
-                    </td>
-                    <td>
-
-                        <button type="button"
-                                class="btn btn-primary btnViewContent"
-                                data-content-html="@blog.Content"
-                                data-bs-toggle="modal"
-                                data-bs-target="#model-content-html">
-                            Xem ở đây
-                        </button>
-                    </td>
-                    <td>
-                        <button type="button"
-                                class="btn btn-primary btnViewImage"
-                                data-bs-toggle="modal"
-                                data-image-url="@blog.ImageUrl"
-                                data-bs-target="#modal-image">
-                            Xem ở đây
-                        </button>
-                    </td>
-                    <td>
-                        <div class="btn btn-group d-flex justify-content-center">
-                            @Html.ActionLink("Sửa", "Update", new { id = blog.Id }, new { @class = "btn btn-primary" })
-                            @Html.ActionLink("Xóa", "Delete", new { id = blog.Id }, new { @class = "btn btn-danger" })
-                        </div>
-                    </td>
-                </tr>
-            }
+        <tbody id="tableBody">
         </tbody>
     </table>
+    
 }
 <div class="modal fade"
      id="model-content-html"
@@ -133,15 +122,151 @@ else
 @section footerJs
 {
     <script>
-        $(`.btnViewContent`).click(function () {
 
+        const pageSize = 2;
+
+        var totalPage = 0;
+
+        fetchData('', 1, pageSize);
+
+        
+        function fetchData  (searchTitle, pageNumber, pageSize, isChangeNumber = true,firtLoad)  {
+            const url = "@Url.Action("GetPaging","Blog")";
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    searchTitle: searchTitle,
+                    pageNumber: pageNumber,
+                    pageSize: pageSize
+                },
+                dataType: "json",
+                success: function (response) {  
+                    if (response.data.length > 0) {
+                        toastr.success('Lấy dữ liệu thành công', "Thông báo");               
+
+                    } else {
+                        toastr.warning('Không tìm thấy dữ liệu', 'Cảnh báo');
+                    }
+                    dumpData(response.data)
+                    totalPage = response.TotalPages;
+                    console.log(totalPage)
+                    if (isChangeNumber)      
+                    chagePageNumber(parseInt(totalPage))
+                }
+            });
+        }
+
+        
+
+        const chagePageNumber = (totalPages) => {         
+            const minPage = totalPages <= 0 ? totalPages : 1;   
+            const numberic = $(`#pageNumber`)
+            numberic.attr('min', minPage)
+            numberic.attr('max', totalPages)
+            numberic.val(minPage);
+        }
+        const dumpData = (data) => {
+            const tableBody = $(`#tableBody`);
+            tableBody.html('');                
+            for (let i = 0; i < data.length; i++)
+            {
+               
+                const item = data[i];     
+                const html = `
+                    <tr>
+                        <td>
+                            <h5> ${item.Title}</h5>
+                            <p> ${item.Id}</p>
+                        </td>
+                        <td>
+                              <button type="button"
+                                  class="btn btn-primary btnViewContent"
+                                  data-content-html='${item.Content}'
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#model-content-html">
+                                  Xem ở đây
+                              </button>
+                        </td>
+                        <td>
+                            <button type="button"
+                                    class="btn btn-primary btnViewImage"
+                                    data-bs-toggle="modal"
+                                    data-image-url='${item.ImageUrl}'
+                                    data-bs-target="#modal-image">
+                                Xem ở đây
+                            </button>
+                        </td>
+
+                        <td>
+                            <div class="btn btn-group d-flex justify-content-center">
+                                <a href="@Url.Action("Update", "Blog", new { area = "Admin" })/${item.Id}" class = "btn btn-primary text-decoration-none">Sửa</a>
+                                 <a href="@Url.Action("Delete", "Blog", new { area = "Admin" })/${item.Id}" class = "btn btn-danger text-decoration-none">Xoá</a>
+                              
+                            </div>
+                        </td>
+                    </tr>`;
+
+                tableBody.append(html)
+            }
+
+
+        }
+        $(document).on('click', '.btnViewContent', function () {
             const html = $(this).data('contentHtml');
             $(`.modalHtml`).html(html);
         });
-        $(`.btnViewImage`).click(function () {
 
+        $(document).on('click', '.btnViewImage', function () {
             const url = $(this).data('imageUrl');
             $(`.modalImage`).attr('src', url);
         });
+        //$(`.btnViewContent`).click(function () {
+
+        //    const html = $(this).data('contentHtml');
+        //    $(`.modalHtml`).html(html);
+        //});
+        //$(`.btnViewImage`).click(function () {
+
+        //    const url = $(this).data('imageUrl');
+        //    $(`.modalImage`).attr('src', url);
+        //});
+        $(`#btnsearch`).click(() => {
+            const searchTitle = $(`#searchTitle`).val();         
+            const pageNumber = 1;
+            
+            fetchData(searchTitle,pageNumber,pageSize)
+        })
+        $(`#pageNumber`).change(function () {
+            console.log('a')
+            const current = $(this)
+            if (current.val() > totalPage) {
+                current.val(totalPage)
+            }
+            else if (current.val() < 0) {
+                current.val(1)
+            }
+            const pageNumber = current.val();
+            console.log(pageNumber)
+            const searchTitle = $(`#searchTitle`).val();
+            fetchData(searchTitle, pageNumber, pageSize, false)            
+        })
+        $(`#btnPrevious`).click(function () {
+            var currentPage = $(`#pageNumber`).val();
+            if (currentPage > 1) {
+                currentPage--;
+                $(`#pageNumber`).val(currentPage)
+                fetchData($('#searchTitle').val(), currentPage, pageSize, false);
+            }
+                  
+        })
+        $(`#btnNext`).click(function () {
+            var currentPage = $(`#pageNumber`).val();
+            if (currentPage < totalPage) {
+                currentPage++;
+                $(`#pageNumber`).val(currentPage)
+                fetchData($('#searchTitle').val(), currentPage, pageSize, false);
+            }
+        })
     </script>
 }

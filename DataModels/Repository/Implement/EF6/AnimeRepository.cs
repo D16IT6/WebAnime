@@ -199,8 +199,8 @@ namespace DataModels.Repository.Implement.EF6
                         .Max(t => t.Count()),
                     TotalEpisode = x.TotalEpisodes,
                     CommentCount = Context.Comments.Count(y => y.AnimeId == x.Id)
-                })
-                .Take(take);
+                }).Take(take).ToList();
+
             return await Task.FromResult(data);
         }
 
@@ -331,7 +331,6 @@ namespace DataModels.Repository.Implement.EF6
             var result = new Paging<Animes>()
             {
                 Data = searchResult,
-                PageCount = searchCount,
                 TotalPages = (int)Math.Ceiling(searchCount * 1.0 / pageSize),
                 PageNumber = pageNumber,
                 PageSize = pageSize

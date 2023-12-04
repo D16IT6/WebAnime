@@ -80,7 +80,7 @@ namespace WebAnime.MVC.Controllers
                 }
 
                 // Handle errors, for example, by adding ModelState errors
-                var builder= new StringBuilder();
+                var builder = new StringBuilder();
                 foreach (var error in result.Errors)
                 {
                     builder.AppendLine(error);
@@ -610,6 +610,7 @@ namespace WebAnime.MVC.Controllers
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user.Id, info.Login);
+                    await _userManager.AddToRoleAsync(user.Id, "User");
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
@@ -628,7 +629,7 @@ namespace WebAnime.MVC.Controllers
         public ActionResult LogOff()
         {
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToLocal(Request["ReturnUrl"]);
         }
 
         [AllowAnonymous]
@@ -639,7 +640,7 @@ namespace WebAnime.MVC.Controllers
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
-            if (Url.IsLocalUrl(returnUrl))
+            if (String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }

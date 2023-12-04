@@ -180,7 +180,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                         x.TotalEpisodes,
                         x.Synopsis,
                         Release = x.Release?.ToString("dd/MM/yyyy") ?? "Khong biet",
-                        Categories = String.Join(",",x.Categories.Where(z =>!z.IsDeleted).Select(c => c.Name)) +"."
+                        Categories = String.Join(",",x.Categories.Where(z =>!z.IsDeleted).Select(c => c.Name)) +".",
+                        x.StatusId,
                     }
                 );
 

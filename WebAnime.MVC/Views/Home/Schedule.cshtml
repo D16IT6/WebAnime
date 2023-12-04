@@ -1,0 +1,69 @@
+﻿@model IEnumerable<ViewModels.Client.AnimeScheduleModelView>
+@{
+    ViewBag.Title = "Schedule";
+}
+
+<div id="countdown" style="font-size: 24px; text-align: center;"></div>
+
+<div class="trending__product">
+
+    @for (var i = 0; i < 7; i++)
+    {
+        var currentDate = DateTime.Now;
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8">
+                <div class="section-title">
+                    <h4>Thứ @((i + 2) != 8 ? (i + 2) : "Chủ nhật")</h4>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @if (Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    int dateOfWeek = int.Parse(item.AiringDate.DayOfWeek.ToString("D"));
+
+                    if ((dateOfWeek == (i + 1) || (dateOfWeek == 0 && (i + 1) == 7))&&item.AiringDate>DateTime.Now)
+                    {
+                        var timeDifference = item.AiringDate - currentDate;
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="product__item">
+                                <div class="product__item__pic set-bg" data-setbg="@item.Poster">
+                                    @{
+                                        var currentEpisode = item.CurrentEpisode ?? 0;
+                                    }
+                                    <div class="ep">
+                                        @currentEpisode
+                                        / @item.TotalEpisode
+                                    </div>
+                                    <div class="d-flex bg-dark justify-content-center align-items-center time">
+                                        @item.AiringTime.ToString("h\\:mm") @item.AiringDate.ToString("MM/dd/yyyy")
+                                    </div>
+                                    <div class="d-flex bg-dark justify-content-center align-items-center time">
+                                        @timeDifference.TotalDays.ToString("F0") ngày nữa
+                                    </div>
+                                    <div style="position: absolute; bottom: 10px; left: 10px; background-color: #4CAF50;" class=" rounded p-2">  
+                                        <span> Tập @(currentEpisode+1)</span>
+                                        </div>
+                                    <div class="view"><i class="fa fa-eye"></i> @item.ViewCount</div>
+                                </div>
+                                <div class="product__item__text">
+                                    <h5><a href="@Url.Action("Detail", "Anime", new { id = item.Id })">@item.Title</a></h5>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                }
+            }
+            else
+            {
+                <h2>Chưa có anime gì</h2>
+            }
+        </div>
+    }
+
+</div>
+
+

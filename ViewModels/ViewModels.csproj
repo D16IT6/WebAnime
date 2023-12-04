@@ -84,6 +84,7 @@
     <Compile Include="Client\AccountViewModels.cs" />
     <Compile Include="Client\AnimeDetailViewModel.cs" />
     <Compile Include="Client\AnimeItemViewModel.cs" />
+    <Compile Include="Client\AnimeScheduleModelView.cs" />
     <Compile Include="Client\AnimeSearchViewModel.cs" />
     <Compile Include="Client\AnimeWatchingViewModel.cs" />
     <Compile Include="Client\BlogCategoryViewModel.cs" />

@@ -27,9 +27,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Index(int animeId)
         {
             var scheduleList = await _scheduleRepository.GetAll();
-            var test = scheduleList.Where(x => x.Id == animeId).ToList();
+            var schedule = scheduleList.Where(x => x.Id == animeId).ToList();
             ViewBag.AnimeId = animeId;
-            var scheduleRepsitoryViewModelList = _mapper.Map<IEnumerable<Schedules>, IEnumerable<ScheduleViewModel>>(test);
+            var scheduleRepsitoryViewModelList = _mapper.Map<IEnumerable<Schedules>, IEnumerable<ScheduleViewModel>>(schedule);
             return View(scheduleRepsitoryViewModelList);
 
         }

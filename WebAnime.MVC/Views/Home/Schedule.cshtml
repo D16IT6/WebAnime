@@ -20,13 +20,13 @@
         <div class="row">
             @if (Model.Any())
             {
+                var index = 0;
                 foreach (var item in Model)
                 {
                     int dateOfWeek = int.Parse(item.AiringDate.DayOfWeek.ToString("D"));
 
-                    if ((dateOfWeek == (i + 1) || (dateOfWeek == 0 && (i + 1) == 7))&&item.AiringDate>DateTime.Now)
+                    if ((dateOfWeek == (i + 1) || (dateOfWeek == 0 && (i + 1) == 7)))
                     {
-                        var timeDifference = item.AiringDate - currentDate;
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="@item.Poster">
@@ -37,15 +37,15 @@
                                         @currentEpisode
                                         / @item.TotalEpisode
                                     </div>
-                                    <div class="d-flex bg-dark justify-content-center align-items-center time">
-                                        @item.AiringTime.ToString("h\\:mm") @item.AiringDate.ToString("MM/dd/yyyy")
+                                    <div class="d-flex bg-dark justify-content-center align-items-center " >
+                                        <span id="time_@(i)_@index" class="time">@item.AiringTime.ToString("h\\:mm") @item.AiringDate.ToString("MM/dd/yyyy")</span>
                                     </div>
-                                    <div class="d-flex bg-dark justify-content-center align-items-center time">
-                                        @timeDifference.TotalDays.ToString("F0") ngày nữa
+                                    <div class="bg-dark">
+                                       <span class="d-flex justify-content-center align-items-center countdown" style=" font-size: 16px; text-align: center;"  id="countdown_@(i)_@index"></span>
                                     </div>
-                                    <div style="position: absolute; bottom: 10px; left: 10px; background-color: #4CAF50;" class=" rounded p-2">  
+                                    <div style="position: absolute; bottom: 10px; left: 10px; background-color: #4CAF50;" class=" rounded p-2">
                                         <span> Tập @(currentEpisode+1)</span>
-                                        </div>
+                                    </div>
                                     <div class="view"><i class="fa fa-eye"></i> @item.ViewCount</div>
                                 </div>
                                 <div class="product__item__text">
@@ -53,6 +53,7 @@
                                 </div>
                             </div>
                         </div>
+                        index++;
                     }
 
                 }
@@ -65,5 +66,54 @@
     }
 
 </div>
+
+@section footerJs{
+    <script>
+        $(document).ready(function () {
+
+            $('[id^="time_"]').each(function () {
+                // Lấy nội dung HTML của từng phần tử
+                var htmlContent = $(this).html();
+
+                // Chuyển đổi nội dung HTML thành đối tượng Date và lấy thời gian
+                var targetDate = new Date(htmlContent).getTime();
+                console.log(targetDate)
+
+                // Tìm id số sau "time_"
+                var idSuffix = this.id.split('_')[1] + "_" + this.id.split('_')[2];
+                console.log(idSuffix)
+                // Tạo id cho phần tử countdown tương ứng
+                var countdownId = '#countdown_' + idSuffix;
+                console.log(countdownId)
+                // Lấy phần tử countdown tương ứng
+                var countdownElement = $(countdownId);
+
+                //Kiểm tra nếu countdownElement tồn tại
+                if (countdownElement != null) {
+                    var countdownInterval = setInterval(function () {
+                        var currentDate = new Date().getTime();
+                        var timeRemaining = targetDate - currentDate;
+
+                        if (timeRemaining > 0) {
+                            var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                            var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                            var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                            console.log(seconds)
+                            countdownElement.html(days + "d " + hours + "h " + minutes + "m " + seconds + "s");
+                        } else {
+                            clearInterval(countdownInterval);
+                            countdownElement.html("Đã qua thời gian đếm ngược!");
+                        }
+                    }, 1000);
+                }
+                else {
+                    console.log("lii");
+                }
+            }); // Đây là dấu ) để đóng hàm each
+        }); // Đây là dấu ) để đóng hàm ready
+
+    </script>
+}
 
 

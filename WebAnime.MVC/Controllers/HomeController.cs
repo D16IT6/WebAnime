@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
@@ -67,7 +68,7 @@ namespace WebAnime.MVC.Controllers
                         .Max(),
                     AiringDate = s.AiringDate,
                     AiringTime = s.AiringTime,
-                });
+                }).Where(a=>a.AiringDate>DateTime.Now);
 
                 return View(results);
             }

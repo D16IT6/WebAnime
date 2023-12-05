@@ -15,10 +15,12 @@ namespace ViewModels.Admin
         [Display(Name = "Ngày phát hành")]
         [Required(ErrorMessage = "Ngày không được để trống")]
         [CustomValidation(typeof(ScheduleViewModel), "ValidateReleaseDate")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime AiringDate { get; set; }
 
         [Display(Name = "Giờ phát hành")]
         [Required(ErrorMessage = "Giờ không được để trống")]
+        [DisplayFormat(DataFormatString = @"{0:hh\:mm}", ApplyFormatInEditMode = true)]
         public TimeSpan AiringTime { get; set; }
 
         public DateTime CurrentDate

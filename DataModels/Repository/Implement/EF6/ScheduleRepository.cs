@@ -42,8 +42,8 @@ namespace DataModels.Repository.Implement.EF6
                 }
 
                 prevEntity.ModifiedDate = DateTime.Now;
-                prevEntity.DayOfWeek = entity.DayOfWeek;
-                prevEntity.Time = entity.Time;
+                prevEntity.AiringDate = entity.AiringDate;
+                prevEntity.AiringTime = entity.AiringTime;
                 prevEntity.ModifiedBy = entity.ModifiedBy;
                 prevEntity.IsDeleted = false;
 
@@ -63,8 +63,8 @@ namespace DataModels.Repository.Implement.EF6
             {
                 var updateEtity = await GetById(entity.Id);
                 if (updateEtity == null) {return false;}
-                updateEtity.DayOfWeek = entity.DayOfWeek;
-                updateEtity.Time = entity.Time;
+                updateEtity.AiringDate = entity.AiringDate;
+                updateEtity.AiringTime = entity.AiringTime;
                 updateEtity.ModifiedDate = DateTime.Now;
                 await Context.SaveChangesAsync();
                 return true;

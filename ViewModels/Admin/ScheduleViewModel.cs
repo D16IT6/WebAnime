@@ -10,28 +10,34 @@ namespace ViewModels.Admin
 {
     public class ScheduleViewModel
     {
-        //[ForeignKey(nameof(AnimeID))]
         public int Id { get; set; }
-        [Range(1, 7, ErrorMessage = "{0} phải nằm trong khoảng từ {1} đến {2}")]
-        [Display(Name = "Ngày trong tuần")]
-        [Required(ErrorMessage = "Ngày được để chống", AllowEmptyStrings = false)]
-        public int DayOfWeek { get; set; }
-        
-        [Display(Name = "Thời gian")]
-        [Required(ErrorMessage = "Thời gian không được để trống")]
-        public DateTime Time { get; set; }
-        
-        //[DataType(DataType.DateTime)] 
-        //public DateTime? CreatedDate { get; set; }
-        //public int? CreatedBy { get; set; }
 
-        //[DataType(DataType.DateTime)] 
-        //public DateTime? ModifiedDate { get; set; }
-        //public int? ModifiedBy { get; set; }
+        [Display(Name = "Ngày phát hành")]
+        [Required(ErrorMessage = "Ngày không được để trống")]
+        [CustomValidation(typeof(ScheduleViewModel), "ValidateReleaseDate")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime AiringDate { get; set; }
 
-        //[DataType(DataType.DateTime)] 
-        //public DateTime? DeletedDate { get; set; }
-        //public int? DeletedBy { get; set; }
+        [Display(Name = "Giờ phát hành")]
+        [Required(ErrorMessage = "Giờ không được để trống")]
+        [DisplayFormat(DataFormatString = @"{0:hh\:mm}", ApplyFormatInEditMode = true)]
+        public TimeSpan AiringTime { get; set; }
 
+        public DateTime CurrentDate
+        {
+            get { return DateTime.Now; }
+        }
+
+        public static ValidationResult ValidateReleaseDate(DateTime releaseDate, ValidationContext context)
+        {
+            var currentDate = (DateTime)context.ObjectInstance.GetType().GetProperty("CurrentDate").GetValue(context.ObjectInstance, null);
+
+            if (releaseDate <= currentDate)
+            {
+                return new ValidationResult("Ngày phát hành phải lớn hơn ngày hiện tại");
+            }
+
+            return ValidationResult.Success;
+        }
     }
 }

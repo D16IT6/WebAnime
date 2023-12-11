@@ -12,10 +12,10 @@
     <table class="table">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DayOfWeek)
+                @Html.DisplayNameFor(model => model.AiringDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Time)
+                @Html.DisplayNameFor(model => model.AiringTime)
             </th>
 
             <th>Chức năng</th>
@@ -24,12 +24,11 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DayOfWeek)
+                    @item.AiringDate.ToString("dd/MM/yyyy")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Time)
+                    @Html.DisplayFor(modelItem => item.AiringTime)
                 </td>
-
                 <td>
                     @Html.ActionLink("Sửa", "Update", "Schedule", new { id = ViewBag.AnimeId, area = "Admin" }, new { @class = "btn btn-primary text-decoration-none" })
                     @Html.ActionLink("Xoá", "Delete", new { id = ViewBag.AnimeId }, new { @class = "btn btn-danger text-decoration-none" })

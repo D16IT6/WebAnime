@@ -148,7 +148,6 @@
                     searchTitle: searchTitle,
                     pageNumber: pageNumber,
                     pageSize: pageSize
-
                 },
                 dataType: "json",
                 success: function(response) {
@@ -168,7 +167,7 @@
             });
         }
         function changeNumeric(totalPages) {
-       
+
             //if (totalPages <= 0) return;
             const numberic = $(`#pageNumber`);
             const minPage = totalPages <= 0 ? totalPages : 1;
@@ -183,9 +182,11 @@
 
             for (let i = 0; i < data.length; ++i) {
                 const item = data[i];
+                const showScheduleButton = item.StatusId !== 1;
                 const html =
                     `
                 <tr>
+        
                     <td>${item.Title}</td>
                     <td>${item.OriginalTitle}</td>
                     <td>${item.Duration} phút</td>
@@ -203,16 +204,17 @@
                         <div class="btn-group w-100">
                         <a href="@Url.Action("Update", "Anime", new { area = "Admin" })/${item.Id}" class = "btn btn-primary text-decoration-none">Sửa</a>
 
-                        
+
 
                         <a href="@Url.Action("Delete", "Anime", new { area = "Admin" })/${item.Id}" class = "btn btn-danger text-decoration-none">Xóa</a>
 
                     </td>
                      <td>
-                     <div class="btn-group w-100">                  
+                     <div class="btn-group w-100">
                      <a href="@Url.Action("Index", "Episode", new { area = "Admin" })?animeId=${item.Id}&serverId=@firstServerId" class="btn btn-info text-white">Tập</a>
-
-                     <a href="@Url.Action("Index", "Schedule", new { area = "Admin" })?animeId=${item.Id}" class="btn btn-success text-decoration-none">Lịch </a>
+                     ${showScheduleButton ? `
+                        <a href="@Url.Action("Index", "Schedule", new { area = "Admin" })?animeId=${item.Id}" class="btn btn-success text-decoration-none">Lịch </a>
+                    ` : ''}
                      </td>
                 </tr>`;
 
@@ -256,7 +258,7 @@
             if (currentPage < totalPage) {
                 currentPage++;
                 $(`#pageNumber`).val(currentPage)
-           
+
                 fetchData($('#searchTitle').val(), currentPage, pageSize, false);
             }
         })

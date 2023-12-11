@@ -199,7 +199,7 @@ namespace DataModels.Repository.Implement.EF6
                         .Max(t => t.Count()),
                     TotalEpisode = x.TotalEpisodes,
                     CommentCount = Context.Comments.Count(y => y.AnimeId == x.Id)
-                }).Take(take).ToList();
+                }).Take(take);
 
             return await Task.FromResult(data);
         }
@@ -392,6 +392,43 @@ namespace DataModels.Repository.Implement.EF6
                 PageSize = model.PageSize,
                 PageNumber = model.PageNumber
             });
+        }
+
+        public async Task<IEnumerable<Animes>> GetHotAnimesAPI(int take)
+        {
+            var data = Context.Animes
+                .Include(x => x.Categories)
+                .Include(x => x.Ratings)
+                .Include(x => x.Countries)
+                .Where(x => !x.IsDeleted)
+                .OrderByDescending(x => x.ViewCount)
+                .ThenByDescending(x => x.CreatedDate)
+                .ThenByDescending(x => x.ModifiedDate)
+                .Take(take);
+
+            return await Task.FromResult(data);
+        }
+
+        public async Task<Paging<Animes>> GetNewEpisodesReleaseAPI(int pageNumber, int pageSize)
+        {
+            var data = Context.Animes
+                .Where(x => !x.IsDeleted)
+                .OrderByDescending(x => x.Episodes.Max(x => x.CreatedDate));
+
+
+            var totalPages = await data.CountAsync();
+
+            var result = new Paging<Animes>()
+            {
+                PageCount = (int)Math.Ceiling(totalPages * 1.0 / pageSize),
+                Data = data
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
+            return await Task.FromResult(result);
+
         }
     }
 }

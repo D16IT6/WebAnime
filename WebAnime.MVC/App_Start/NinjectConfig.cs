@@ -113,9 +113,6 @@ namespace WebAnime.MVC
                     HttpContext.Current.GetOwinContext().Authentication
             );
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
-
-
-
         }
 
         public static void RegisterIdentityStores(IKernel kernel)

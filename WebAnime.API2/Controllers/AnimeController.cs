@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using DataModels.Repository.Interface;
-
 namespace WebAnime.API2.Controllers
 {
     [RoutePrefix("API/Anime")]
@@ -9,6 +9,7 @@ namespace WebAnime.API2.Controllers
     {
         private readonly IAnimeRepository _animeRepository;
         private readonly ICommentRepository _commentRepository;
+        private readonly int mobileTakeCount = 10;
 
         public AnimeController(IAnimeRepository animeRepository, ICommentRepository commentRepository)
         {
@@ -17,38 +18,52 @@ namespace WebAnime.API2.Controllers
         }
 
         [HttpGet]
-        [Route("Trend/{take?}")]
-        public async Task<IHttpActionResult> GetAnimeTrending(int take = 9)
+        [Route("Hit/{take?}")]
+        public async Task<IHttpActionResult> HotAnime(int take = 10)
         {
-            if (take <= 0 || take > 9)
+            var data = await _animeRepository.GetHotAnimesAPI(take);
+            var result = data.Select(x => new
             {
-                return BadRequest("Plase re-input value");
-            }
+                x.Id,
+                x.Title,
+                x.Release.Value.Year,
+                Country = x.Countries.Name,
+                Categories = string.Join(",", x.Categories.Select(c => c.Name)),
+                x.Poster,
+                Rating = x.Ratings.Sum(y => y.RatePoint) / x.Ratings.Count(),
+            });
 
-            var data = await _animeRepository
-                .GetAnimeTrending(take);
-
-            return await Task.FromResult(Ok(data));
+            return await Task.FromResult(Ok(result));
         }
 
         [HttpGet]
-        [Route("Recenly/{take?}")]
-        public async Task<IHttpActionResult> GetAnimeRecenly(int take = 9)
+        [Route("NewEpisodeRelease/PageNumber/{pageNumber}/PageSize/{pageSize}")]
+        public async Task<IHttpActionResult> NewEpisodeRelease(int pageNumber = 1, int pageSize = 6)
         {
-            if (take <= 0 || take > 9)
+
+            var wrapper = await _animeRepository.GetNewEpisodesReleaseAPI(pageNumber, pageSize);
+
+            var result = wrapper.Data.Select(x => new
             {
-                return BadRequest("Plase re-input value");
-            }
+                x.Id,
+                x.Poster,
+                Rating = x.Ratings.Sum(y => y.RatePoint) / x.Ratings.Count(),
+                CurrentEpisode = x.Episodes
+                                .GroupBy(g => g.ServerId)
+                                .Select(g => new { g.Key, CurrrentEpisodes = g.Count() })
+                                .Max(g => g.CurrrentEpisodes),
+            });
 
-            var data = await _animeRepository
-                .GetAnimeTrending(take);
-
-            return await Task.FromResult(Ok(data));
+            return await Task.FromResult(Ok(new
+            {
+                data= result,
+                wrapper.TotalPages
+            }));
         }
 
         [HttpGet]
         [Route("{id}/Comment/PageNumber/{pageNumber}/PageSize/{pageSize}")]
-        public async Task<IHttpActionResult> GetAllComment(int id,int pageNumber,int pageSize = 10)
+        public async Task<IHttpActionResult> GetAllComment(int id, int pageNumber, int pageSize = 10)
         {
             var data = await _commentRepository.GetPaging(id, pageNumber, pageSize);
             return Ok(data);

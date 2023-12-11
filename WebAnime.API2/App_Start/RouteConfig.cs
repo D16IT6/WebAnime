@@ -14,6 +14,7 @@ namespace WebAnime.API2
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
+                //url: "swagger/ui/index",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }

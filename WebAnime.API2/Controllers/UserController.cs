@@ -2,11 +2,13 @@
 using DataModels.EF.Identity;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using ViewModels.Admin;
+using Microsoft.Owin.Security;
+using System.Security.Claims;
 
 namespace WebAnime.API2.Controllers
 {
@@ -22,7 +24,6 @@ namespace WebAnime.API2.Controllers
             _signInManager = signInManager;
         }
 
-
         public async Task<IHttpActionResult> GetAllUsers()
         {
             var userList = await _userManager.Users.AsNoTracking().ToListAsync();
@@ -37,6 +38,8 @@ namespace WebAnime.API2.Controllers
             });
         }
 
+        [Authorize]
+        [HttpGet]
         public async Task<IHttpActionResult> GetUserById(int id)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
@@ -61,25 +64,34 @@ namespace WebAnime.API2.Controllers
             });
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("User/Login")]
         public async Task<IHttpActionResult> Login(LoginViewModel loginViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _signInManager.PasswordSignInAsync(loginViewModel.UserName, loginViewModel.Password, false, false);
-                if (result == SignInStatus.Success)
-                {
-                }
-            }
-            return await Task.FromResult(BadRequest("Du lieu khong hop le"));
+            if (!ModelState.IsValid) return await Task.FromResult(BadRequest("Dữ liệu không hợp lệ"));
+
+
+            var result = await _signInManager.PasswordSignInAsync(loginViewModel.UserName, loginViewModel.Password, false, false);
+
+            if (result != SignInStatus.Success) return await Task.FromResult(BadRequest("Dữ liệu không hợp lệ"));
+
+            var currentUser = await _userManager.FindByNameAsync(loginViewModel.UserName);
+
+            var identity =
+                await _userManager.CreateIdentityAsync(currentUser, DefaultAuthenticationTypes.ExternalBearer);
+            var claimsIdentity = new ClaimsIdentity(identity);
+
+            // Tạo đối tượng AuthenticationTicket từ ClaimsIdentity
+            var ticket = new AuthenticationTicket(claimsIdentity, new AuthenticationProperties());
+
+            // Tạo AccessToken từ AuthenticationTicket
+            var accessToken = OwinConfig.OAuthAuthorizationOptions.AccessTokenFormat.Protect(ticket);
+
+            // Trả về token
+            return Ok(new { AccessToken = accessToken });
+            
         }
 
-        [HttpGet]
-        [Route("User/Login/Facebook")]
-        public async Task<IHttpActionResult> LoginFacebook()
-        {
-            return await Task.FromResult(Ok());
-        }
     }
 }

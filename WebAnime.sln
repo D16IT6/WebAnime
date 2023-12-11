@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModels", "ViewModels\Vi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAnime.API2", "WebAnime.API2\WebAnime.API2.csproj", "{311E2597-6586-4CC3-B48D-5C4BC5603CD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAnime.UnitTest", "WebAnime.UnitTest\WebAnime.UnitTest.csproj", "{C60F864D-15A0-4B96-B38C-A110D58C2FA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{311E2597-6586-4CC3-B48D-5C4BC5603CD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{311E2597-6586-4CC3-B48D-5C4BC5603CD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{311E2597-6586-4CC3-B48D-5C4BC5603CD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C60F864D-15A0-4B96-B38C-A110D58C2FA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C60F864D-15A0-4B96-B38C-A110D58C2FA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C60F864D-15A0-4B96-B38C-A110D58C2FA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C60F864D-15A0-4B96-B38C-A110D58C2FA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

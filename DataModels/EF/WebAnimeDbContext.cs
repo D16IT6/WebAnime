@@ -32,6 +32,7 @@ namespace DataModels.EF
         public virtual DbSet<Statuses> Statuses { get; set; }
         public virtual DbSet<Studios> Studios { get; set; }
         public virtual DbSet<Types> Types { get; set; }
+        public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -43,7 +44,7 @@ namespace DataModels.EF
             modelBuilder.Entity<UserLogins>().ToTable("UserLogins");
             modelBuilder.Entity<UserClaims>().ToTable("UserClaims");
 
-            modelBuilder.Entity<UserRoles>().HasKey(x => new {  x.UserId,x.RoleId });
+            modelBuilder.Entity<UserRoles>().HasKey(x => new { x.UserId, x.RoleId });
             modelBuilder.Entity<UserLogins>().HasKey(x => new { x.UserId, x.ProviderKey, x.LoginProvider });
 
 

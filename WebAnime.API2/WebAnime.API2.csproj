@@ -238,8 +238,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Components\AuthorizationServerProvider.cs" />
     <Compile Include="Components\HeaderFilter.cs" />
+    <Compile Include="Components\JwtProvider.cs" />
+    <Compile Include="Controllers\AdminJwtAuthorize.cs" />
     <Compile Include="Controllers\AnimeController.cs" />
+    <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\BlogController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

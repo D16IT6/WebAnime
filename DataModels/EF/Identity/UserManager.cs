@@ -32,11 +32,11 @@ namespace DataModels.EF.Identity
 
             };
 
-            var dataProtectionProvider = new DpapiDataProtectionProvider("WebAnime.DpapiDataProtectionProvider.TalonEzio.123!@#");
+            var dataProtectionProvider = new DpapiDataProtectionProvider(AuthConstants.DpapiPassphrase);
 
             userManager.UserTokenProvider =
                 new DataProtectorTokenProvider<Users, int>(
-                    dataProtectionProvider.Create("WebAnime.MVC.ResetTokenKey.Abc!@#)(&"));
+                    dataProtectionProvider.Create(AuthConstants.TokenProtectionKey));
 
             userManager.UserLockoutEnabledByDefault = true;
             userManager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(AuthConstants.LockoutMinutes);

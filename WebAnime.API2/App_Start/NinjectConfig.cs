@@ -81,6 +81,7 @@ namespace WebAnime.API2
             kernel.Bind<IStudioRepository>().To<StudioRepository>();
             kernel.Bind<ITypeRepository>().To<TypeRepository>();
             kernel.Bind<IRatingRepository>().To<RatingRepository>();
+            kernel.Bind<IUserTokenRepository>().To<UserTokenRepository>();
         }
 
         static void RegisterRepositoryDapper(IKernel kernel)

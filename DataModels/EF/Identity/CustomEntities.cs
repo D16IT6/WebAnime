@@ -32,6 +32,8 @@ namespace DataModels.EF.Identity
         public virtual ICollection<BlogComments> BlogComments { get; set; }
         public virtual ICollection<Favorites> Favorites { get; set; }
 
+        public virtual UserRefreshToken RefreshToken { get; set; }
+
     }
 
     public class Roles : IdentityRole<int, UserRoles>

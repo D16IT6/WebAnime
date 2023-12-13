@@ -4,12 +4,11 @@ using System.Web.Http;
 using DataModels.Repository.Interface;
 namespace WebAnime.API2.Controllers
 {
-    [RoutePrefix("API/Anime")]
+    [RoutePrefix("api/Anime")]
     public class AnimeController : ApiController
     {
         private readonly IAnimeRepository _animeRepository;
         private readonly ICommentRepository _commentRepository;
-        private readonly int mobileTakeCount = 10;
 
         public AnimeController(IAnimeRepository animeRepository, ICommentRepository commentRepository)
         {
@@ -26,7 +25,7 @@ namespace WebAnime.API2.Controllers
             {
                 x.Id,
                 x.Title,
-                x.Release.Value.Year,
+                x.Release?.Year,
                 Country = x.Countries.Name,
                 Categories = string.Join(",", x.Categories.Select(c => c.Name)),
                 x.Poster,
@@ -49,6 +48,7 @@ namespace WebAnime.API2.Controllers
                 x.Poster,
                 Rating = x.Ratings.Sum(y => y.RatePoint) / x.Ratings.Count(),
                 CurrentEpisode = x.Episodes
+                                .Where(e => !e.IsDeleted)
                                 .GroupBy(g => g.ServerId)
                                 .Select(g => new { g.Key, CurrrentEpisodes = g.Count() })
                                 .Max(g => g.CurrrentEpisodes),
@@ -56,7 +56,7 @@ namespace WebAnime.API2.Controllers
 
             return await Task.FromResult(Ok(new
             {
-                data= result,
+                data = result,
                 wrapper.TotalPages
             }));
         }

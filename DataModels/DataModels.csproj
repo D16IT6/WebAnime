@@ -160,6 +160,7 @@
     <Compile Include="EF\NotMapped\Animes.cs" />
     <Compile Include="EF\NotMapped\Blogs.cs" />
     <Compile Include="EF\Ratings.cs" />
+    <Compile Include="EF\Identity\UserRefreshToken.cs" />
     <Compile Include="EF\Schedules.cs" />
     <Compile Include="Helpers\AuthConstants.cs" />
     <Compile Include="EF\AgeRatings.cs" />
@@ -176,6 +177,10 @@
     <Compile Include="Migrations\202312040937397_UpdateScheduleTable.cs" />
     <Compile Include="Migrations\202312040937397_UpdateScheduleTable.designer.cs">
       <DependentUpon>202312040937397_UpdateScheduleTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202312130817083_Add-RefreshToken-Table.cs" />
+    <Compile Include="Migrations\202312130817083_Add-RefreshToken-Table.designer.cs">
+      <DependentUpon>202312130817083_Add-RefreshToken-Table.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -203,6 +208,7 @@
     <Compile Include="Repository\Implement\EF6\StatusRepository.cs" />
     <Compile Include="Repository\Implement\EF6\StudioRepository.cs" />
     <Compile Include="Repository\Implement\EF6\TypeRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\UserTokenRepository.cs" />
     <Compile Include="Repository\Interface\IAgeRatingRepository.cs" />
     <Compile Include="Repository\Interface\IBlogCommentRepository.cs" />
     <Compile Include="Repository\Interface\IBlogRepository.cs" />
@@ -219,6 +225,7 @@
     <Compile Include="Repository\Interface\IStatusRepository.cs" />
     <Compile Include="Repository\Interface\IStudioRepository.cs" />
     <Compile Include="Repository\Interface\ITypeRepository.cs" />
+    <Compile Include="Repository\Interface\IUserTokenRepository.cs" />
     <Compile Include="Services\EmailService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +241,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202312040937397_UpdateScheduleTable.resx">
       <DependentUpon>202312040937397_UpdateScheduleTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202312130817083_Add-RefreshToken-Table.resx">
+      <DependentUpon>202312130817083_Add-RefreshToken-Table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

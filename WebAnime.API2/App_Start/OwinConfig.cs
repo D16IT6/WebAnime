@@ -42,8 +42,8 @@ namespace WebAnime.API2
                         RoleClaimType = ClaimTypes.Role,
 
 
-                        ValidIssuer = JwtProvider.Issuer,
-                        ValidAudience = JwtProvider.Audience,
+                        ValidIssuer = JwtConstants.Issuer,
+                        ValidAudience = JwtConstants.Audience,
                         ValidateLifetime = true, 
                         ValidateIssuerSigningKey = true,
 

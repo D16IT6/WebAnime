@@ -32,6 +32,8 @@ namespace ViewModels.Client
 
         [Display(Name = "Ngày sinh")]
         [Required(ErrorMessage = "{0} là bắt buộc")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+
         public DateTime BirthDay { get; set; }
 
         [StringLength(50, ErrorMessage = "{0} chỉ dài từ {2} tới {1}", MinimumLength = 2)]
@@ -123,6 +125,8 @@ namespace ViewModels.Client
         public string FullName { get; set; }
 
         [Display(Name = "Ngày sinh")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+
         [Required(ErrorMessage = "{0} là bắt buộc")]
         public DateTime BirthDay { get; set; }
 

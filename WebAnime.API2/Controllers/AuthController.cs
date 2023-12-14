@@ -68,8 +68,6 @@ namespace WebAnime.API2.Controllers
         public async Task<IHttpActionResult> RefreshToken(RefreshTokenRequest refreshTokenRequest)
         {
 
-            
-
             var user = await _userManager.FindByNameAsync(refreshTokenRequest.UserName);
 
             if (user?.RefreshToken == null)

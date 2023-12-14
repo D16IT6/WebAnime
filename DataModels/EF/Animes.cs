@@ -28,7 +28,9 @@ namespace DataModels.EF
 
         [Range(1, Int32.MaxValue)] public int Duration { get; set; }
 
-        [Column(TypeName = "date")] public DateTime? Release { get; set; } = DateTime.Now.Date;
+        [Column(TypeName = "date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? Release { get; set; } = DateTime.Now.Date;
 
         [StringLength(50)] public string Trailer { get; set; }
 

@@ -17,7 +17,8 @@ namespace DataModels.EF
         [ForeignKey(nameof(Episode))] public int? EpisodeId { get; set; }
         public virtual Episodes Episode { get; set; }
 
-        [DataType(DataType.DateTime)] public DateTime? CreatedDate { get; set; }
+        [DataType(DataType.DateTime)]
+        public DateTime? CreatedDate { get; set; }
         [ForeignKey(nameof(User))] public int CreatedBy { get; set; }
         public Users User { get; set; }
 

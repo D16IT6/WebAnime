@@ -7,13 +7,12 @@ using DataModels.EF.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using JwtConstants = DataModels.Helpers.JwtConstants;
 
 namespace WebAnime.API2.Components
 {
     public static class JwtProvider
     {
-        public static string Issuer => "TalonEzio";
-        public static string Audience => "All";
         public static SymmetricSecurityKey SecurityKey =>
             new SymmetricSecurityKey(Encoding.Unicode.GetBytes(AuthConstants.TokenProtectionKey));
 
@@ -32,9 +31,9 @@ namespace WebAnime.API2.Components
 
 
             var jwtToken = new JwtSecurityToken(
-                issuer: Issuer,
-                audience: Audience,
-                expires: DateTime.UtcNow.AddMinutes(3),
+                issuer: JwtConstants.Issuer,
+                audience: JwtConstants.Audience,
+                expires: DateTime.UtcNow.AddMinutes(JwtConstants.ExpriedAfterMinutes),
                 signingCredentials: credentials,
                 claims: claims
             );

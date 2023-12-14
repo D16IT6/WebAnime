@@ -30,6 +30,7 @@ namespace ViewModels.Client
         public int Duration { get; set; }
 
         [Display(Name = "Ngày phát hành")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? Release { get; set; } = DateTime.Now.Date;
 
         public string Type { get; set; }

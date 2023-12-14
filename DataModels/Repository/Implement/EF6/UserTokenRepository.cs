@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DataModels.EF;
 using DataModels.EF.Identity;
+using DataModels.Helpers;
 using DataModels.Repository.Interface;
 
 namespace DataModels.Repository.Implement.EF6
@@ -53,7 +52,7 @@ namespace DataModels.Repository.Implement.EF6
             var userRefreshToken = user.RefreshToken ??= new UserRefreshToken();
 
             userRefreshToken.CreationTime = DateTimeOffset.UtcNow;
-            userRefreshToken.ExpiredTime = DateTimeOffset.UtcNow.AddMonths(1);
+            userRefreshToken.ExpiredTime = DateTimeOffset.UtcNow.AddMonths(JwtConstants.ExpiredRefreshTokenMonths);
             userRefreshToken.RefreshToken = token;
 
             await _context.SaveChangesAsync().ConfigureAwait(false);

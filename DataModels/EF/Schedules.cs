@@ -10,6 +10,7 @@ namespace DataModels.EF
         public int Id { get; set; }
         [Required]
         [Column(TypeName = "date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime AiringDate { get; set; }
         [Required]
         [Column(TypeName = "time")]

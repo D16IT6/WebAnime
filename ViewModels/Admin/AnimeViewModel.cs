@@ -39,6 +39,7 @@ namespace ViewModels.Admin
         [Display(Name = "Ngày phát hành")]
         [Required(ErrorMessage = "{0} là bắt buộc")]
         [Column(TypeName = "date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? Release { get; set; } = DateTime.Now.Date;
 
         [StringLength(50, ErrorMessage = "{0} phải dài từ {2} tới {1} ký tự", MinimumLength = 2)]

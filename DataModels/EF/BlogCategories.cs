@@ -15,7 +15,8 @@ namespace DataModels.EF
         [ForeignKey("BlogId")]
         public virtual ICollection<Blogs> Blogs { get; set; }
 
-        [DataType(DataType.DateTime)] public DateTime? CreatedDate { get; set; }
+        [DataType(DataType.DateTime)]
+        public DateTime? CreatedDate { get; set; }
 
         public int? CreatedBy { get; set; }
 

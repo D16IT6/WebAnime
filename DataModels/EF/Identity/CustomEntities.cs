@@ -13,7 +13,10 @@ namespace DataModels.EF.Identity
     {
         [MaxLength(200)]
         public string AvatarUrl { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? BirthDay { get; set; }
+
         [MaxLength(250)]
         public string FullName { get; set; }
         [DataType(DataType.DateTime)] public DateTime? CreatedDate { get; set; }

@@ -15,6 +15,7 @@ using System.Net;
 
 namespace WebAnime.API2.Controllers
 {
+    [RoutePrefix("api/Auth")]
     public class AuthController : ApiController
     {
         private readonly UserManager _userManager;
@@ -53,7 +54,7 @@ namespace WebAnime.API2.Controllers
                 });
 
             var refreshToken = Guid.NewGuid();
-            await SaveRefreshToken(currentUser, refreshToken);
+            await SaveRefreshToken(currentUser, refreshToken,true);
             return Ok(new
             {
                 AccessToken = JwtProvider.GenerateJwt(currentUser, roleList),
@@ -68,7 +69,7 @@ namespace WebAnime.API2.Controllers
         public async Task<IHttpActionResult> RefreshToken(RefreshTokenRequest refreshTokenRequest)
         {
 
-            var user = await _userManager.FindByNameAsync(refreshTokenRequest.UserName);
+            var user = await _userManager.FindByIdAsync(refreshTokenRequest.UserId);
 
             if (user?.RefreshToken == null)
             {
@@ -80,6 +81,7 @@ namespace WebAnime.API2.Controllers
             {
                 return BadRequest("Invalid refresh token request");
             }
+
             if (user.RefreshToken.ExpiredTime <= DateTimeOffset.UtcNow)
             {
                 var msg = new HttpResponseMessage(HttpStatusCode.Unauthorized);
@@ -88,18 +90,21 @@ namespace WebAnime.API2.Controllers
 
 
             var roleList = await _userManager.GetRolesAsync(user.Id);
-            var newAccessToken = JwtProvider.GenerateJwt(user, roleList);
 
+            var newAccessToken = JwtProvider.GenerateJwt(user, roleList);
+            var newRefreshToken = Guid.NewGuid();
+
+            await SaveRefreshToken(user, newRefreshToken,false);
             return Ok(new
             {
                 AccessToken = newAccessToken,
-                user.RefreshToken.RefreshToken
+                RefreshToken = newRefreshToken
             });
         }
 
-        private Task SaveRefreshToken(Users currentUser, Guid refreshToken)
+        private Task SaveRefreshToken(Users currentUser, Guid refreshToken,bool shouldUpdateExpirationTime)
         {
-            return _userTokenRepository.SaveRefreshToken(currentUser.Id, refreshToken);
+            return _userTokenRepository.SaveRefreshToken(currentUser.Id, refreshToken, shouldUpdateExpirationTime);
         }
 
         private async Task<string> GenerateOAuthToken(Users user)

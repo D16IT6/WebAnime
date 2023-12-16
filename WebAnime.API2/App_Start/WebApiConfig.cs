@@ -10,8 +10,7 @@ namespace WebAnime.API2
     {
         public static void Register(HttpConfiguration config)
         {
-            EnableCorsAttribute cors = new EnableCorsAttribute("*", "*", "*");
-            config.EnableCors(cors);
+            
 
             config.MapHttpAttributeRoutes();
 
@@ -26,6 +25,9 @@ namespace WebAnime.API2
 
             //config.Formatters.JsonFormatter.SupportedMediaTypes
             //.Add(new MediaTypeHeaderValue("text/html"));
+
+            EnableCorsAttribute cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
         }
     }
 }

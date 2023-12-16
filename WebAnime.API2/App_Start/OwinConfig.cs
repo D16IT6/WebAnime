@@ -1,16 +1,12 @@
-﻿using DataModels.EF.Identity;
-using Microsoft.AspNet.Identity;
-using Microsoft.Owin;
-using Owin;
+﻿using Owin;
 using System;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using DataModels.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Jwt;
 using Microsoft.Owin.Security.OAuth;
+using Serilog;
 using WebAnime.API2.Components;
 namespace WebAnime.API2
 {
@@ -52,6 +48,8 @@ namespace WebAnime.API2
                     },
                     
                 });
+
+
         }
 
 

@@ -43,7 +43,7 @@ namespace DataModels.Repository.Implement.EF6
             throw new NotImplementedException();
         }
 
-        public async Task SaveRefreshToken(int userId, Guid token)
+        public async Task SaveRefreshToken(int userId, Guid token,bool shouldUpdateExpirationTime)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId && !x.IsDeleted).ConfigureAwait(false);
 
@@ -51,8 +51,12 @@ namespace DataModels.Repository.Implement.EF6
 
             var userRefreshToken = user.RefreshToken ??= new UserRefreshToken();
 
-            userRefreshToken.CreationTime = DateTimeOffset.UtcNow;
-            userRefreshToken.ExpiredTime = DateTimeOffset.UtcNow.AddMonths(JwtConstants.ExpiredRefreshTokenMonths);
+            if (shouldUpdateExpirationTime)
+            {
+                userRefreshToken.CreationTime = DateTimeOffset.UtcNow;
+                userRefreshToken.ExpiredTime = DateTimeOffset.UtcNow.AddMonths(JwtConstants.ExpiredRefreshTokenMonths);
+            }
+           
             userRefreshToken.RefreshToken = token;
 
             await _context.SaveChangesAsync().ConfigureAwait(false);

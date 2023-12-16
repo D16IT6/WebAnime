@@ -413,7 +413,7 @@ namespace DataModels.Repository.Implement.EF6
         {
             var data = Context.Animes
                 .Where(x => !x.IsDeleted)
-                .OrderByDescending(x => x.Episodes.Max(x => x.CreatedDate));
+                .OrderByDescending(x => x.Episodes.Max(y => y.CreatedDate));
 
 
             var totalPages = await data.CountAsync();
@@ -426,9 +426,34 @@ namespace DataModels.Repository.Implement.EF6
                         .Take(pageSize),
                 PageNumber = pageNumber,
                 PageSize = pageSize,
+                TotalPages = totalPages
             };
             return await Task.FromResult(result);
 
+        }
+
+        public async Task<IEnumerable<Animes>> SearchAPI(ViewModels.API.AnimeSearchViewModel model)
+        {
+            model.SearchTitle ??= "";
+            model.SearchTitle = model.SearchTitle.ToLower();
+            int length = model.CategoryIds.Length;
+            var result = Context.Animes
+                .Where((x) =>
+                    !x.IsDeleted &&
+                    ((x.Title.ToLower().Contains(model.SearchTitle) || String.IsNullOrEmpty(model.SearchTitle)) ||
+                     (x.OriginalTitle.ToLower().Contains(model.SearchTitle) ||
+                      String.IsNullOrEmpty(model.SearchTitle))) &&
+                    (x.TypeId == model.TypeId || model.TypeId == 0) &&
+                    (x.CountryId == model.CountryId || model.CountryId == 0) &&
+                    (x.StatusId == model.StatusId || model.StatusId == 0) &&
+                    (x.AgeRatingId == model.AgeRatingId || model.AgeRatingId == 0) &&
+                    (model.CategoryIds.Except(
+                        x.Categories
+                            .Where(c => !c.IsDeleted)
+                            .Select(c => c.Id)).Count() != length || length == 0)
+                ).OrderByDescending(x => x.ViewCount)
+                .ThenByDescending(x => x.CreatedDate);
+            return await Task.FromResult(result);
         }
     }
 }

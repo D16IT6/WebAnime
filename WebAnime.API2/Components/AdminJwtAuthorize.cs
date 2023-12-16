@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
-namespace WebAnime.API2.Controllers
+namespace WebAnime.API2.Components
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AdminJwtAuthorize : Attribute, IAuthorizationFilter
@@ -22,7 +22,10 @@ namespace WebAnime.API2.Controllers
             var principal = ClaimsPrincipal.Current;
 
             if (principal == null || !principal.Identity.IsAuthenticated)
+
+            {
                 return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+            }
 
             var roles = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
@@ -34,7 +37,7 @@ namespace WebAnime.API2.Controllers
             return new HttpResponseMessage(HttpStatusCode.Unauthorized);
         }
 
-        public bool AllowMultiple { get; set; }
+        public bool AllowMultiple { get; set; } = true;
     }
 
 }

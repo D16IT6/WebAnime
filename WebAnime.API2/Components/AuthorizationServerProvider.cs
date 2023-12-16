@@ -1,6 +1,4 @@
-﻿
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DataModels.EF.Identity;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security.OAuth;

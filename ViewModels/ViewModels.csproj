@@ -80,6 +80,8 @@
     <Compile Include="Admin\ServerViewModel.cs" />
     <Compile Include="Admin\StudioViewModel.cs" />
     <Compile Include="Admin\UserViewModel.cs" />
+    <Compile Include="API\AnimeSearchViewModel.cs" />
+    <Compile Include="API\CommentPutViewModel.cs" />
     <Compile Include="API\LoginViewModel.cs" />
     <Compile Include="Client\AccountViewModels.cs" />
     <Compile Include="Client\AnimeDetailViewModel.cs" />

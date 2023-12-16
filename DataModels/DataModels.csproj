@@ -162,6 +162,7 @@
     <Compile Include="EF\Ratings.cs" />
     <Compile Include="EF\Identity\UserRefreshToken.cs" />
     <Compile Include="EF\Schedules.cs" />
+    <Compile Include="Helpers\AnimeConstants.cs" />
     <Compile Include="Helpers\AuthConstants.cs" />
     <Compile Include="EF\AgeRatings.cs" />
     <Compile Include="EF\Animes.cs" />
@@ -196,6 +197,7 @@
     <Compile Include="Repository\Implement\Dapper\EpisodeRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\Dapper\StatusRepositoryDapper.cs" />
     <Compile Include="Repository\Implement\EF6\AgeRatingRepository.cs" />
+    <Compile Include="Repository\Implement\EF6\AnimeFavoriteRepository.cs" />
     <Compile Include="Repository\Implement\EF6\AnimeRepository.cs" />
     <Compile Include="Repository\Implement\EF6\BlogCategoryRepository.cs" />
     <Compile Include="Repository\Implement\EF6\BlogRepository.cs" />
@@ -211,6 +213,7 @@
     <Compile Include="Repository\Implement\EF6\TypeRepository.cs" />
     <Compile Include="Repository\Implement\EF6\UserTokenRepository.cs" />
     <Compile Include="Repository\Interface\IAgeRatingRepository.cs" />
+    <Compile Include="Repository\Interface\IAnimeFavoriteRepository.cs" />
     <Compile Include="Repository\Interface\IBlogCommentRepository.cs" />
     <Compile Include="Repository\Interface\IBlogRepository.cs" />
     <Compile Include="Repository\Interface\IBlogCategoryRepository.cs" />

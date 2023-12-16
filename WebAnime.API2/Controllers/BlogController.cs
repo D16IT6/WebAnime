@@ -5,6 +5,7 @@ using DataModels.Repository.Interface;
 
 namespace WebAnime.API2.Controllers
 {
+    [Authorize]
     public class BlogController : ApiController
     {
         private readonly IBlogRepository _blogRepository;

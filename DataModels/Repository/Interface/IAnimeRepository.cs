@@ -25,5 +25,8 @@ namespace DataModels.Repository.Interface
 
         public Task<IEnumerable<Animes>> GetHotAnimesAPI(int take);
         public Task<Paging<Animes>> GetNewEpisodesReleaseAPI(int pageNumber, int pageSize);
+
+        public Task<IEnumerable<Animes>> SearchAPI(ViewModels.API.AnimeSearchViewModel model);
+
     }
 }

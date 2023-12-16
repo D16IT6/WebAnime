@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using ViewModels.API;
 using ViewModels.Client;
 
 namespace DataModels.Repository.Implement.EF6
@@ -97,7 +98,7 @@ namespace DataModels.Repository.Implement.EF6
                 Context.Comments.Add(comment);
 
                 await Context.SaveChangesAsync();
-                
+
                 var user = Context.Users.FirstOrDefault(x => !x.IsDeleted && x.Id == comment.CreatedBy);
 
                 return new CommentShowViewModel()
@@ -111,10 +112,38 @@ namespace DataModels.Repository.Implement.EF6
                     EpisodeTitle = Context.Episodes.FirstOrDefault(x => !x.IsDeleted && x.Id == comment.EpisodeId)?.Title ?? ""
                 };
             }
-            catch 
+            catch
             {
                 return null;
             }
+        }
+
+        public async Task<Comments> CommentAPI(CommentPutViewModel model)
+        {
+            try
+            {
+                var comment = new Comments()
+                {
+                    AnimeId = model.AnimeId,
+                    Content = model.Content,
+                    CreatedBy = model.UserId,
+                    EpisodeId = model.EpisodeId,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                };
+                Context.Comments.Add(comment);
+                await Context.SaveChangesAsync();
+                return comment;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Task<IQueryable<Comments>> GetAllAPI(int animeId)
+        {
+            return Task.FromResult(Context.Comments.Where(x => x.AnimeId == animeId && !x.IsDeleted));
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataModels.EF;
+using ViewModels.API;
 using ViewModels.Client;
 
 namespace DataModels.Repository.Interface
@@ -12,5 +13,8 @@ namespace DataModels.Repository.Interface
     {
         Task<IEnumerable<CommentShowViewModel>> GetPaging(int animeId, int pageNumber, int pageSize);
         Task<CommentShowViewModel> Comment(Comments comment);
+
+        Task<Comments> CommentAPI(CommentPutViewModel model);
+        Task<IQueryable<Comments>> GetAllAPI(int animeId);
     }
 }

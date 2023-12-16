@@ -1,19 +1,22 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using DataModels.Helpers;
 using DataModels.Repository.Interface;
+using ViewModels.API;
+
 namespace WebAnime.API2.Controllers
 {
     [RoutePrefix("api/Anime")]
+    [Authorize]
+
     public class AnimeController : ApiController
     {
         private readonly IAnimeRepository _animeRepository;
-        private readonly ICommentRepository _commentRepository;
 
-        public AnimeController(IAnimeRepository animeRepository, ICommentRepository commentRepository)
+        public AnimeController(IAnimeRepository animeRepository)
         {
             _animeRepository = animeRepository;
-            _commentRepository = commentRepository;
         }
 
         [HttpGet]
@@ -36,10 +39,9 @@ namespace WebAnime.API2.Controllers
         }
 
         [HttpGet]
-        [Route("NewEpisodeRelease/PageNumber/{pageNumber}/PageSize/{pageSize}")]
+        [Route("NewEpisodeRelease")]
         public async Task<IHttpActionResult> NewEpisodeRelease(int pageNumber = 1, int pageSize = 6)
         {
-
             var wrapper = await _animeRepository.GetNewEpisodesReleaseAPI(pageNumber, pageSize);
 
             var result = wrapper.Data.Select(x => new
@@ -56,17 +58,54 @@ namespace WebAnime.API2.Controllers
 
             return await Task.FromResult(Ok(new
             {
-                data = result,
-                wrapper.TotalPages
+                data = result
+
             }));
         }
 
         [HttpGet]
-        [Route("{id}/Comment/PageNumber/{pageNumber}/PageSize/{pageSize}")]
-        public async Task<IHttpActionResult> GetAllComment(int id, int pageNumber, int pageSize = 10)
+        [Route("{id}")]
+        public async Task<IHttpActionResult> GetDetail(int id)
         {
-            var data = await _commentRepository.GetPaging(id, pageNumber, pageSize);
-            return Ok(data);
+            var anime = await _animeRepository.GetById(id);
+            if (anime == null) return BadRequest("Cannot find anime");
+
+            return Ok(new
+            {
+                anime.Id,
+                anime.Title,
+                anime.Poster,
+                Rating = anime.Ratings.Sum(y => y.RatePoint) / anime.Ratings.Count(),
+                anime.Release?.Year,
+                Country = anime.Countries.Name,
+                AgeRating = anime.AgeRatings.Name,
+                Categories = anime.Categories.Select(x => x.Name),
+                anime.Synopsis,
+                Episodes = anime.Episodes.Where(x => x.ServerId == AnimeConstants.MobileServerId && !x.IsDeleted)
+                        .OrderBy(x => x.SortOrder)
+                        .ThenByDescending(x => x.CreatedDate)
+                        .Select(x => new
+                        {
+                            x.Id,
+                            x.Title,
+                            x.Url
+                        })
+
+            });
+        }
+
+
+        [HttpPut]
+        [Route("Search")]
+        public async Task<IHttpActionResult> SearchAnime(AnimeSearchViewModel model)
+        {
+            var data = await _animeRepository.SearchAPI(model);
+            return Ok(data.Select(x => new
+            {
+                x.Id,
+                x.Title,
+                x.Poster,
+            }));
         }
     }
 }

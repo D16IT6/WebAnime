@@ -5,7 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DataModels.EF.Identity;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using JwtConstants = DataModels.Helpers.JwtConstants;
 
@@ -24,7 +23,7 @@ namespace WebAnime.API2.Components
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Sid,user.Id.ToString()),
-                new Claim(ClaimTypes.Name,user.FullName),
+                new Claim(ClaimTypes.Name,user.UserName),
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.Role,String.Join(",",roleList))
             };
@@ -46,6 +45,6 @@ namespace WebAnime.API2.Components
     public class RefreshTokenRequest
     {
         public string RefreshToken { get; set; }
-        public string UserName { get; set; }
+        public int UserId { get; set; }
     }
 }

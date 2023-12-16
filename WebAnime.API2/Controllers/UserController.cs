@@ -9,6 +9,8 @@ using ViewModels.Admin;
 
 namespace WebAnime.API2.Controllers
 {
+    [RoutePrefix("api/User")]
+    [Authorize]
     public class UserController : ApiController
     {
         private readonly UserManager _userManager;
@@ -33,30 +35,21 @@ namespace WebAnime.API2.Controllers
             });
         }
 
-        [AdminJwtAuthorize]
         [HttpGet]
+        [Route("{id}")]
         public async Task<IHttpActionResult> GetUserById(int id)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
 
-            var userId = user?.Id ?? 1;
-            var userViewModel =
-                _mapper.Map<UserViewModel>(user);
-
-            var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(userId);
-            var changePhoneNumberToken = await _userManager.GenerateChangePhoneNumberTokenAsync(userId, "0123456789");
-            var passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(userId);
-
+            if (user == null) return BadRequest("Cannot find user");
             return Ok(new
             {
-                success = true,
-                user = new
-                {
-                    data = userViewModel,
-                    emailConfirmationToken,
-                    changePhoneNumberToken,
-                    passwordResetToken
-                }
+                user.Id,
+                user.FullName,
+                user.Email,
+                user.AvatarUrl,
+                user.PhoneNumber,
+                user.BirthDay,
             });
         }
 

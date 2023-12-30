@@ -8,37 +8,25 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Org.BouncyCastle.Math.EC.Rfc7748;
 using ViewModels.Admin;
-using WebAnime.MVC.Components;
 using Newtonsoft.Json;
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
     //[OnlyAdminAuthorize]
-    public class UserController : Controller
+    public class UserController(UserManager userManager, IMapper mapper, RoleManager roleManager)
+        : Controller
     {
-        private readonly UserManager _userManager;
-        private readonly IMapper _mapper;
-        private readonly RoleManager _roleManager;
-
-        public UserController(UserManager userManager, IMapper mapper, RoleManager roleManager)
-        {
-            _userManager = userManager;
-            _mapper = mapper;
-            _roleManager = roleManager;
-
-        }
         public async Task<ActionResult> Index()
         {
-            var users = _userManager.Users.Where(x => !x.IsDeleted);
-            var usersViewModel = _mapper.Map<IQueryable<Users>, IEnumerable<UserViewModel>>(users);
+            var users = userManager.Users.Where(x => !x.IsDeleted);
+            var usersViewModel = mapper.Map<IQueryable<Users>, IEnumerable<UserViewModel>>(users);
             return await Task.FromResult(View(usersViewModel));
         }
         [HttpGet]
         public async Task<ActionResult> Create()
         {
-            var roleList = _roleManager.Roles;
+            var roleList = roleManager.Roles;
             ViewBag.Roles = roleList;
 
             return await Task.FromResult(View());
@@ -47,7 +35,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(UserViewModel model)
         {
-            var roleList = _roleManager.Roles.ToList();
+            var roleList = roleManager.Roles.ToList();
             ViewBag.Roles = roleList;
 
             if (ModelState.IsValid)
@@ -58,14 +46,14 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     return View(model);
                 }
 
-                var existUsername = await _userManager.FindByNameAsync(model.UserName);
+                var existUsername = await userManager.FindByNameAsync(model.UserName);
                 if (existUsername != null)
                 {
                     ModelState.AddModelError("ExistUsername", @"Tài khoản đã tồn tại");
                     return View(model);
                 }
 
-                var existEmail = await _userManager.FindByEmailAsync(model.Email);
+                var existEmail = await userManager.FindByEmailAsync(model.Email);
                 if (existEmail != null)
                 {
                     ModelState.AddModelError("ExistEmail", @"Địa chỉ đã tồn tại");
@@ -73,7 +61,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 }
 
 
-                var user = _mapper.Map<Users>(model);
+                var user = mapper.Map<Users>(model);
 
                 var insertRoleList = roleList.Where(x => model.RoleListIds.Contains(x.Id)).Select(x => x.Name).ToArray();
 
@@ -84,11 +72,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 user.EmailConfirmed = true;
                 user.PhoneNumberConfirmed = true;
 
-                IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+                IdentityResult result = await userManager.CreateAsync(user, model.Password);
                 int x;
                 if (result.Succeeded)
                 {
-                    IdentityResult roleResult = await _userManager.AddToRolesAsync(user.Id, insertRoleList);
+                    IdentityResult roleResult = await userManager.AddToRolesAsync(user.Id, insertRoleList);
 
                     if (!roleResult.Succeeded)
                     {
@@ -116,15 +104,15 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
-            var roleList = _roleManager.Roles.ToList();
+            var roleList = roleManager.Roles.ToList();
             ViewBag.Roles = roleList;
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return new HttpNotFoundResult("Cannot find user");
             }
 
-            var usersViewModel = _mapper.Map<Users, UserViewModel>(user);
+            var usersViewModel = mapper.Map<Users, UserViewModel>(user);
             usersViewModel.Password = usersViewModel.ReTypePassword = "abc";//fake
             return await Task.FromResult(View(usersViewModel));
         }
@@ -134,9 +122,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var roleList = _roleManager.Roles.ToArray();
+                var roleList = roleManager.Roles.ToArray();
                 ViewBag.Roles = roleList;
-                var user = await _userManager.FindByIdAsync(model.Id);
+                var user = await userManager.FindByIdAsync(model.Id);
                 if (user == null)
                 {
                     return new HttpNotFoundResult("Cannot find user");
@@ -148,7 +136,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 user.FullName = model.FullName;
                 user.AvatarUrl = model.AvatarUrl;
 
-                var oldRoleIds = _roleManager.GetRoleIdsFromUser(_userManager, user.Id).ToArray();
+                var oldRoleIds = roleManager.GetRoleIdsFromUser(userManager, user.Id).ToArray();
                 var newRoleIds = model.RoleListIds ?? Array.Empty<int>();
                 var removeUserRoleIds = oldRoleIds.Except(newRoleIds);
                 var insertUserRoleIds = newRoleIds.Except(oldRoleIds);
@@ -163,7 +151,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                         var removeRole = roleList.FirstOrDefault(x => x.Id == removeRoleId);
                         if (removeRole != null)
                         {
-                            IdentityResult removeResult = await _userManager.RemoveFromRoleAsync(user.Id, removeRole.Name);
+                            IdentityResult removeResult = await userManager.RemoveFromRoleAsync(user.Id, removeRole.Name);
                             if (!removeResult.Succeeded)
                             {
                                 foreach (var removeResultError in removeResult.Errors)
@@ -183,7 +171,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                         if (insertRole != null)
                         {
-                            var insertRoleResult = await _userManager.AddToRoleAsync(user.Id, insertRole.Name);
+                            var insertRoleResult = await userManager.AddToRoleAsync(user.Id, insertRole.Name);
                             if (!insertRoleResult.Succeeded)
                             {
                                 foreach (var insertResultError in insertRoleResult.Errors)
@@ -199,7 +187,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 user.ModifiedBy = User.Identity.GetUserId<int>();
                 user.ModifiedDate = DateTime.Now;
 
-                IdentityResult updateUserResult = await _userManager.UpdateAsync(user);
+                IdentityResult updateUserResult = await userManager.UpdateAsync(user);
 
                 foreach (var userError in updateUserResult.Errors)
                 {
@@ -222,20 +210,20 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return new HttpNotFoundResult("Cannot find user");
             }
 
-            var usersViewModel = _mapper.Map<Users, UserViewModel>(user);
+            var usersViewModel = mapper.Map<Users, UserViewModel>(user);
             return await Task.FromResult(View(usersViewModel));
         }
 
         [HttpPost]
         public async Task<ActionResult> Delete(UserViewModel model)
         {
-            var user = await _userManager.FindByIdAsync(model.Id);
+            var user = await userManager.FindByIdAsync(model.Id);
             if (user == null)
             {
                 return new HttpNotFoundResult("Cannot find user");
@@ -244,7 +232,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             user.IsDeleted = true;
             user.DeletedBy = User.Identity.GetUserId<int>();
 
-            IdentityResult result = await _userManager.UpdateAsync(user);
+            IdentityResult result = await userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
@@ -265,22 +253,22 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             switch (selectedPropertyName)
             {
                 case "UserName": 
-                    result = _userManager.Users
+                    result = userManager.Users
                     .Where(x => (!x.IsDeleted) &&
                                 (x.UserName.Contains(textSearch) || String.IsNullOrEmpty(textSearch)));
                     break;
                 case "FullName":
-                    result = _userManager.Users
+                    result = userManager.Users
                     .Where(x => (!x.IsDeleted) &&
                                 (x.FullName.Contains(textSearch) || String.IsNullOrEmpty(textSearch)));
                     break;
                 case "PhoneNumber":
-                    result = _userManager.Users
+                    result = userManager.Users
                     .Where(x => (!x.IsDeleted) &&
                                 (x.PhoneNumber.Contains(textSearch) || String.IsNullOrEmpty(textSearch)));
                     break;
                 case "Email":
-                    result = _userManager.Users
+                    result = userManager.Users
                     .Where(x => (!x.IsDeleted) &&
                                 (x.Email.Contains(textSearch) || String.IsNullOrEmpty(textSearch)));
                     break;
@@ -296,15 +284,15 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 {
                     x.Id,
                     x.UserName,
-                    x?.FullName,
+                    x.FullName,
                     x.PhoneNumber,
                     BirthDay = x.BirthDay?.ToString("dd/MM/yyyy"),
                     x.Email,
                     x.AvatarUrl,
-                    RoleList = x.Roles.Select(x => new
+                    RoleList = x.Roles.Select(t => new
                     {
-                        x.Roles.Name,
-                        x.Roles.Id
+                        t.Roles.Name,
+                        t.Roles.Id
                     })
                 });
 

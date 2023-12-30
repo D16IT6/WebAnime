@@ -2,7 +2,7 @@
 
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     public class ErrorController : Controller
     {
         // GET: Admin/Error

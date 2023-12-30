@@ -22,6 +22,8 @@ namespace WebAnime.API2
 
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
+            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("multipart/form-data"));
 
             //config.Formatters.JsonFormatter.SupportedMediaTypes
             //.Add(new MediaTypeHeaderValue("text/html"));

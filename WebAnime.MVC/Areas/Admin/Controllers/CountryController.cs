@@ -12,21 +12,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 {
     [OnlyAdminAuthorize]
 
-    public class CountryController : Controller
+    public class CountryController(IMapper mapper, ICountryRepository countryRepository) : Controller
     {
-        private readonly IMapper _mapper;
-        private readonly ICountryRepository _countryRepository;
-
-        public CountryController(IMapper mapper, ICountryRepository countryRepository)
-        {
-            _mapper = mapper;
-            _countryRepository = countryRepository;
-
-        }
-
         public async Task<ActionResult> Index()
         {
-            var countryViewModelList = _mapper.Map<IEnumerable<Countries>, IEnumerable<CountryViewModel>>(await _countryRepository.GetAll());
+            var countryViewModelList = mapper.Map<IEnumerable<Countries>, IEnumerable<CountryViewModel>>(await countryRepository.GetAll());
 
             return View(countryViewModelList);
         }
@@ -42,10 +32,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var country = _mapper.Map<Countries>(model);
+                var country = mapper.Map<Countries>(model);
                 country.CreatedBy = User.Identity.GetUserId<int>();
 
-                if (await _countryRepository.Create(country))
+                if (await countryRepository.Create(country))
                 {
                     TempData[AlertConstants.SuccessMessage] = "Thêm quốc gia mới thành công";
                     return RedirectToAction("Index", "Country");
@@ -62,7 +52,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
-            var countryViewModel = _mapper.Map<CountryViewModel>(await _countryRepository.GetById(id));
+            var countryViewModel = mapper.Map<CountryViewModel>(await countryRepository.GetById(id));
             if (countryViewModel == null) return HttpNotFound();
             return View(countryViewModel);
         }
@@ -72,10 +62,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var country = _mapper.Map<Countries>(model);
+                var country = mapper.Map<Countries>(model);
                 country.ModifiedBy = User.Identity.GetUserId<int>();
 
-                if (await _countryRepository.Update(country))
+                if (await countryRepository.Update(country))
                 {
                     TempData[AlertConstants.SuccessMessage] = "Cập nhật quốc gia mới thành công";
                     return RedirectToAction("Index", "Country");
@@ -93,7 +83,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            var countryViewModel = _mapper.Map<CountryViewModel>(await _countryRepository.GetById(id));
+            var countryViewModel = mapper.Map<CountryViewModel>(await countryRepository.GetById(id));
             if (countryViewModel == null) return HttpNotFound();
             return View(countryViewModel);
         }
@@ -103,7 +93,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             int deletedBy = User.Identity.GetUserId<int>();
 
-            if (await _countryRepository.Delete(model.Id, deletedBy))
+            if (await countryRepository.Delete(model.Id, deletedBy))
             {
                 TempData[AlertConstants.SuccessMessage] = "Xóa quốc gia mới thành công";
 

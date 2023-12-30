@@ -40,15 +40,27 @@ namespace WebAnime.API2
 
                         ValidIssuer = JwtConstants.Issuer,
                         ValidAudience = JwtConstants.Audience,
-                        ValidateLifetime = true, 
+                        ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
 
                         IssuerSigningKey = JwtProvider.SecurityKey,
-                        
+
                     },
-                    
+
                 });
 
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            // Use Serilog as the OWIN middleware logger
+            app.Use(async (context, next) =>
+            {
+                Log.Information("Request received");
+                await next.Invoke();
+                Log.Information("Response sent");
+            });
 
         }
 

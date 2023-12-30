@@ -14,14 +14,14 @@ namespace WebAnime.UnitTest.RepositoryTest
     public class AnimeRepositoryTest
     {
         private IAnimeRepository _animeRepositoryEf;
-        private int currentAnimeCount = 11;
-        private WebAnimeDbContext context;
+        private const int CurrentAnimeCount = 11;
+        private WebAnimeDbContext _context;
 
         [TestInitialize]
         public void Initialize()
         {
-            context = new WebAnimeDbContext();
-            _animeRepositoryEf = new AnimeRepository(context);
+            _context = new WebAnimeDbContext();
+            _animeRepositoryEf = new AnimeRepository(_context);
         }
 
         [TestMethod]
@@ -30,7 +30,7 @@ namespace WebAnime.UnitTest.RepositoryTest
             var test = await _animeRepositoryEf.GetAll();
 
             Assert.IsNotNull(test);
-            Assert.AreEqual(currentAnimeCount, test.Count());
+            Assert.AreEqual(CurrentAnimeCount, test.Count());
         }
         [TestMethod]
         [DataRow(1)]
@@ -43,21 +43,22 @@ namespace WebAnime.UnitTest.RepositoryTest
         [TestMethod]
         public async Task Create_Anime()
         {
-            var anime = new Animes();
-
-            anime.Title = "Test Title";
-            anime.OriginalTitle = "Test Title";
-            anime.Synopsis = "<p>Test</p>";
-            anime.Poster = "/Uploads/images/108030.jpg";
-            anime.Duration = 23;
-            anime.Release = DateTime.Now;
-            anime.Trailer = "https://youtu.be/Yt4N0UUEd90";
-            anime.StatusId = 2;
-            anime.AgeRatingId = 2;
-            anime.CreatedDate = DateTime.Now;
-            anime.CreatedBy = 1;
-            anime.CategoriesId =  context.Categories.Where(x => x.Id < 3 && !x.IsDeleted).Select( x=> x.Id).ToArray();
-            anime.StudiosId = new int[] { 1 };
+            var anime = new Animes
+            {
+                Title = "Test Title",
+                OriginalTitle = "Test Title",
+                Synopsis = "<p>Test</p>",
+                Poster = "/Uploads/images/108030.jpg",
+                Duration = 23,
+                Release = DateTime.Now,
+                Trailer = "https://youtu.be/Yt4N0UUEd90",
+                StatusId = 2,
+                AgeRatingId = 2,
+                CreatedDate = DateTime.Now,
+                CreatedBy = 1,
+                CategoriesId = _context.Categories.Where(x => x.Id < 3 && !x.IsDeleted).Select( x=> x.Id).ToArray(),
+                StudiosId = new[] { 1 }
+            };
 
             var result = await _animeRepositoryEf.Create(anime);
 

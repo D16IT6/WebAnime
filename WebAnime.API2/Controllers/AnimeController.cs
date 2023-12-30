@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
+using DataModels.EF.Identity;
 using DataModels.Helpers;
 using DataModels.Repository.Interface;
 using ViewModels.API;
@@ -13,16 +17,46 @@ namespace WebAnime.API2.Controllers
     public class AnimeController : ApiController
     {
         private readonly IAnimeRepository _animeRepository;
+        private readonly UserManager _userManager;
 
-        public AnimeController(IAnimeRepository animeRepository)
+        public AnimeController(IAnimeRepository animeRepository, UserManager userManager)
         {
             _animeRepository = animeRepository;
+            _userManager = userManager;
+        }
+
+        [HttpGet]
+        [Route("Random")]
+        public async Task<IHttpActionResult> GetRandom()
+        {
+            var data = await _animeRepository.GetRandomAPI();
+            var result = data.Include(x => x.Ratings).Select(x =>
+                new
+                {
+                    x.Id,
+                    x.Poster,
+                    Rating = x.Ratings.Any()
+                        ? Math.Round(x.Ratings.Sum(t => t.RatePoint) / (x.Ratings.Count * 1.0), 2)
+                        : 0
+                }
+            );
+            return Ok(result);
         }
 
         [HttpGet]
         [Route("Hit/{take?}")]
         public async Task<IHttpActionResult> HotAnime(int take = 10)
         {
+            var check = int.TryParse(ClaimsPrincipal.Current.Claims
+                .FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out var userId);
+
+            if (!check)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
             var data = await _animeRepository.GetHotAnimesAPI(take);
             var result = data.Select(x => new
             {
@@ -33,6 +67,7 @@ namespace WebAnime.API2.Controllers
                 Categories = string.Join(",", x.Categories.Select(c => c.Name)),
                 x.Poster,
                 Rating = x.Ratings.Sum(y => y.RatePoint) / x.Ratings.Count(),
+                IsFavorite = user.Favorites.Where(f => !f.IsDeleted).Any(f => f.AnimeId == x.Id)
             });
 
             return await Task.FromResult(Ok(result));
@@ -67,6 +102,16 @@ namespace WebAnime.API2.Controllers
         [Route("{id}")]
         public async Task<IHttpActionResult> GetDetail(int id)
         {
+            var check = int.TryParse(ClaimsPrincipal.Current.Claims
+                .FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out var userId);
+
+            if (!check)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
             var anime = await _animeRepository.GetById(id);
             if (anime == null) return BadRequest("Cannot find anime");
 
@@ -75,7 +120,9 @@ namespace WebAnime.API2.Controllers
                 anime.Id,
                 anime.Title,
                 anime.Poster,
-                Rating = anime.Ratings.Sum(y => y.RatePoint) / anime.Ratings.Count(),
+                Rating = anime.Ratings.Any()
+                    ? Math.Round(anime.Ratings.Sum(t => t.RatePoint) / (anime.Ratings.Count * 1.0), 2)
+                    : 0,
                 anime.Release?.Year,
                 Country = anime.Countries.Name,
                 AgeRating = anime.AgeRatings.Name,
@@ -89,7 +136,8 @@ namespace WebAnime.API2.Controllers
                             x.Id,
                             x.Title,
                             x.Url
-                        })
+                        }),
+                IsFavorite = user.Favorites.Where(x => !x.IsDeleted).Any(x => x.AnimeId == id),
 
             });
         }

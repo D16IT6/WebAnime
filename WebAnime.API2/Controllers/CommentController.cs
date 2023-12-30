@@ -32,7 +32,8 @@ namespace WebAnime.API2.Controllers
                     x.Content,
                     x.User.FullName,
                     x.User.AvatarUrl,
-                    x.CreatedDate
+                    x.CreatedDate,
+                    x.ParentId
                 }
             ));
         }

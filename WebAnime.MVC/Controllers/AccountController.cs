@@ -18,38 +18,21 @@ using WebAnime.MVC.Components;
 namespace WebAnime.MVC.Controllers
 {
     [AllowAnonymous]
-    public class AccountController : Controller
+    public class AccountController(
+        IAuthenticationManager authenticationManager,
+        SignInManager<Users, int> signInManager,
+        UserManager userManager,
+        RoleManager roleManager,
+        IMapper mapper)
+        : Controller
     {
-        private readonly UserManager _userManager;
-        private readonly IAuthenticationManager _authenticationManager;
-        private readonly SignInManager<Users, int> _signInManager;
-        private readonly RoleManager _roleManager;
-        private readonly IMapper _mapper;
-
-        public AccountController(IAuthenticationManager authenticationManager, SignInManager<Users, int> signInManager, UserManager userManager, RoleManager roleManager, IMapper mapper)
-        {
-            _authenticationManager = authenticationManager;
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _mapper = mapper;
-        }
-
-        public async Task<ActionResult> Index()
-        {
-            if (User.Identity.IsAuthenticated && User.IsInRole("User"))
-            {
-                return new HttpUnauthorizedResult("Already login, please go back");
-            }
-            return await Task.FromResult(View());
-        }
 
         [UserAuthorize]
         [HttpGet]
         public async Task<ActionResult> Info()
         {
-            var user = _userManager.FindById(User.Identity.GetUserId<int>());
-            var userViewModel = _mapper.Map<UserViewModel>(user);
+            var user = userManager.FindById(User.Identity.GetUserId<int>());
+            var userViewModel = mapper.Map<UserViewModel>(user);
             return await Task.FromResult(View(userViewModel));
         }
 
@@ -57,7 +40,7 @@ namespace WebAnime.MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Info(UserViewModel model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null) return await Task.FromResult(new HttpNotFoundResult("cannot found account"));
 
             var uploadImage = Request.Files["AvatarFile"];
@@ -71,7 +54,7 @@ namespace WebAnime.MVC.Controllers
                 user.AvatarUrl = model.AvatarUrl;
                 user.BirthDay = model.BirthDay;
                 user.PhoneNumber = model.PhoneNumber;
-                var result = await _userManager.UpdateAsync(user);
+                var result = await userManager.UpdateAsync(user);
 
                 if (result.Succeeded)
                 {
@@ -98,14 +81,14 @@ namespace WebAnime.MVC.Controllers
         [HttpGet]
         public async Task<ActionResult> ChangePassword()
         {
-            var user = await _userManager.FindByIdAsync(User.Identity.GetUserId<int>());
+            var user = await userManager.FindByIdAsync(User.Identity.GetUserId<int>());
             if (user == null)
             {
                 TempData[AlertConstants.ErrorMessage] = "Yêu cầu đăng nhập";
                 return RedirectToAction("Login");
             }
 
-            var userViewModel = _mapper.Map<UserChangePasswordViewModel>(user);
+            var userViewModel = mapper.Map<UserChangePasswordViewModel>(user);
             return View(userViewModel);
         }
 
@@ -113,7 +96,7 @@ namespace WebAnime.MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> ChangePassword(UserChangePasswordViewModel model)
         {
-            var user = await _userManager.FindByIdAsync(User.Identity.GetUserId<int>());
+            var user = await userManager.FindByIdAsync(User.Identity.GetUserId<int>());
             if (user == null)
             {
                 TempData[AlertConstants.ErrorMessage] = "Yêu cầu đăng nhập";
@@ -122,11 +105,11 @@ namespace WebAnime.MVC.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _userManager.ChangePasswordAsync(user.Id, model.OldPassword, model.NewPassword);
+                var result = await userManager.ChangePasswordAsync(user.Id, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
                     TempData[AlertConstants.SuccessMessage] = "Đổi mật thành công, vui lòng đăng nhập lại";
-                    _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                    authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                     return RedirectToAction("Login");
                 }
 
@@ -148,7 +131,7 @@ namespace WebAnime.MVC.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return await Task.FromResult<ActionResult>(RedirectToAction("Login"));
             }
             return await Task.FromResult(RedirectToAction("NotFound", "Error"));
@@ -170,13 +153,13 @@ namespace WebAnime.MVC.Controllers
 
             if (ModelState.IsValid)
             {
-                Users user = await _userManager.FindByNameAsync(model.UserName);
+                var user = await userManager.FindByNameAsync(model.UserName);
 
                 if (user != null)
                 {
                     if (user.AccessFailedCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
                     {
-                        await _userManager.SetLockoutEnabledAsync(user.Id, true);
+                        await userManager.SetLockoutEnabledAsync(user.Id, true);
                     }
                 }
                 else
@@ -204,19 +187,19 @@ namespace WebAnime.MVC.Controllers
 
                 }
 
-                SignInStatus signInStatus =
-                    await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
+                var signInStatus =
+                    await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
 
                 switch (signInStatus)
                 {
                     case SignInStatus.Success:
                         Session.Remove(CommonConstants.LoginFailCount);
-                        await _userManager.SetLockoutEnabledAsync(user.Id, false);
-                        await _userManager.ResetAccessFailedCountAsync(user.Id);
+                        await userManager.SetLockoutEnabledAsync(user.Id, false);
+                        await userManager.ResetAccessFailedCountAsync(user.Id);
 
-                        if (!await _userManager.IsEmailConfirmedAsync(user.Id))
+                        if (!await userManager.IsEmailConfirmedAsync(user.Id))
                         {
-                            _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                             TempData[AlertConstants.WarningMessage] = "Yêu cầu xác thực email";
                             return RedirectToAction("UnconfirmedEmail", new { email = user.Email });
                         }
@@ -259,10 +242,10 @@ namespace WebAnime.MVC.Controllers
         public async Task<ActionResult> UnconfirmedEmail(string email, string temp)
         {
 
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByEmailAsync(email);
             if (user == null) return new HttpNotFoundResult("Cannot find user by email " + email);
 
-            string code = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+            string code = await userManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
             var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
                 protocol: Request.Url?.Scheme ?? "http");
@@ -296,7 +279,7 @@ namespace WebAnime.MVC.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Login");
             }
 
@@ -311,21 +294,21 @@ namespace WebAnime.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            var userRole = _roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"));
+            var userRole = roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"));
             model.RoleListIds = new[] { userRole.Id };
             var uploadImage = Request.Files["AvatarFile"];
             model.AvatarUrl = HandleFile(uploadImage);
             if (ModelState.IsValid)
             {
 
-                var user = _mapper.Map<Users>(model);
+                var user = mapper.Map<Users>(model);
 
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user.Id, userRole.Name ?? "User");
+                    await userManager.AddToRoleAsync(user.Id, userRole.Name ?? "User");
 
-                    string code = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    string code = await userManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
 
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
@@ -375,7 +358,7 @@ namespace WebAnime.MVC.Controllers
             {
                 return RedirectToAction("NotFound", "Error");
             }
-            var result = await _userManager.ConfirmEmailAsync(userId, code);
+            var result = await userManager.ConfirmEmailAsync(userId, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -393,7 +376,7 @@ namespace WebAnime.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
                     //return View("ForgotPasswordConfirmation");
@@ -402,7 +385,7 @@ namespace WebAnime.MVC.Controllers
                     return View(model);
                 }
 
-                if (!(await _userManager.IsEmailConfirmedAsync(user.Id)))
+                if (!(await userManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     TempData[AlertConstants.ErrorMessage] = "Email chưa được xác nhận";
 
@@ -418,7 +401,7 @@ namespace WebAnime.MVC.Controllers
                     return View(model);
                 }
 
-                string resetCode = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
+                string resetCode = await userManager.GeneratePasswordResetTokenAsync(user.Id);
 
                 if (Request.Url != null)
                 {
@@ -427,7 +410,7 @@ namespace WebAnime.MVC.Controllers
                         protocol: Request.Url.Scheme);
 
 
-                    StringBuilder bodyBuilder = new StringBuilder();
+                    var bodyBuilder = new StringBuilder();
                     bodyBuilder.AppendLine(
                         $"<p>Xin chào <strong>{user.FullName}</strong>, bạn đã yêu cầu khôi phục mật khẩu!</p>");
                     bodyBuilder.AppendLine(
@@ -486,11 +469,11 @@ namespace WebAnime.MVC.Controllers
                     ModelState.AddModelError("PasswordError", @"Mật khẩu xác nhận không đúng, vui lòng thử lại");
                     return View(model);
                 }
-                IdentityResult result = await _userManager.ResetPasswordAsync(model.UserId, model.ResetCode, model.Password);
+                IdentityResult result = await userManager.ResetPasswordAsync(model.UserId, model.ResetCode, model.Password);
                 if (result.Succeeded)
                 {
-                    _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                    return RedirectToAction("Login", "Home");
+                    authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                    return RedirectToAction("Login", "Account");
                 }
 
                 foreach (var error in result.Errors)
@@ -514,12 +497,12 @@ namespace WebAnime.MVC.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
         {
-            var userId = await _signInManager.GetVerifiedUserIdAsync();
+            var userId = await signInManager.GetVerifiedUserIdAsync();
             if (userId == 0)
             {
                 return RedirectToAction("NotFound", "Error");
             }
-            var userFactors = await _userManager.GetValidTwoFactorProvidersAsync(userId);
+            var userFactors = await userManager.GetValidTwoFactorProvidersAsync(userId);
             var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
@@ -534,7 +517,7 @@ namespace WebAnime.MVC.Controllers
                 return View();
             }
 
-            if (!await _signInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
+            if (!await signInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
             {
                 return RedirectToAction("NotFound", "Error");
             }
@@ -545,7 +528,7 @@ namespace WebAnime.MVC.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
-            var loginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
+            var loginInfo = await authenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
                 TempData[AlertConstants.ErrorMessage] = "Lỗi đăng nhập bên thứ 3, vui lòng thử lại";
@@ -553,7 +536,7 @@ namespace WebAnime.MVC.Controllers
             }
 
             // Sign in the user with this external login provider if the user already has a login
-            var result = await _signInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
+            var result = await signInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -590,12 +573,12 @@ namespace WebAnime.MVC.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            var userRole = _roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"))?.Id ?? 3;
+            var userRole = roleManager.Roles.FirstOrDefault(x => x.Name.ToLower().Equals("user"))?.Id ?? 3;
             model.RoleListIds = new[] { userRole };
 
             if (ModelState.IsValid)
             {
-                var info = await _authenticationManager.GetExternalLoginInfoAsync();
+                var info = await authenticationManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
                     return View("ExternalLoginFailure");
@@ -604,16 +587,16 @@ namespace WebAnime.MVC.Controllers
                 var uploadImage = Request.Files["AvatarFile"];
                 model.AvatarUrl = HandleFile(uploadImage);
 
-                var user = _mapper.Map<Users>(model);
-                var result = await _userManager.CreateAsync(user);
+                var user = mapper.Map<Users>(model);
+                var result = await userManager.CreateAsync(user);
 
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user.Id, info.Login);
-                    await _userManager.AddToRoleAsync(user.Id, "User");
+                    result = await userManager.AddLoginAsync(user.Id, info.Login);
+                    await userManager.AddToRoleAsync(user.Id, "User");
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        await signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         return RedirectToLocal(returnUrl);
                     }
                 }
@@ -628,7 +611,7 @@ namespace WebAnime.MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToLocal(Request["ReturnUrl"]);
         }
 
@@ -667,7 +650,7 @@ namespace WebAnime.MVC.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
-            if (!await _signInManager.HasBeenVerifiedAsync())
+            if (!await signInManager.HasBeenVerifiedAsync())
             {
                 return RedirectToAction("NotFound", "Error");
             }
@@ -685,7 +668,7 @@ namespace WebAnime.MVC.Controllers
                 return View(model);
             }
 
-            var result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await signInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:

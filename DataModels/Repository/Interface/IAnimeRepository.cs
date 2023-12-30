@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DataModels.EF;
 using ViewModels.Admin;
@@ -27,6 +25,7 @@ namespace DataModels.Repository.Interface
         public Task<Paging<Animes>> GetNewEpisodesReleaseAPI(int pageNumber, int pageSize);
 
         public Task<IEnumerable<Animes>> SearchAPI(ViewModels.API.AnimeSearchViewModel model);
+        public Task<IQueryable<Animes>> GetRandomAPI(int take = 10);
 
     }
 }

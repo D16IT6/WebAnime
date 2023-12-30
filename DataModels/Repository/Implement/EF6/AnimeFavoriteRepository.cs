@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataModels.EF;
 using DataModels.Repository.Interface;
+using static Dapper.SqlMapper;
 
 namespace DataModels.Repository.Implement.EF6
 {
@@ -28,9 +30,31 @@ namespace DataModels.Repository.Implement.EF6
             throw new NotImplementedException();
         }
 
-        public Task<bool> Create(Favorites entity)
+        public async Task<bool> Create(Favorites entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var find = await _context.Favorites.FirstOrDefaultAsync(x =>
+                    !x.IsDeleted && x.AnimeId == entity.AnimeId && x.CreatedBy == entity.CreatedBy);
+                if (find != null)
+                {
+                    find.CreatedDate = DateTime.Now;
+                    find.IsDeleted = false;
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+
+                entity.CreatedDate = DateTime.Now;
+                entity.IsDeleted = false;
+                entity.StatusId = 1;
+                _context.Favorites.Add(entity);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public Task<bool> Update(Favorites entity)
@@ -38,9 +62,26 @@ namespace DataModels.Repository.Implement.EF6
             throw new NotImplementedException();
         }
 
-        public Task<bool> Delete(int id, int deletedBy = default)
+        public async Task<bool> Delete(int id, int deletedBy = default)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var find = await _context.Favorites.FirstOrDefaultAsync(x =>
+                    !x.IsDeleted && x.Id == id);
+                if (find == null)
+                {
+                    return false;
+                }
+
+                find.DeletedDate = DateTime.Now;
+                find.IsDeleted = true;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public Task<IQueryable<Favorites>> GetByUserIdAPI(int userId)

@@ -12,24 +12,15 @@ using WebAnime.MVC.Components;
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
     [AdminAreaAuthorize]
-    public class ScheduleController : Controller
+    public class ScheduleController(IMapper mapper, IScheduleRepository scheduleRepository) : Controller
     {
-
-        private readonly IMapper _mapper;
-        private readonly IScheduleRepository _scheduleRepository;
-
-        public ScheduleController(IMapper mapper, IScheduleRepository scheduleRepository)
-        {
-            _mapper = mapper;
-            _scheduleRepository = scheduleRepository;
-        }
         [HttpGet]
         public async Task<ActionResult> Index(int animeId)
         {
-            var scheduleList = await _scheduleRepository.GetAll();
+            var scheduleList = await scheduleRepository.GetAll();
             var schedule = scheduleList.Where(x => x.Id == animeId).ToList();
             ViewBag.AnimeId = animeId;
-            var scheduleRepsitoryViewModelList = _mapper.Map<IEnumerable<Schedules>, IEnumerable<ScheduleViewModel>>(schedule);
+            var scheduleRepsitoryViewModelList = mapper.Map<IEnumerable<Schedules>, IEnumerable<ScheduleViewModel>>(schedule);
             return View(scheduleRepsitoryViewModelList);
 
         }
@@ -47,10 +38,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 int animeId = model.Id;
-                var entity = _mapper.Map<Schedules>(model);
+                var entity = mapper.Map<Schedules>(model);
                 entity.ModifiedBy = User.Identity.GetUserId<int>();
                 entity.Id = animeId;
-                if (await _scheduleRepository.Create(entity))
+                if (await scheduleRepository.Create(entity))
                 {
                     TempData[AlertConstants.SuccessHeader] = "Lịch mới";
                     TempData[AlertConstants.SuccessMessage] = "Thêm lịch mới thành công";
@@ -68,7 +59,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Update(int id)
         {
             ViewBag.AnimeID = id;
-            var update = _mapper.Map<ScheduleViewModel>(await _scheduleRepository.GetById(id));
+            var update = mapper.Map<ScheduleViewModel>(await scheduleRepository.GetById(id));
             if (update == null)
                 return HttpNotFound();
             return View(update);
@@ -78,9 +69,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var entity = _mapper.Map<Schedules>(model);
+                var entity = mapper.Map<Schedules>(model);
                 entity.ModifiedBy = User.Identity.GetUserId<int>();
-                if (await _scheduleRepository.Update(entity))
+                if (await scheduleRepository.Update(entity))
                 {
                     TempData[AlertConstants.SuccessHeader] = "Lịch mới";
                     TempData[AlertConstants.SuccessMessage] = "Sửa lịch chiếu thành công";
@@ -98,7 +89,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             ViewBag.AnimeID = id;
-            var delete = _mapper.Map<ScheduleViewModel>(await _scheduleRepository.GetById(id));
+            var delete = mapper.Map<ScheduleViewModel>(await scheduleRepository.GetById(id));
             if (delete == null) return HttpNotFound();
             return View(delete);
         }
@@ -106,7 +97,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Delete(ScheduleViewModel model)
         {
             int deletedBy = User.Identity.GetUserId<int>();
-            if (await _scheduleRepository.Delete(model.Id, deletedBy))
+            if (await scheduleRepository.Delete(model.Id, deletedBy))
             {
                 TempData[AlertConstants.SuccessHeader] = "Xoá";
                 TempData[AlertConstants.SuccessMessage] = "Xoá lịch chiếu thành công";

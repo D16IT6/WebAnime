@@ -11,31 +11,23 @@ using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Controllers
 {
-    public class BlogController : Controller
+    public class BlogController(
+        IBlogRepository blogRepository,
+        IMapper mapper,
+        IBlogCommentRepository blogCommentRepository,
+        UserManager userManager)
+        : Controller
     {
-        private readonly IBlogRepository _blogRepository;
-        private readonly IBlogCommentRepository _blogCommentRepository;
-        private readonly IMapper _mapper;
-        private readonly UserManager _userManager;
-
-        public BlogController(IBlogRepository blogRepository, IMapper mapper, IBlogCommentRepository blogCommentRepository, UserManager userManager)
-        {
-            _blogRepository = blogRepository;
-            _mapper = mapper;
-            _blogCommentRepository = blogCommentRepository;
-            _userManager = userManager;
-        }
-
         public async Task<ActionResult> Index()
         {
-            var blogList = await _blogRepository.GetAll();
-            var blogLitteListViewModel = _mapper.Map<IEnumerable<Blogs>, IEnumerable<BlogLitteViewModel>>(blogList);
+            var blogList = await blogRepository.GetAll();
+            var blogLitteListViewModel = mapper.Map<IEnumerable<Blogs>, IEnumerable<BlogLitteViewModel>>(blogList);
             return View(blogLitteListViewModel);
         }
 
         public async Task<ActionResult> Detail(int id)
         {
-            var blogViewModel = await _blogRepository.GetBlogViewModel(id);
+            var blogViewModel = await blogRepository.GetBlogViewModel(id);
             return View(blogViewModel);
         }
 
@@ -43,16 +35,16 @@ namespace WebAnime.MVC.Controllers
         [HttpPost]
         public async Task<JsonResult> Comment(BlogCommentViewModel model)
         {
-            var blogComment = _mapper.Map<BlogComments>(model);
-            var result = await _blogCommentRepository.Comment(blogComment);
+            var blogComment = mapper.Map<BlogComments>(model);
+            var result = await blogCommentRepository.Comment(blogComment);
             var jsonResult = new JsonResult()
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
 
-            var commentUser = await _userManager.FindByIdAsync(model.CreatedBy);
+            var commentUser = await userManager.FindByIdAsync(model.CreatedBy);
 
-            var afterComment = await _blogCommentRepository.GetById(result);
+            var afterComment = await blogCommentRepository.GetById(result);
 
             jsonResult.Data = new
             {

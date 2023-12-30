@@ -1,11 +1,15 @@
-﻿using AutoMapper;
+﻿using System;
 using DataModels.EF.Identity;
-using System.Collections.Generic;
 using System.Data.Entity;
+using System.Net.Http;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
-using ViewModels.Admin;
 
+using System.Linq;
+using System.Security.Claims;
+
+using ViewModels.API;
 
 namespace WebAnime.API2.Controllers
 {
@@ -14,25 +18,10 @@ namespace WebAnime.API2.Controllers
     public class UserController : ApiController
     {
         private readonly UserManager _userManager;
-        private readonly IMapper _mapper;
-        public UserController(UserManager userManager, IMapper mapper)
+
+        public UserController(UserManager userManager)
         {
             _userManager = userManager;
-            _mapper = mapper;
-        }
-
-        public async Task<IHttpActionResult> GetAllUsers()
-        {
-            var userList = await _userManager.Users.AsNoTracking().ToListAsync();
-
-            var userViewModelList =
-                _mapper.Map<List<Users>, IEnumerable<UserViewModel>>(userList);
-
-            return Ok(new
-            {
-                success = true,
-                userList = userViewModelList
-            });
         }
 
         [HttpGet]
@@ -54,5 +43,26 @@ namespace WebAnime.API2.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<HttpResponseMessage> UpdateProfile(UserPutViewModel model)
+        {
+            var check = int.TryParse(ClaimsPrincipal.Current.Claims
+                .FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out var userId);
+
+            if (!check)
+            {
+                return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+            if (!String.IsNullOrEmpty(model.FullName)) user.FullName = model.FullName;
+            if (!String.IsNullOrEmpty(model.Email)) user.Email = model.Email;
+            if (!String.IsNullOrEmpty(model.PhoneNumber)) user.PhoneNumber = model.PhoneNumber;
+
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded ? new HttpResponseMessage(HttpStatusCode.OK) : new HttpResponseMessage(HttpStatusCode.BadRequest);
+        }
     }
 }

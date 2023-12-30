@@ -7,15 +7,8 @@ using WebAnime.MVC.Components;
 
 namespace WebAnime.MVC.Controllers
 {
-    public class CommentController : Controller
+    public class CommentController(ICommentRepository commentRepository) : Controller
     {
-        private readonly ICommentRepository _commentRepository;
-
-        public CommentController(ICommentRepository commentRepository)
-        {
-            _commentRepository = commentRepository;
-        }
-
         [HttpGet]
         public async Task<JsonResult> LoadComment(int animeId, int pageNumber, int pageSize)
         {
@@ -23,7 +16,7 @@ namespace WebAnime.MVC.Controllers
 
             if (pageNumber <= 0) pageNumber = 1;
 
-            var commentPage = await _commentRepository.GetPaging(animeId, pageNumber, pageSize);
+            var commentPage = await commentRepository.GetPaging(animeId, pageNumber, pageSize);
 
             var jsonResult = new JsonResult
             {
@@ -32,10 +25,10 @@ namespace WebAnime.MVC.Controllers
                 {
                     data = commentPage.Select(x =>
                     {
-                        if (String.IsNullOrEmpty(x.AvatarUrl)) x.AvatarUrl = CommonConstants.DefaultAvatarUrl;
-                        if (String.IsNullOrEmpty(x.UserFullName)) x.UserFullName = "Không biết";
+                        if (string.IsNullOrEmpty(x.AvatarUrl)) x.AvatarUrl = CommonConstants.DefaultAvatarUrl;
+                        if (string.IsNullOrEmpty(x.UserFullName)) x.UserFullName = "Không biết";
 
-                        if (String.IsNullOrEmpty(x.EpisodeTitle))
+                        if (string.IsNullOrEmpty(x.EpisodeTitle))
                         {
                             x.EpisodeTitle = "";
                         }

@@ -10,5 +10,6 @@ namespace DataModels.Repository.Interface
     public interface IAnimeFavoriteRepository : IRepositoryBase<Favorites, int>
     {
         public Task<IQueryable<Favorites>> GetByUserIdAPI(int userId);
+
     }
 }

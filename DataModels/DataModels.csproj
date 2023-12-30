@@ -176,14 +176,6 @@
     <Compile Include="Helpers\LoadFirstData.cs" />
     <Compile Include="Helpers\RoleManagerExtensions.cs" />
     <Compile Include="Helpers\UserManagerExtensions.cs" />
-    <Compile Include="Migrations\202312040937397_UpdateScheduleTable.cs" />
-    <Compile Include="Migrations\202312040937397_UpdateScheduleTable.designer.cs">
-      <DependentUpon>202312040937397_UpdateScheduleTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202312130817083_Add-RefreshToken-Table.cs" />
-    <Compile Include="Migrations\202312130817083_Add-RefreshToken-Table.designer.cs">
-      <DependentUpon>202312130817083_Add-RefreshToken-Table.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EF\Episodes.cs" />
@@ -241,14 +233,6 @@
       <Project>{d9099fe9-cfb8-448b-8179-70f4d27e1a00}</Project>
       <Name>ViewModels</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202312040937397_UpdateScheduleTable.resx">
-      <DependentUpon>202312040937397_UpdateScheduleTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202312130817083_Add-RefreshToken-Table.resx">
-      <DependentUpon>202312130817083_Add-RefreshToken-Table.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -22,6 +22,10 @@ namespace DataModels.EF
         [ForeignKey(nameof(User))] public int CreatedBy { get; set; }
         public Users User { get; set; }
 
+        [ForeignKey(nameof(Parent))]
+        public int? ParentId { get; set; }
+        public Comments Parent { get; set; }
+
         [DataType(DataType.DateTime)] public DateTime? DeletedDate { get; set; }
         public int? DeletedBy { get; set; }
 

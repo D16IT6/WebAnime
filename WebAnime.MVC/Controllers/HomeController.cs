@@ -8,27 +8,16 @@ using ViewModels.Client;
 
 namespace WebAnime.MVC.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(
+        IAgeRatingRepository ageRatingRepository,
+        ICategoryRepository categoryRepository,
+        ITypeRepository typeRepository,
+        ICountryRepository countryRepository,
+        IStatusRepository statusRepository,
+        IAnimeRepository animeRepository,
+        IScheduleRepository scheduleRepository)
+        : Controller
     {
-        private readonly IAgeRatingRepository _ageRatingRepository;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly ITypeRepository _typeRepository;
-        private readonly ICountryRepository _countryRepository;
-        private readonly IStatusRepository _statusRepository;
-        private readonly IAnimeRepository _animeRepository;
-        private readonly IScheduleRepository _scheduleRepository;
-
-        public HomeController(IAgeRatingRepository ageRatingRepository, ICategoryRepository categoryRepository, ITypeRepository typeRepository, ICountryRepository countryRepository, IStatusRepository statusRepository ,IAnimeRepository animeRepository,IScheduleRepository scheduleRepository)
-        {
-            _ageRatingRepository = ageRatingRepository;
-            _categoryRepository = categoryRepository;
-            _typeRepository = typeRepository;
-            _countryRepository = countryRepository;
-            _statusRepository = statusRepository;
-            _animeRepository =animeRepository;
-            _scheduleRepository = scheduleRepository;
-        }
-
         public async Task<ActionResult> Index()
         {
             return await Task.FromResult(View());
@@ -48,8 +37,8 @@ namespace WebAnime.MVC.Controllers
 
         public async Task<ActionResult> Schedule()
         {
-            var animeTask =  _animeRepository.GetAll().Result;
-            var scheduleTask = await _scheduleRepository.GetAll();
+            var animeTask =  animeRepository.GetAll().Result;
+            var scheduleTask = await scheduleRepository.GetAll();
 
             if (animeTask.Any() && scheduleTask.Any())
             {
@@ -81,11 +70,11 @@ namespace WebAnime.MVC.Controllers
         }
         async Task LoadDependencies()
         {
-            var ageRatingTask = _ageRatingRepository.GetAll();
-            var categoryTask = _categoryRepository.GetAll();
-            var countryTask = _countryRepository.GetAll();
-            var statusTask = _statusRepository.GetAll();
-            var typeTask = _typeRepository.GetAll();
+            var ageRatingTask = ageRatingRepository.GetAll();
+            var categoryTask = categoryRepository.GetAll();
+            var countryTask = countryRepository.GetAll();
+            var statusTask = statusRepository.GetAll();
+            var typeTask = typeRepository.GetAll();
 
             await Task.WhenAll(ageRatingTask, categoryTask, countryTask, statusTask, typeTask);
 

@@ -455,5 +455,17 @@ namespace DataModels.Repository.Implement.EF6
                 .ThenByDescending(x => x.CreatedDate);
             return await Task.FromResult(result);
         }
+
+
+        public Task<IQueryable<Animes>> GetRandomAPI(int take = 10)
+        {
+
+            var randomAnimes = Context.Animes
+                .Where(x => !x.IsDeleted)
+                .OrderBy(_ => Guid.NewGuid());
+
+            return Task.FromResult(randomAnimes.AsQueryable());
+        }
+
     }
 }

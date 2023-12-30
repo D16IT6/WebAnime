@@ -1,17 +1,14 @@
 ﻿using System;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.AspNet.Identity;
-using Microsoft.Owin.Security;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
-
 using ViewModels.Client;
 using DataModels.EF.Identity;
 using DataModels.Repository.Interface;
 using WebAnime.API2.Components;
 using System.Net.Http;
 using System.Net;
+using ViewModels.API;
 
 namespace WebAnime.API2.Controllers
 {
@@ -54,7 +51,7 @@ namespace WebAnime.API2.Controllers
                 });
 
             var refreshToken = Guid.NewGuid();
-            await SaveRefreshToken(currentUser, refreshToken,true);
+            await SaveRefreshToken(currentUser, refreshToken, true);
             return Ok(new
             {
                 AccessToken = JwtProvider.GenerateJwt(currentUser, roleList),
@@ -62,6 +59,36 @@ namespace WebAnime.API2.Controllers
             });
 
         }
+
+        [HttpPut]
+        public async Task<IHttpActionResult> SignUp(SignupViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Dữ liệu không hợp lệ");
+            }
+
+            var result = await _userManager.CreateAsync(new Users()
+            {
+                AvatarUrl = "/Uploads/images/AvatarUsers/DefaultAvatar.jpg",
+                BirthDay = DateTime.Now.AddYears(-18),
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                UserName = model.UserName,
+                Email = model.Email
+            }, model.Password);
+            if (result.Succeeded)
+            {
+                return Ok(new
+                {
+                    Message = "Tạo tài khoản thành công, vui lòng đăng nhập"
+                });
+            }
+
+            return BadRequest(String.Join("\n", result.Errors));
+        }
+
+
 
         [HttpPost]
         [Route("Refresh-Token")]
@@ -76,7 +103,7 @@ namespace WebAnime.API2.Controllers
                 return BadRequest("Invalid user");
             }
 
-            if (string.IsNullOrEmpty(refreshTokenRequest.RefreshToken) 
+            if (string.IsNullOrEmpty(refreshTokenRequest.RefreshToken)
                 || !user.RefreshToken.RefreshToken.ToString().ToLower().Equals(refreshTokenRequest.RefreshToken.ToLower()))
             {
                 return BadRequest("Invalid refresh token request");
@@ -94,7 +121,7 @@ namespace WebAnime.API2.Controllers
             var newAccessToken = JwtProvider.GenerateJwt(user, roleList);
             var newRefreshToken = Guid.NewGuid();
 
-            await SaveRefreshToken(user, newRefreshToken,false);
+            await SaveRefreshToken(user, newRefreshToken, false);
             return Ok(new
             {
                 AccessToken = newAccessToken,
@@ -102,21 +129,21 @@ namespace WebAnime.API2.Controllers
             });
         }
 
-        private Task SaveRefreshToken(Users currentUser, Guid refreshToken,bool shouldUpdateExpirationTime)
+        private Task SaveRefreshToken(Users currentUser, Guid refreshToken, bool shouldUpdateExpirationTime)
         {
             return _userTokenRepository.SaveRefreshToken(currentUser.Id, refreshToken, shouldUpdateExpirationTime);
         }
 
-        private async Task<string> GenerateOAuthToken(Users user)
-        {
-            var identity =
-                await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ExternalBearer);
-            var claimsIdentity = new ClaimsIdentity(identity);
+        //private async Task<string> GenerateOAuthToken(Users user)
+        //{
+        //    var identity =
+        //        await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ExternalBearer);
+        //    var claimsIdentity = new ClaimsIdentity(identity);
 
-            var ticket = new AuthenticationTicket(claimsIdentity, new AuthenticationProperties());
+        //    var ticket = new AuthenticationTicket(claimsIdentity, new AuthenticationProperties());
 
-            var accessToken = OwinConfig.OAuthAuthorizationOptions.AccessTokenFormat.Protect(ticket);
-            return accessToken;
-        }
+        //    var accessToken = OwinConfig.OAuthAuthorizationOptions.AccessTokenFormat.Protect(ticket);
+        //    return accessToken;
+        //}
     }
 }

@@ -13,22 +13,12 @@ using WebAnime.MVC.Components;
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
     [AllowAnonymous]
-    public class AuthController : Controller
+    public class AuthController(
+        IAuthenticationManager authenticationManager,
+        SignInManager<Users, int> signInManager,
+        UserManager userManager)
+        : Controller
     {
-        private readonly UserManager _userManager;
-        private readonly IAuthenticationManager _authenticationManager;
-        private readonly SignInManager<Users, int> _signInManager;
-
-        public AuthController(IAuthenticationManager authenticationManager, SignInManager<Users, int> signInManager, UserManager userManager)
-        {
-            _authenticationManager = authenticationManager;
-            _signInManager = signInManager;
-            _userManager = userManager;
-
-
-        }
-
-
         [HttpGet]
         public async Task<ActionResult> Login()
         {
@@ -52,13 +42,13 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                Users user = await _userManager.FindByNameAsync(model.UserName);
+                Users user = await userManager.FindByNameAsync(model.UserName);
 
                 if (user != null)
                 {
                     if (user.AccessFailedCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
                     {
-                        await _userManager.SetLockoutEnabledAsync(user.Id, true);
+                        await userManager.SetLockoutEnabledAsync(user.Id, true);
                     }
                 }
                 else
@@ -84,15 +74,15 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
                 }
                 SignInStatus signInStatus =
-                    await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
+                    await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
 
                 switch (signInStatus)
                 {
 
                     case SignInStatus.Success:
                         Session.Remove(CommonConstants.LoginFailCount);
-                        await _userManager.SetLockoutEnabledAsync(user.Id, false);
-                        await _userManager.ResetAccessFailedCountAsync(user.Id);
+                        await userManager.SetLockoutEnabledAsync(user.Id, false);
+                        await userManager.ResetAccessFailedCountAsync(user.Id);
                         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                         {
                             return Redirect(returnUrl);
@@ -120,7 +110,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [Authorize]
         public async Task<ActionResult> LogOut()
         {
-            _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return await Task.FromResult<ActionResult>(RedirectToAction("Login"));
         }
 
@@ -136,7 +126,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await userManager.FindByEmailAsync(model.Email);
 
                 if (user == null)
                 {
@@ -145,7 +135,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     return View(model);
                 }
 
-                if (!(await _userManager.IsEmailConfirmedAsync(user.Id)))
+                if (!(await userManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     ModelState.AddModelError("NoConfirmEmail", @"Email chưa được xác nhận");
                     return View(model);
@@ -156,7 +146,8 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     ModelState.AddModelError("DeletedAccount", @"Tài khoản đã bị xóa khỏi hệ thống, vui lòng liên hệ admin để cập nhật");
                     return View(model);
                 }
-                string resetCode = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
+
+                string resetCode = await userManager.GeneratePasswordResetTokenAsync(user.Id);
 
                 if (Request.Url != null)
                 {
@@ -172,7 +163,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     bodyBuilder.AppendLine("<p>Thư sẽ hết hạn sau 1 giờ.</p>");
                     bodyBuilder.AppendLine("<h3>Cảm ơn bạn!</h3>");
 
-                    bool isSendEmail = await EmailService.SendMailAsync(new IdentityMessage()
+                    var isSendEmail = await EmailService.SendMailAsync(new IdentityMessage()
                     {
                         Body = bodyBuilder.ToString(),
                         Destination = user.Email,
@@ -195,6 +186,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (resetCode == null)
                 return new HttpNotFoundResult();
 
+            if (!userManager.VerifyUserToken(userId, "ResetPassword", resetCode))
+            {
+                return RedirectToAction("NotFound", "Error", new { Area = "Admin" });
+            }
+
             return await Task.FromResult(View(new ResetPasswordViewModel()
             {
                 UserId = userId,
@@ -205,6 +201,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+
             if (ModelState.IsValid)
             {
                 if (!model.Password.Equals(model.ConfirmPassword))
@@ -212,7 +209,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                     ModelState.AddModelError("PasswordError", @"Mật khẩu xác nhận không đúng, vui lòng thử lại");
                     return View(model);
                 }
-                IdentityResult result = await _userManager.ResetPasswordAsync(model.UserId, model.ResetCode, model.Password);
+                IdentityResult result = await userManager.ResetPasswordAsync(model.UserId, model.ResetCode, model.Password);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Login", "Auth", new { area = "Admin" });

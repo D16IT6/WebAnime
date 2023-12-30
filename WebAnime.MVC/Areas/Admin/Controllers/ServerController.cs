@@ -11,23 +11,14 @@ using WebAnime.MVC.Components;
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
     [OnlyAdminAuthorize]
-    public class ServerController : Controller
+    public class ServerController(IMapper mapper, IServerRepository serverRepository) : Controller
     {
-        private readonly IMapper _mapper;
-        private readonly IServerRepository _serverRepository;
-
-        public ServerController(IMapper mapper, IServerRepository serverRepository)
-        {
-            _mapper = mapper;
-            _serverRepository = serverRepository;
-
-        }
         [HttpGet]
         public async Task<ActionResult> Index()
         {
 
             var serverViewModelList =
-                _mapper.Map<IEnumerable<Servers>, IEnumerable<ServerViewModel>>(await _serverRepository.GetAll());
+                mapper.Map<IEnumerable<Servers>, IEnumerable<ServerViewModel>>(await serverRepository.GetAll());
             return View(serverViewModelList);
         }
 
@@ -42,10 +33,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
 
-                var server = _mapper.Map<Servers>(model);
+                var server = mapper.Map<Servers>(model);
                 server.CreatedBy = User.Identity.GetUserId<int>();
 
-                if (await _serverRepository.Create(server))
+                if (await serverRepository.Create(server))
                 {
                     return RedirectToAction("Index");
                 }
@@ -59,7 +50,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Update(int id)
         {
 
-            var serverViewModel = _mapper.Map<ServerViewModel>(await _serverRepository.GetById(id));
+            var serverViewModel = mapper.Map<ServerViewModel>(await serverRepository.GetById(id));
             if (serverViewModel == null) return HttpNotFound();
 
             return View(serverViewModel);
@@ -71,10 +62,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
 
-                var server = _mapper.Map<Servers>(model);
+                var server = mapper.Map<Servers>(model);
                 server.ModifiedBy = User.Identity.GetUserId<int>();
 
-                if (await _serverRepository.Update(server))
+                if (await serverRepository.Update(server))
                 {
                     return RedirectToAction("Index");
                 }
@@ -89,7 +80,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Delete(int id)
         {
 
-            var serverViewModel = _mapper.Map<ServerViewModel>(await _serverRepository.GetById(id));
+            var serverViewModel = mapper.Map<ServerViewModel>(await serverRepository.GetById(id));
             if (serverViewModel == null) return HttpNotFound();
             return View(serverViewModel);
         }
@@ -97,7 +88,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Delete(ServerViewModel model)
         {
             int deletedBy = User.Identity.GetUserId<int>();
-            if (await _serverRepository.Delete(model.Id, deletedBy))
+            if (await serverRepository.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index");
             }

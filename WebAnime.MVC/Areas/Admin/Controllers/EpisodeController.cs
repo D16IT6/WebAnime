@@ -11,32 +11,22 @@ using WebAnime.MVC.Components;
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
     [AdminAreaAuthorize]
-    public class EpisodeController : Controller
+    public class EpisodeController(
+        IMapper mapper,
+        IServerRepository serverRepository,
+        IEpisodeRepository episodeRepository,
+        IAnimeRepository animeRepository)
+        : Controller
     {
-        private readonly IMapper _mapper;
-        private readonly IServerRepository _serverRepository;
-        private readonly IEpisodeRepository _episodeRepository;
-        private readonly IAnimeRepository _animeRepository;
-
-
-        public EpisodeController(IMapper mapper, IServerRepository serverRepository, IEpisodeRepository episodeRepository, IAnimeRepository animeRepository)
-        {
-            _mapper = mapper;
-            _serverRepository = serverRepository;
-            _episodeRepository = episodeRepository;
-            _animeRepository = animeRepository;
-
-        }
-
         public async Task<ActionResult> Index(int animeId, int serverId)
         {
-            var firstServer = await _serverRepository.GetFirst();
+            var firstServer = await serverRepository.GetFirst();
             if (firstServer == null) return HttpNotFound();
 
             await LoadEditData(animeId);
-            ViewBag.Servers = await _serverRepository.GetAll();
+            ViewBag.Servers = await serverRepository.GetAll();
 
-            var episodeViewModelList = _mapper.Map<IEnumerable<Episodes>, IEnumerable<EpisodeViewModel>>(await _episodeRepository.GetAll(animeId, serverId));
+            var episodeViewModelList = mapper.Map<IEnumerable<Episodes>, IEnumerable<EpisodeViewModel>>(await episodeRepository.GetAll(animeId, serverId));
             ViewBag.ServerId = serverId;
 
             return View(episodeViewModelList);
@@ -45,7 +35,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Create(int animeId, int serverId)
         {
-            var server = await _serverRepository.GetById(serverId);
+            var server = await serverRepository.GetById(serverId);
             ViewBag.ServerName = server.Name;
             await LoadEditData(animeId);
 
@@ -54,15 +44,15 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
                 Id = 0,
                 AnimeId = animeId,
                 ServerId = serverId,
-                SortOrder = await _episodeRepository.GetMaxOrderId(animeId, serverId) + 1
+                SortOrder = await episodeRepository.GetMaxOrderId(animeId, serverId) + 1
             });
         }
         [HttpPost]
         public async Task<ActionResult> CreateMultiple(List<EpisodeViewModel> model)
         {
-            var episodeList = _mapper.Map<List<EpisodeViewModel>, List<Episodes>>(model);
+            var episodeList = mapper.Map<List<EpisodeViewModel>, List<Episodes>>(model);
 
-            var result = await _episodeRepository.AddRange(episodeList);
+            var result = await episodeRepository.AddRange(episodeList);
 
             return Json(new
             {
@@ -76,10 +66,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var episode = _mapper.Map<Episodes>(model);
+                var episode = mapper.Map<Episodes>(model);
                 episode.CreatedBy = User.Identity.GetUserId<int>();
 
-                if (await _episodeRepository.Create(episode))
+                if (await episodeRepository.Create(episode))
                 {
                     return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = model.AnimeId, serverId = model.ServerId });
                 }
@@ -92,11 +82,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Update(int id)
         {
-            var episode = await _episodeRepository.GetById(id);
+            var episode = await episodeRepository.GetById(id);
             if (episode == null) return HttpNotFound();
-            var episodeViewModel = _mapper.Map<EpisodeViewModel>(episode);
+            var episodeViewModel = mapper.Map<EpisodeViewModel>(episode);
             await LoadEditData(episodeViewModel.AnimeId);
-            ViewBag.Server = await _serverRepository.GetById(episodeViewModel.ServerId);
+            ViewBag.Server = await serverRepository.GetById(episodeViewModel.ServerId);
             return View(episodeViewModel);
         }
 
@@ -107,10 +97,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                var episode = _mapper.Map<Episodes>(model);
+                var episode = mapper.Map<Episodes>(model);
                 episode.ModifiedBy = User.Identity.GetUserId<int>();
 
-                if (await _episodeRepository.Update(episode))
+                if (await episodeRepository.Update(episode))
                 {
                     return RedirectToAction("Index", "Episode", new { area = "Admin", animeId = episode.AnimeId, serverId = episode.ServerId });
                 }
@@ -123,11 +113,11 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            var episode = await _episodeRepository.GetById(id);
+            var episode = await episodeRepository.GetById(id);
             if (episode == null) return HttpNotFound();
-            var episodeViewModel = _mapper.Map<EpisodeViewModel>(episode);
+            var episodeViewModel = mapper.Map<EpisodeViewModel>(episode);
             await LoadEditData(episodeViewModel.AnimeId);
-            ViewBag.Server = await _serverRepository.GetById(episodeViewModel.ServerId);
+            ViewBag.Server = await serverRepository.GetById(episodeViewModel.ServerId);
             return View(episodeViewModel);
         }
 
@@ -135,13 +125,13 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Delete(EpisodeViewModel model)
         {
 
-            var deleted = await _episodeRepository.GetById(model.Id);
+            var deleted = await episodeRepository.GetById(model.Id);
             var animeId = deleted.AnimeId;
             var serverId = deleted.ServerId;
 
             int deletedBy = User.Identity.GetUserId<int>();
 
-            if (await _episodeRepository.Delete(model.Id, deletedBy))
+            if (await episodeRepository.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index", "Episode", new { area = "Admin", animeId, serverId });
             }
@@ -151,7 +141,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
 
         async Task LoadEditData(int animeId)
         {
-            ViewBag.Anime = await _animeRepository.GetById(animeId);
+            ViewBag.Anime = await animeRepository.GetById(animeId);
         }
     }
 }

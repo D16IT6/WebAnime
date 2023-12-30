@@ -12,22 +12,14 @@ using WebAnime.MVC.Components;
 namespace WebAnime.MVC.Areas.Admin.Controllers
 {
     [AdminAreaAuthorize]
-    public class StudioController : Controller
+    public class StudioController(IMapper mapper, IStudioRepository studioRepository) : Controller
     {
-        private readonly IMapper _mapper;
-        private readonly IStudioRepository _studioRepository;
-
-        public StudioController(IMapper mapper, IStudioRepository studioRepository)
-        {
-            _mapper = mapper;
-            _studioRepository = studioRepository;
-        }
         [HttpGet]
         public async Task<ActionResult> Index()
         {
 
             var studioViewModelList =
-                _mapper.Map<IEnumerable<Studios>, IEnumerable<StudioViewModel>>(await _studioRepository.GetAll());
+                mapper.Map<IEnumerable<Studios>, IEnumerable<StudioViewModel>>(await studioRepository.GetAll());
             return View(studioViewModelList);
         }
 
@@ -41,9 +33,9 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var studio = _mapper.Map<Studios>(model);
+                var studio = mapper.Map<Studios>(model);
                 studio.CreatedBy = User.Identity.GetUserId<int>();
-                if (await _studioRepository.Create(studio))
+                if (await studioRepository.Create(studio))
                 {
                     return RedirectToAction("Index", "Studio");
                 }
@@ -57,7 +49,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Update(int id)
         {
 
-            var studioViewModel = _mapper.Map<StudioViewModel>(await _studioRepository.GetById(id));
+            var studioViewModel = mapper.Map<StudioViewModel>(await studioRepository.GetById(id));
             if (studioViewModel == null) return HttpNotFound();
 
             return View(studioViewModel);
@@ -68,10 +60,10 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
 
-                var studio = _mapper.Map<Studios>(model);
+                var studio = mapper.Map<Studios>(model);
                 studio.ModifiedBy = User.Identity.GetUserId<int>();
 
-                if (await _studioRepository.Update(studio))
+                if (await studioRepository.Update(studio))
                 {
                     return RedirectToAction("Index", "Studio");
                 }
@@ -86,7 +78,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         public async Task<ActionResult> Delete(int id)
         {
 
-            var studioViewModel = _mapper.Map<StudioViewModel>(await _studioRepository.GetById(id));
+            var studioViewModel = mapper.Map<StudioViewModel>(await studioRepository.GetById(id));
             if (studioViewModel == null) return HttpNotFound();
             return View(studioViewModel);
         }
@@ -96,7 +88,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         {
             int deletedBy = User.Identity.GetUserId<int>();
 
-            if (await _studioRepository.Delete(model.Id, deletedBy))
+            if (await studioRepository.Delete(model.Id, deletedBy))
             {
                 return RedirectToAction("Index", "Studio");
             }
@@ -107,7 +99,7 @@ namespace WebAnime.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> GetPaging(string searchName, int pageNumber, int pageSize)
         {
-            var searchResult = await _studioRepository.GetPaging(searchName, pageSize, pageNumber);
+            var searchResult = await studioRepository.GetPaging(searchName, pageSize, pageNumber);
 
             var result = searchResult.Data.Select
             (x => new
